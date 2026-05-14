@@ -3,7 +3,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
     exit;
 }
 
-define('ARIA_VERSION', '1.9.0');
+define('ARIA_VERSION', '1.10.0');
 define('__TYPECHO_GRAVATAR_PREFIX__', Helper::options()->gravatarPrefix ? Helper::options()->gravatarPrefix : 'https://cn.gravatar.com/avatar/');
 
 require_once 'lib/Shortcode.php';
@@ -18,13 +18,14 @@ function themeConfig($form)
     <style>form{position:relative;max-width:100%}form input:not([type]),form input[type="date"],form input[type="datetime-local"],form input[type="email"],form input[type="number"],form input[type="password"],form input[type="search"],form input[type="tel"],form input[type="time"],form input[type="text"],form input[type="file"],form input[type="url"]{font-family:'Lato','Helvetica Neue',Arial,Helvetica,sans-serif;margin:0em;outline:none;-webkit-appearance:none;tap-highlight-color:rgba(255,255,255,0);line-height:1.21428571em;padding:0.67857143em 1em;font-size:1em;background:#FFFFFF;border:1px solid rgba(34,36,38,0.15);color:rgba(0,0,0,0.87);border-radius:0.28571429rem;-webkit-box-shadow:0em 0em 0em 0em transparent inset;box-shadow:0em 0em 0em 0em transparent inset;-webkit-transition:color 0.5s ease,border-color 0.5s ease;transition:color 0.5s ease,border-color 0.5s ease}form textarea{margin:0em;-webkit-appearance:none;tap-highlight-color:rgba(255,255,255,0);padding:0.78571429em 1em;background:#FFFFFF;border:1px solid rgba(34,36,38,0.15);outline:none;color:rgba(0,0,0,0.87);border-radius:0.28571429rem;-webkit-box-shadow:0em 0em 0em 0em transparent inset;box-shadow:0em 0em 0em 0em transparent inset;-webkit-transition:color 0.1s ease,border-color 0.5s ease;transition:color 0.1s ease,border-color 0.5s ease;font-size:1em;line-height:1.2857;resize:vertical}form textarea:not([rows]){height:12em;min-height:8em;max-height:24em}form textarea,form input[type="checkbox"]{vertical-align:top}form textarea:focus,form input:focus{color:rgba(0,0,0,0.95);border-color:#85B7D9;border-radius:0.28571429rem;background:#FFFFFF;-webkit-box-shadow:0px 0em 0em 0em rgba(34,36,38,0.35) inset;box-shadow:0px 0em 0em 0em rgba(34,36,38,0.35) inset;-webkit-appearance:none}.tip{max-width:100%;position:relative;min-height:1em;margin:0 10px;background:#F8F8F9;padding:1em 1.5em;line-height:1.4285em;color:rgba(0,0,0,0.87);-webkit-transition:opacity 0.1s ease,color 0.1s ease,background 0.1s ease,-webkit-box-shadow 0.1s ease;transition:opacity 0.1s ease,color 0.1s ease,background 0.1s ease,-webkit-box-shadow 0.1s ease;transition:opacity 0.1s ease,color 0.1s ease,background 0.1s ease,box-shadow 0.1s ease;transition:opacity 0.1s ease,color 0.1s ease,background 0.1s ease,box-shadow 0.1s ease,-webkit-box-shadow 0.1s ease;border-radius:0.28571429rem;-webkit-box-shadow:0 0 0 1px rgba(34,36,38,.22) inset,0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.15);box-shadow:0 0 0 1px rgba(34,36,38,.22) inset,0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.15)}.tip-header{text-align:center;margin:10px auto 20px auto;color:#444;text-shadow:0 0 2px #c2c2c2}.current-ver{position:relative;border-color:#b21e1e!important;background-color:#DB2828!important;color:#FFF!important;left:-37px;padding-left:1rem;border-bottom-right-radius:5px;padding-right:1.2em}.current-ver:after{position:absolute;content:'';top:100%;left:0;background-color:transparent!important;border-style:solid;border-width:0 1.2em 1.2em 0;border-color:transparent;border-right-color:inherit;width:0;height:0}.btn.primary{cursor:pointer;display:inline-block;background:#E0E1E2 none;color:rgba(0,0,0,0.6);padding:0 1.5em;border-radius:0.28571429rem;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;outline:none;-webkit-transition:opacity 0.5s ease,background-color 0.5s ease,color 0.5s ease,background 0.5s ease,-webkit-box-shadow 0.5s ease;transition:opacity 0.5s ease,background-color 0.5s ease,color 0.5s ease,background 0.5s ease,-webkit-box-shadow 0.5s ease;transition:opacity 0.5s ease,background-color 0.5s ease,color 0.5s ease,box-shadow 0.5s ease,background 0.5s ease;transition:opacity 0.5s ease,background-color 0.5s ease,color 0.5s ease,box-shadow 0.5s ease,background 0.5s ease,-webkit-box-shadow 0.5s ease;-webkit-tap-highlight-color:transparent}.btn.primary:hover{background-color:#CACBCD;color:rgba(0,0,0,0.8)}.btn.primary[type="submit"]{position:fixed;right:100px;bottom:100px}.btn.confirm{background-color:#95f798!important}.btn.alert{background-color:#fa9492 !important}i.confirm{position:absolute;left:.5em}i.confirm:after,i.confirm:before{content:"";background:green;display:block;position:absolute;width:3px;border-radius:3px}i.confirm:after{height:6px;transform:rotate(-45deg);top:9px;left:6px}i.confirm:before{height:11px;transform:rotate(45deg);top:5px;left:10px}i.alert{position:absolute;left:.5em}i.alert:after,i.alert:before{content:"";background:red;display:block;position:absolute;width:3px;border-radius:3px;left:9px}i.alert:after{height:3px;top:14px}i.alert:before{height:8px;top:4px}.multiline{position:relative;display:inline-block;-webkit-backface-visibility:hidden;backface-visibility:hidden;outline:none;vertical-align:baseline;font-style:normal;min-height:17px;font-size:1rem;line-height:17px;min-width:17px}.multiline input[type="checkbox"],.multiline input[type="radio"]{cursor:pointer;position:absolute;top:0px;left:0px;opacity:0 !important;outline:none;z-index:3;width:17px;height:17px}.multiline{min-height:1.5rem}.multiline input{width:3.5rem;height:1.5rem}.multiline .box,.multiline label{min-height:1.5rem;padding-left:4.5rem;color:rgba(0,0,0,0.87)}.multiline label{padding-top:0.15em}.multiline .box:before,.multiline label:before{cursor:pointer;display:block;position:absolute;content:'';z-index:1;-webkit-transform:none;transform:none;border:none;top:0rem;background:rgba(0,0,0,0.05);-webkit-box-shadow:none;box-shadow:none;width:3.5rem;height:1rem;border-radius:500rem}.multiline .box:after,.multiline label:after{cursor:pointer;background:#FFFFFF -webkit-gradient(linear,left top,left bottom,from(transparent),to(rgba(0,0,0,0.05)));background:#FFFFFF -webkit-linear-gradient(transparent,rgba(0,0,0,0.05));background:#FFFFFF linear-gradient(transparent,rgba(0,0,0,0.05));position:absolute;content:'' !important;opacity:1;z-index:2;border:none;-webkit-box-shadow:0px 1px 2px 0 rgba(34,36,38,0.15),0px 0px 0px 1px rgba(34,36,38,0.15) inset;box-shadow:0px 1px 2px 0 rgba(34,36,38,0.15),0px 0px 0px 1px rgba(34,36,38,0.15) inset;width:1.2rem;height:1.2rem;top:-.1rem;left:0em;border-radius:500rem;-webkit-transition:background 0.3s ease,left 0.3s ease;transition:background 0.3s ease,left 0.3s ease}.multiline input ~ .box:after,.multiline input ~ label:after{left:-0.05rem;-webkit-box-shadow:0px 1px 2px 0 rgba(34,36,38,0.15),0px 0px 0px 1px rgba(34,36,38,0.15) inset;box-shadow:0px 1px 2px 0 rgba(34,36,38,0.15),0px 0px 0px 1px rgba(34,36,38,0.15) inset}.multiline input:focus ~ .box:before,.multiline input:focus ~ label:before{background-color:rgba(0,0,0,0.15);border:none}.multiline .box:hover::before,.multiline label:hover::before{background-color:rgba(0,0,0,0.15);border:none}.multiline input:checked ~ .box,.multiline input:checked ~ label{color:rgba(0,0,0,0.95) !important}.multiline input:checked ~ .box:before,.multiline input:checked ~ label:before{background-color:#2185D0 !important}.multiline input:checked ~ .box:after,.multiline input:checked ~ label:after{left:2.3rem;-webkit-box-shadow:0px 1px 2px 0 rgba(34,36,38,0.15),0px 0px 0px 1px rgba(34,36,38,0.15) inset;box-shadow:0px 1px 2px 0 rgba(34,36,38,0.15),0px 0px 0px 1px rgba(34,36,38,0.15) inset}.multiline input:focus:checked ~ .box,.multiline input:focus:checked ~ label{color:rgba(0,0,0,0.95) !important}.multiline input:focus:checked ~ .box:before,.multiline input:focus:checked ~ label:before{background-color:#0d71bb !important}
     [id^="typecho-option-item-MathJaxConfig-"]{display:none}
     </style>
-    <script>var r=new XMLHttpRequest();var updating=function(dom){var i=document.createElement("i");i.className="loading";dom.prepend(i)};var checkUpdate=function(dom){updating(dom);try{r.open("GET","https://raw.githubusercontent.com/Siphils/Typecho-Theme-Aria/master/version.json?raw=true",true);r.send();r.onreadystatechange=function(){if(r.readyState===4){if(r.status==200){try{var d=JSON.parse(r.responseText)}catch(e){}if(d.version==ARIA_VERSION.trim()){dom.className+=" confirm";dom.style.paddingLeft="2em";dom.textContent="已经为最新版";var i=document.createElement("i");i.className="confirm";dom.prepend(i)}else{dom.className+=" alert";dom.style.paddingLeft="2em";dom.textContent="检查到新版本";var i=document.createElement("i");i.className="alert";dom.prepend(i);if(typeof document.getElementById('update-info')==='undefined'||document.getElementById('update-info')===null){var log=document.createElement('div');log.id='update-info';log.classList.add('tip');var html='<ul><li>新版本：'+d.version+'</li><li>更新日志：<a href="'+d.changeLog+'" target="_blank">changeLog</a></li><li>使用帮助：<a href="'+d.wiki+'" target="_blank">Wiki</a></li>';if(d.warning){html+='<li><strong>更新须知:'+d.warning+'</strong></li>'}html+='</ul>';log.innerHTML=html;Array.prototype.slice.call(document.getElementsByClassName('tip')).pop().after(log)}}}else{dom.textContent="请求失败！错误码："+r.status}}}}catch(e){dom.textContent="请求失败，请稍后重试！"+e}document.getElementsByTagName("button")[1].onclick=function(e){updating(e.target)}};window.onload=function(){checkUpdate(document.getElementById('check-update'))}</script>
-    <script>window.addEventListener('load',function(){var checkbox=document.getElementById('AriaConfig-enableMathJax');var text=document.querySelector('[id^="typecho-option-item-MathJaxConfig-"]');if(!checkbox||!text){return}function show(){text.style.display=checkbox.checked?'block':'none'}checkbox.addEventListener('change',show);show()})</script>
+    <script>var r=new XMLHttpRequest();var updating=function(dom){var i=document.createElement("i");i.className="loading";dom.prepend(i)};var checkUpdate=function(dom){updating(dom);try{r.open("GET","https://raw.githubusercontent.com/SweetenedSuzuka/Typecho-Theme-Aria-Continu/master/version.json?raw=true",true);r.send();r.onreadystatechange=function(){if(r.readyState===4){if(r.status==200){try{var d=JSON.parse(r.responseText)}catch(e){}if(d.version==ARIA_VERSION.trim()){dom.className+=" confirm";dom.style.paddingLeft="2em";dom.textContent="已经为最新版";var i=document.createElement("i");i.className="confirm";dom.prepend(i)}else{dom.className+=" alert";dom.style.paddingLeft="2em";dom.textContent="检查到新版本";var i=document.createElement("i");i.className="alert";dom.prepend(i);if(typeof document.getElementById('update-info')==='undefined'||document.getElementById('update-info')===null){var log=document.createElement('div');log.id='update-info';log.classList.add('tip');var html='<ul><li>新版本：'+d.version+'</li><li>更新日志：<a href="'+d.changeLog+'" target="_blank">changeLog</a></li><li>使用帮助（Aria）：<a href="'+d.wiki+'" target="_blank">Wiki</a></li>';if(d.warning){html+='<li><strong>更新须知:'+d.warning+'</strong></li>'}html+='</ul>';log.innerHTML=html;Array.prototype.slice.call(document.getElementsByClassName('tip')).pop().after(log)}}}else{dom.textContent="请求失败！错误码："+r.status}}}}catch(e){dom.textContent="请求失败，请稍后重试！"+e}document.getElementsByTagName("button")[1].onclick=function(e){updating(e.target)}};window.onload=function(){checkUpdate(document.getElementById('check-update'))}</script>
+    <script>window.addEventListener('load',function(){var mathJaxCheckbox=document.getElementById('AriaConfig-enableMathJax');var mathJaxConfig=document.querySelector('[id^="typecho-option-item-MathJaxConfig-"]');var mathJaxInCommentsCheckbox=document.getElementById('AriaConfig-enableMathJaxInComments');var mathJaxInCommentsItem=mathJaxInCommentsCheckbox&&(mathJaxInCommentsCheckbox.closest&&mathJaxInCommentsCheckbox.closest('li')||mathJaxInCommentsCheckbox.closest&&mathJaxInCommentsCheckbox.closest('label')||mathJaxInCommentsCheckbox.parentElement);var creditsMode=document.getElementById('footerCreditsMode')||document.querySelector('select[name="footerCreditsMode"]');var creditsText=document.querySelector('[id^="typecho-option-item-footerCreditsText-"]');var creditsLink=document.querySelector('[id^="typecho-option-item-footerCreditsLink-"]');var homeExcludeEnabled=document.querySelector('select[name="homeExcludeCategoriesEnabled"]');var homeExcludeCategories=document.querySelector('[id^="typecho-option-item-homeExcludeCategories-"]');var footerRecordsEnabled=document.querySelector('select[name="footerRecordsEnabled"]');var footerRecords=document.querySelector('[id^="typecho-option-item-footerRecords-"]');var toggle=function(dom,show){if(dom){dom.style.display=show?'block':'none'}};var syncMathJax=function(){var enabled=!!(mathJaxCheckbox&&mathJaxCheckbox.checked);toggle(mathJaxConfig,enabled);toggle(mathJaxInCommentsItem,enabled)};var syncFooterCredits=function(){var showCustom=!!(creditsMode&&creditsMode.value==='custom');toggle(creditsText,showCustom);toggle(creditsLink,showCustom)};var syncHomeExclude=function(){var enabled=!!(homeExcludeEnabled&&homeExcludeEnabled.value==='1');toggle(homeExcludeCategories,enabled)};var syncFooterRecords=function(){var enabled=!!(footerRecordsEnabled&&footerRecordsEnabled.value==='1');toggle(footerRecords,enabled)};if(mathJaxCheckbox&&(mathJaxConfig||mathJaxInCommentsItem)){mathJaxCheckbox.addEventListener('change',syncMathJax);syncMathJax()}if(creditsMode){creditsMode.addEventListener('change',syncFooterCredits);syncFooterCredits()}if(homeExcludeEnabled){homeExcludeEnabled.addEventListener('change',syncHomeExclude);syncHomeExclude()}if(footerRecordsEnabled){footerRecordsEnabled.addEventListener('change',syncFooterRecords);syncFooterRecords()}})</script>
 <?php
 echo '<div class="tip"><span class="current-ver"><strong><code>Ver ' . ARIA_VERSION . '</code></strong></span>
-    <div class="tip-header"><h1>Typecho-Theme-Aria</h1></div>
-    <p>感谢选择使用 <code>Aria</code> </p>
-    <p>查看<a href="https://github.com/Siphils/Typecho-Theme-Aria/wiki">帮助手册</a> <a href="https://github.com/Siphils/Typecho-Theme-Aria/issues">issue</a> <a href="https://github.com/Siphils/Typecho-Theme-Aria/pulls">PR</a></p>
+    <div class="tip-header"><h1>Aria-Continuo</h1></div>
+    <p>感谢选择使用 <code>Aria</code> / <code>Aria Continuo</code></p>
+    <p>帮助手册（Aria）：<a href="https://github.com/Siphils/Typecho-Theme-Aria/wiki" target="_blank">Wiki</a>（Continuo 暂无）</p>
+    <p>Aria：<a href="https://github.com/Siphils/Typecho-Theme-Aria/issues" target="_blank">Issues</a> <a href="https://github.com/Siphils/Typecho-Theme-Aria/pulls" target="_blank">PR</a> ｜ Continuo：<a href="https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continu/issues" target="_blank">Issues</a> <a href="https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continu/pulls" target="_blank">PR</a></p>
     <p><button id="check-update" onClick="checkUpdate(this);" class="btn primary" style="position:absolute;right:5px;bottom:5px;">检查更新</button></p>
 </div>';
     $avatarUrl = new Typecho_Widget_Helper_Form_Element_Text('avatarUrl', null, null, _t('站点头像'), _t('在这里填入一个图片URL地址, 以在网站标题前加上一个头像,需要带上http(s)://'));
@@ -45,15 +46,6 @@ echo '<div class="tip"><span class="current-ver"><strong><code>Ver ' . ARIA_VERS
     $searchPlaceholder = new Typecho_Widget_Helper_Form_Element_Text('searchPlaceholder', null, '要看书架吗？请吧', _t('搜索框 placeholder'), _t('搜索框输入提示文本；留空可不显示 placeholder'));
     $form->addInput($searchPlaceholder);
 
-    $homeExcludeCategories = new Typecho_Widget_Helper_Form_Element_Textarea(
-        'homeExcludeCategories',
-        null,
-        'negawakubakonotenikoufukuwo',
-        _t('首页排除分类（slug）'),
-        _t('首页文章列表中需要排除的分类 slug；每行一个，或用空格/逗号分隔；留空则不排除任何分类')
-    );
-    $form->addInput($homeExcludeCategories);
-
     $homeExcludeCategoriesEnabled = new Typecho_Widget_Helper_Form_Element_Select(
         'homeExcludeCategoriesEnabled',
         array(
@@ -66,10 +58,19 @@ echo '<div class="tip"><span class="current-ver"><strong><code>Ver ' . ARIA_VERS
     );
     $form->addInput($homeExcludeCategoriesEnabled);
 
+    $homeExcludeCategories = new Typecho_Widget_Helper_Form_Element_Textarea(
+        'homeExcludeCategories',
+        null,
+        'negawakubakonotenikoufukuwo',
+        _t('首页排除分类（slug）'),
+        _t('首页文章列表中需要排除的分类 slug；每行一个，或用空格/逗号分隔；留空则不排除任何分类')
+    );
+    $form->addInput($homeExcludeCategories);
+
     $commentWaitingText = new Typecho_Widget_Helper_Form_Element_Text(
         'commentWaitingText',
         null,
-        '猫猫正在思考这条评论和不和谐.jpg（评论正在等待审核）',
+        '正在思考这条评论和不和谐.jpg（评论正在等待审核）',
         _t('评论审核提示文案'),
         _t('评论处于等待审核状态时显示；留空可不显示提示')
     );
@@ -123,21 +124,34 @@ echo '<div class="tip"><span class="current-ver"><strong><code>Ver ' . ARIA_VERS
     $footerCreditsMode = new Typecho_Widget_Helper_Form_Element_Select(
         'footerCreditsMode',
         array(
-            'original' => _t('原主题署名'),
+            'original' => _t('Aria署名'),
+            'continu' => _t('Aria Continu署名'),
             'custom' => _t('自定义署名'),
             'hidden' => _t('隐藏署名'),
         ),
-        'custom',
+        'continu',
         _t('页脚署名模式'),
-        _t('控制页脚中额外署名信息的显示方式')
+        _t('控制页脚署名信息的显示方式')
     );
     $form->addInput($footerCreditsMode);
 
-    $footerCreditsText = new Typecho_Widget_Helper_Form_Element_Text('footerCreditsText', null, 'Customized by Site Owner', _t('页脚署名文本'), _t('当署名模式为“自定义署名”时显示'));
+    $footerCreditsText = new Typecho_Widget_Helper_Form_Element_Text('footerCreditsText', null, '用户自定义内容', _t('页脚署名文本'), _t('当署名模式为“自定义署名”时显示；前缀会固定显示为 Aria Continu'));
     $form->addInput($footerCreditsText);
 
-    $footerCreditsLink = new Typecho_Widget_Helper_Form_Element_Text('footerCreditsLink', null, 'https://example.com/', _t('页脚署名链接'), _t('当署名模式为“自定义署名”时使用，需要带上http(s)://；留空则仅显示文本'));
+    $footerCreditsLink = new Typecho_Widget_Helper_Form_Element_Text('footerCreditsLink', null, null, _t('页脚署名链接'), _t('当署名模式为“自定义署名”时使用，需要带上http(s)://；留空则仅显示文本'));
     $form->addInput($footerCreditsLink);
+
+    $footerRecordsEnabled = new Typecho_Widget_Helper_Form_Element_Select(
+        'footerRecordsEnabled',
+        array(
+            '1' => _t('开启'),
+            '0' => _t('关闭'),
+        ),
+        '1',
+        _t('显示页脚备案信息'),
+        _t('控制页脚备案信息是否显示；关闭时仅保存不显示')
+    );
+    $form->addInput($footerRecordsEnabled);
 
     $footerRecords = new Typecho_Widget_Helper_Form_Element_Textarea(
         'footerRecords',
@@ -158,18 +172,6 @@ echo '<div class="tip"><span class="current-ver"><strong><code>Ver ' . ARIA_VERS
         _t('按原有 JSON 片段格式填写，每项可包含 text、url、icon、title')
     );
     $form->addInput($footerRecords);
-
-    $footerRecordsEnabled = new Typecho_Widget_Helper_Form_Element_Select(
-        'footerRecordsEnabled',
-        array(
-            '1' => _t('开启'),
-            '0' => _t('关闭'),
-        ),
-        '1',
-        _t('显示页脚备案信息'),
-        _t('控制页脚备案信息是否显示；关闭时仅保存不显示')
-    );
-    $form->addInput($footerRecordsEnabled);
 
     $customScript = new Typecho_Widget_Helper_Form_Element_Textarea('customScript', null, null, _t('自定义JS'), _t('会加载在main.min.js文件加载之前'));
     $form->addInput($customScript);
@@ -223,8 +225,8 @@ echo '<div class="tip"><span class="current-ver"><strong><code>Ver ' . ARIA_VERS
 
     $MathJaxConfig = new Typecho_Widget_Helper_Form_Element_Textarea('MathJaxConfig', null, "MathJax = MathJax || {};
 MathJax.tex = MathJax.tex || {};
-MathJax.tex.inlineMath = {'[+]': [['$', '$']]};
-MathJax.tex.displayMath = {'[+]': [['$$', '$$']]};
+MathJax.tex.inlineMath = [['$', '$'], ['\\\\(', '\\\\)']];
+MathJax.tex.displayMath = [['$$', '$$'], ['\\\\[', '\\\\]']];
 MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入 MathJax 配置 JS（不需要 script 标签）。推荐使用对 MathJax 对象的增量配置；也兼容旧写法 MathJax.Hub.Config({...})。'));
     $form->addInput($MathJaxConfig);
 
@@ -236,6 +238,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
             'enableLazyload' => '开启图片懒加载<a href="https://appelsiini.net/projects/lazyload" target="_blank">lazyload</a>',
             'enableCommentToMail' => '是否接收评论邮件回复按钮，需要配合<a href="https://9sb.org/58">CommentToMail</a>（文章中最后一个插件)使用',
             'enableMathJax' => '启用MathJax',
+            'enableMathJaxInComments' => '评论区启用 MathJax 解析',
             'showQRCode' => '文章底部显示本文链接二维码',
             'showCommentUA' => '评论显示UserAgent（显示操作系统和浏览器信息）',
             'showHitokoto' => '页面底部显示一言',
@@ -270,13 +273,17 @@ function themeInit($archive)
         Helper::options()->commentsAntiSpam = false;
     }
 
-    //ajax获取评论头像
-    if (isset($_GET['action']) == 'ajax_avatar_get' && 'GET' == $_SERVER['REQUEST_METHOD']) {
-        $host = __TYPECHO_GRAVATAR_PREFIX__;
-        $email = strtolower($_GET['email']);
-        $hash = md5($email);
-        $avatar = $host . $hash . '?s=64&r=G';
+    // AJAX 获取评论头像，仅在明确请求该动作时响应。
+    if (
+        $_SERVER['REQUEST_METHOD'] === 'GET'
+        && isset($_GET['action'])
+        && $_GET['action'] === 'ajax_avatar_get'
+    ) {
+        $email = isset($_GET['email']) ? trim((string) $_GET['email']) : '';
+        $hash = md5(strtolower($email));
+        $avatar = __TYPECHO_GRAVATAR_PREFIX__ . $hash . '?s=64&r=G';
+
         echo $avatar;
-        die();
-    } else {return;}
+        exit;
+    }
 }

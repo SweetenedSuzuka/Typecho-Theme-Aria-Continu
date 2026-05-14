@@ -7,11 +7,18 @@
  * 文章/页面相关组件
  *
  * @author     Siphils
- * @version    since 1.9.0
+ * @version    since 1.10.0
  */
 
 class Contents
 {
+    /**
+     * 浏览量字段检查结果缓存
+     *
+     * @var bool|null
+     */
+    private static $hasViewsColumn = null;
+
     /**
      * 从数据库查询上/下篇文章内容信息
      * 返回内容包括文章缩略、标题、链接
@@ -130,15 +137,14 @@ class Contents
     {
         $cid = $archive->cid;
         $db = Typecho_Db::get();
-        $prefix = $db->getPrefix();
 
-        if (!array_key_exists('views', $db->fetchRow($db->select()->from('table.contents')))) {
-            $db->query('ALTER TABLE `' . $prefix . 'contents` ADD `views` INT(10) DEFAULT 0;');
+        if (!self::hasViewsColumn($db)) {
             echo 0;
             return;
         }
 
         $row = $db->fetchRow($db->select('views')->from('table.contents')->where('cid = ?', $cid));
+        $viewsCount = isset($row['views']) ? (int) $row['views'] : 0;
 
         if ($archive->is('single')) {
             $views = Typecho_Cookie::get('extend_contents_views');
@@ -148,13 +154,33 @@ class Contents
                 $views = explode(',', $views);
             }
             if (!in_array($cid, $views)) {
-                $db->query($db->update('table.contents')->rows(array('views' => (int) $row['views'] + 1))->where('cid = ?', $cid));
+                $viewsCount++;
+                $db->query($db->update('table.contents')->rows(array('views' => $viewsCount))->where('cid = ?', $cid));
                 array_push($views, $cid);
                 $views = implode(',', $views);
                 Typecho_Cookie::set('extend_contents_views', $views); //记录查看cookie
             }
         }
-        echo $row['views'];
+        echo $viewsCount;
+    }
+
+    /**
+     * 检查 contents 表是否存在浏览量字段
+     *
+     * @param Typecho_Db $db
+     *
+     * @return bool
+     */
+    private static function hasViewsColumn($db)
+    {
+        if (self::$hasViewsColumn !== null) {
+            return self::$hasViewsColumn;
+        }
+
+        $row = $db->fetchRow($db->select()->from('table.contents')->limit(1));
+        self::$hasViewsColumn = is_array($row) && array_key_exists('views', $row);
+
+        return self::$hasViewsColumn;
     }
 
     /**

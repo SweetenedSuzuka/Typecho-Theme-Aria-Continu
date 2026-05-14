@@ -7,11 +7,24 @@
  * 部分工具
  *
  * @author     Siphils
- * @version    since 1.9.0
+ * @version    since 1.10.0
  */
 
 class Utils
 {
+    /**
+     * 判断配置项是否存在
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public static function hasOption($name)
+    {
+        $options = Helper::options();
+        return isset($options->$name);
+    }
+
     /**
      * 获取主题配置项字符串值
      *
@@ -23,12 +36,74 @@ class Utils
     private static function getOptionString($name, $default = '')
     {
         $options = Helper::options();
-        if (!isset($options->$name)) {
+        if (!self::hasOption($name)) {
             return $default;
         }
 
         $value = trim((string) $options->$name);
         return $value !== '' ? $value : $default;
+    }
+
+    /**
+     * 获取配置项字符串值
+     *
+     * @param string $name
+     * @param string $default
+     * @param bool $useDefaultWhenEmpty
+     *
+     * @return string
+     */
+    public static function getOptionStringValue($name, $default = '', $useDefaultWhenEmpty = true)
+    {
+        if (!self::hasOption($name)) {
+            return $default;
+        }
+
+        $value = trim((string) Helper::options()->$name);
+        if ($value !== '') {
+            return $value;
+        }
+
+        return $useDefaultWhenEmpty ? $default : '';
+    }
+
+    /**
+     * 获取 1/0 形式配置项的启用状态
+     *
+     * @param string $name
+     * @param bool $default
+     *
+     * @return bool
+     */
+    public static function isOptionEnabled($name, $default = false)
+    {
+        if (!self::hasOption($name)) {
+            return $default;
+        }
+
+        return trim((string) Helper::options()->$name) === '1';
+    }
+
+    /**
+     * 将文本配置拆分为字符串列表
+     *
+     * @param string $value
+     *
+     * @return array
+     */
+    public static function splitOptionList($value)
+    {
+        $value = trim((string) $value);
+        if ($value === '') {
+            return array();
+        }
+
+        $parts = preg_split('/[\s,]+/', $value, -1, PREG_SPLIT_NO_EMPTY);
+        if (!is_array($parts)) {
+            return array();
+        }
+
+        return array_values(array_unique($parts));
     }
 
     /**
@@ -283,25 +358,45 @@ class Utils
                 'title' => '念念不忘，必有回响。',
                 'target' => '_blank',
             ),
-            array(
+        );
+
+        $creditsMode = self::getOptionString('footerCreditsMode', 'continu');
+        if ($creditsMode === 'original') {
+            $items[] = array(
                 'text' => 'Aria',
                 'href' => 'https://eriri.ink/archives/Typecho-Theme-Aria.html',
                 'title' => 'Typecho-Theme-Aria Ver ' . ARIA_VERSION . ' by Siphils',
                 'target' => '_blank',
-            ),
-        );
-
-        $creditsMode = self::getOptionString('footerCreditsMode', 'custom');
-        if ($creditsMode === 'original') {
+            );
             $items[] = array(
                 'text' => 'Theme by Siphils',
                 'href' => 'https://eriri.ink/archives/Typecho-Theme-Aria.html',
                 'title' => 'Typecho-Theme-Aria Ver ' . ARIA_VERSION . ' by Siphils',
                 'target' => '_blank',
             );
+        } elseif ($creditsMode === 'continu') {
+            $items[] = array(
+                'text' => 'Aria Continu',
+                'href' => 'https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continu',
+                'title' => 'Typecho-Theme-Aria-Continu',
+                'target' => '_blank',
+            );
+            $items[] = array(
+                'text' => 'Modified by 永見涼花',
+                'href' => 'https://suzuka.cc',
+                'title' => '永見涼花',
+                'target' => '_blank',
+            );
         } elseif ($creditsMode === 'custom') {
-            $creditsText = self::getOptionString('footerCreditsText', 'Customized by Site Owner');
-            $creditsLink = self::getOptionString('footerCreditsLink', 'https://example.com/');
+            $options = Helper::options();
+            $creditsText = isset($options->footerCreditsText) ? trim((string) $options->footerCreditsText) : '用户自定义内容';
+            $creditsLink = isset($options->footerCreditsLink) ? trim((string) $options->footerCreditsLink) : '';
+            $items[] = array(
+                'text' => 'Aria Continu',
+                'href' => 'https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continu',
+                'title' => 'Typecho-Theme-Aria-Continu',
+                'target' => '_blank',
+            );
             $items[] = array(
                 'text' => $creditsText,
                 'href' => $creditsLink,

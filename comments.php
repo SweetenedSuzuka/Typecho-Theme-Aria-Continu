@@ -28,10 +28,7 @@ echo $commentClass;
 			<div class="comment-text"><span class="comment-reply" style="float:right"><?php $comments->reply('<i class="iconfont icon-aria-reply"></i>'); ?></span>
 			<p><?php
             if ('waiting' == $comments->status) {
-                $waitingText = '猫猫正在思考这条评论和不和谐.jpg（评论正在等待审核）';
-                if (isset(Helper::options()->commentWaitingText)) {
-                    $waitingText = trim((string) Helper::options()->commentWaitingText);
-                }
+                $waitingText = Utils::getOptionStringValue('commentWaitingText', '正在思考这条评论和不和谐.jpg（评论正在等待审核）', false);
                 if ($waitingText !== '') {
                     echo '<em>' . htmlspecialchars($waitingText, ENT_QUOTES, 'UTF-8') . '</em>';
                 }
@@ -53,7 +50,7 @@ echo $commentClass;
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 
 
-<div id="comments">
+<div id="comments"<?php echo (Utils::isEnabled('enableMathJax', 'AriaConfig') && !Utils::isEnabled('enableMathJaxInComments', 'AriaConfig')) ? ' class="aria-mathjax-ignore"' : ''; ?>>
 	<?php if($this->allow('comment')): ?>
 
 	<?php Comments::commentReply($this); ?>
@@ -163,10 +160,7 @@ echo $commentClass;
 	</div>
 	<?php else: ?>
     <?php
-    $commentClosedText = '评论关闭了哟';
-    if (isset($this->options->commentClosedText)) {
-        $commentClosedText = trim((string) $this->options->commentClosedText);
-    }
+    $commentClosedText = Utils::getOptionStringValue('commentClosedText', '评论关闭了哟', false);
     ?>
     <?php if ($commentClosedText !== ''): ?>
         <span style="font-size: 20px;display: block;user-select: none;"><i class="iconfont icon-aria-close" sytle="font-size:20px"></i> <?php echo htmlspecialchars($commentClosedText, ENT_QUOTES, 'UTF-8'); ?></span>
