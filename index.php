@@ -6,7 +6,7 @@
  * 
  * @package Aria
  * @author Siphils
- * @version 1.9.0
+ * @version 1.10.0
  * @link https://eriri.ink/archives/Typecho-Theme-Aria.html
  */
 
@@ -16,23 +16,11 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
 <div id="main" class="col-mb-12 col-8 col-offset-2" >
     <?php
-    $homeExcludeEnabled = true;
-    if (isset($this->options->homeExcludeCategoriesEnabled)) {
-        $homeExcludeEnabled = trim((string) $this->options->homeExcludeCategoriesEnabled) === '1';
-    }
-
-    $homeExcludeCategoriesText = 'negawakubakonotenikoufukuwo';
-    if (isset($this->options->homeExcludeCategories)) {
-        $homeExcludeCategoriesText = trim((string) $this->options->homeExcludeCategories);
-    }
-
-    $homeExcludeSlugs = array();
-    if ($homeExcludeEnabled && $homeExcludeCategoriesText !== '') {
-        $parts = preg_split('/[\s,]+/', $homeExcludeCategoriesText, -1, PREG_SPLIT_NO_EMPTY);
-        if (is_array($parts)) {
-            $homeExcludeSlugs = array_values(array_unique($parts));
-        }
-    }
+    $homeExcludeEnabled = Utils::isOptionEnabled('homeExcludeCategoriesEnabled', true);
+    $homeExcludeCategoriesText = Utils::hasOption('homeExcludeCategories')
+        ? Utils::getOptionStringValue('homeExcludeCategories', '', false)
+        : 'negawakubakonotenikoufukuwo';
+    $homeExcludeSlugs = $homeExcludeEnabled ? Utils::splitOptionList($homeExcludeCategoriesText) : array();
     ?>
 	<?php while($this->next()): ?>
         <?php

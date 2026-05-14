@@ -18,10 +18,7 @@
         <?php Utils::getFooterWidget(); ?>
     </p>
     <?php
-    $footerRecordsEnabled = true;
-    if (isset($this->options->footerRecordsEnabled)) {
-        $footerRecordsEnabled = trim((string) $this->options->footerRecordsEnabled) === '1';
-    }
+    $footerRecordsEnabled = Utils::isOptionEnabled('footerRecordsEnabled', true);
     $footerRecordsHtml = $footerRecordsEnabled ? Utils::getFooterRecordsHtml() : '';
     ?>
     <?php if ($footerRecordsHtml !== ''): ?>
@@ -78,8 +75,15 @@
             };
         };
         window.ariaEnsureMathJaxCompat();
+        (function(){var cls='aria-mathjax-ignore';var opt=window.MathJax&&window.MathJax.options;opt=opt||{};window.MathJax.options=opt;var cur=opt.ignoreHtmlClass;if(typeof cur!=='string'||cur.trim()===''){opt.ignoreHtmlClass='tex2jax_ignore|'+cls;return}if(!new RegExp('(^|\\\\|)'+cls+'($|\\\\|)').test(cur)){opt.ignoreHtmlClass=cur+'|'+cls}})();
     </script>
-    <script><?php $this->options->MathJaxConfig(); ?></script>
+    <script><?php
+        $mathJaxConfig = isset($this->options->MathJaxConfig) ? trim((string) $this->options->MathJaxConfig) : '';
+        if ($mathJaxConfig === '') {
+            $mathJaxConfig = "MathJax = MathJax || {};\nMathJax.tex = MathJax.tex || {};\nMathJax.tex.inlineMath = [['$', '$'], ['\\\\(', '\\\\)']];\nMathJax.tex.displayMath = [['$$', '$$'], ['\\\\[', '\\\\]']];\nMathJax.tex.processEscapes = true;";
+        }
+        echo $mathJaxConfig;
+    ?></script>
     <script>window.ariaEnsureMathJaxCompat&&window.ariaEnsureMathJaxCompat();</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4.1.2/tex-mml-chtml.js"></script>
 <?php endif; ?>

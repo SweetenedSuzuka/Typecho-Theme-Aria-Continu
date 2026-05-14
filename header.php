@@ -74,10 +74,9 @@
     <span class="close"><i class="iconfont icon-aria-close"></i></span>
     <form id="search" method="post" action="./" role="search">
         <?php
-        $searchPlaceholder = '要看书架吗？请吧';
-        if (isset($this->options->searchPlaceholder)) {
-            $searchPlaceholder = trim((string) $this->options->searchPlaceholder);
-        }
+        $searchPlaceholder = Utils::hasOption('searchPlaceholder')
+            ? Utils::getOptionStringValue('searchPlaceholder', '', false)
+            : '要想搜索请输入关键词';
         ?>
         <input type="text" name="s" id="search-text" placeholder="<?php echo htmlspecialchars($searchPlaceholder, ENT_QUOTES, 'UTF-8'); ?>" />
         <button type="submit" id="search-button" style="background: url(<?php $this->options->themeUrl('assets/img/search.png') ?>) center center no-repeat;background-size: cover;"></button>
@@ -97,11 +96,10 @@
     <div id="site-meta">
             <h1 id="site-name"><?php $this->options->title(); ?></h1>
             <?php
-            $heroSubtitle = '';
-            if (isset($this->options->heroSubtitle)) {
-                $heroSubtitle = trim((string) $this->options->heroSubtitle);
-                if ($heroSubtitle === '' && isset($this->options->description)) {
-                    $heroSubtitle = trim((string) $this->options->description);
+            if (Utils::hasOption('heroSubtitle')) {
+                $heroSubtitle = Utils::getOptionStringValue('heroSubtitle', '', false);
+                if ($heroSubtitle === '') {
+                    $heroSubtitle = Utils::getOptionStringValue('description', '', false);
                 }
             } else {
                 $heroSubtitle = '越过喧嚣找到你';
