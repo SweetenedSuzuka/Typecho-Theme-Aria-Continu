@@ -310,6 +310,16 @@ class Utils
      */
     public static function getBackground()
     {
+        echo self::getBackgroundUrl();
+    }
+
+    /**
+     * 获取背景图片 URL
+     *
+     * @return string
+     */
+    public static function getBackgroundUrl()
+    {
         $options = Helper::options();
 
         if ($options->backgroundUrl) {
@@ -317,10 +327,27 @@ class Utils
             $imgs = trim($str);
             $urls = explode("\r\n", $imgs);
             $n = mt_rand(0, count($urls) - 1);
-            echo $urls[$n];
-        } else {
-            $options->themeUrl('assets/img/background.jpg');
+            return $urls[$n];
         }
+
+        return $options->themeUrl . '/assets/img/background.jpg';
+    }
+
+    /**
+     * 获取 404 背景图片 URL
+     *
+     * @return string
+     */
+    public static function get404BackgroundUrl()
+    {
+        $options = Helper::options();
+        $customUrl = trim((string) $options->notFoundBackgroundUrl);
+
+        if ($customUrl !== '') {
+            return $customUrl;
+        }
+
+        return $options->themeUrl . '/assets/img/404.jpg';
     }
 
     /**
@@ -360,7 +387,7 @@ class Utils
             ),
         );
 
-        $creditsMode = self::getOptionString('footerCreditsMode', 'continu');
+        $creditsMode = self::getOptionString('footerCreditsMode', 'Continuo');
         if ($creditsMode === 'original') {
             $items[] = array(
                 'text' => 'Aria',
@@ -374,11 +401,11 @@ class Utils
                 'title' => 'Typecho-Theme-Aria Ver ' . ARIA_VERSION . ' by Siphils',
                 'target' => '_blank',
             );
-        } elseif ($creditsMode === 'continu') {
+        } elseif ($creditsMode === 'Continuo') {
             $items[] = array(
-                'text' => 'Aria Continu',
-                'href' => 'https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continu',
-                'title' => 'Typecho-Theme-Aria-Continu',
+                'text' => 'Aria Continuo',
+                'href' => 'https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continuo',
+                'title' => 'Aria Continuo V' . ARIA_VERSION,
                 'target' => '_blank',
             );
             $items[] = array(
@@ -392,9 +419,9 @@ class Utils
             $creditsText = isset($options->footerCreditsText) ? trim((string) $options->footerCreditsText) : '用户自定义内容';
             $creditsLink = isset($options->footerCreditsLink) ? trim((string) $options->footerCreditsLink) : '';
             $items[] = array(
-                'text' => 'Aria Continu',
-                'href' => 'https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continu',
-                'title' => 'Typecho-Theme-Aria-Continu',
+                'text' => 'Aria Continuo',
+                'href' => 'https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continuo',
+                'title' => 'Aria Continuo V' . ARIA_VERSION,
                 'target' => '_blank',
             );
             $items[] = array(

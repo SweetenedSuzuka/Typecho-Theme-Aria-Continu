@@ -3,30 +3,11 @@
 </div><!-- end .container -->
 </div><!-- end #body -->
 </div><!-- end #pjax-container -->
-<div id="go-top" onclick="goTop(this);">
-    <img no-lazyload src="<?php $this->options->themeUrl('assets/img/goTop.png'); ?>">
-    <!--div id="scroll-percentage"></div-->
-</div>
-<footer id="footer" role="contentinfo">
-    <?php $this->options->customFooter(); ?>
-    <!-- 调用一言接口 -->
-    <?php if (Utils::isEnabled('showHitokoto', 'AriaConfig')): ?>
-        <p id="hitokoto" class="footer-line"></p>
-    <?php endif; ?>
-    <p id="footer-info" class="footer-line">
-        <span>&copy; <span><?php echo Utils::getCopyrightYears(); ?></span></span>
-        <?php Utils::getFooterWidget(); ?>
-    </p>
-    <?php
-    $footerRecordsEnabled = Utils::isOptionEnabled('footerRecordsEnabled', true);
-    $footerRecordsHtml = $footerRecordsEnabled ? Utils::getFooterRecordsHtml() : '';
-    ?>
-    <?php if ($footerRecordsHtml !== ''): ?>
-        <p id="footer-records" class="footer-line">
-            <?php echo $footerRecordsHtml; ?>
-        </p>
-    <?php endif; ?>
-</footer><!-- end #footer -->
+<?php
+$footerRecordsEnabled = Utils::isOptionEnabled('footerRecordsEnabled', true);
+$footerRecordsHtml = $footerRecordsEnabled ? Utils::getFooterRecordsHtml() : '';
+include __DIR__ . '/components/footer/content.php';
+?>
 <!-- pajx -->
 <?php if (Utils::isEnabled('enablePjax', 'AriaConfig')): ?>
     <script src="<?php $this->options->themeUrl('assets/js/jquery.pjax.min.js'); ?>"></script>
@@ -74,6 +55,31 @@
                 }
             };
         };
+        window.ariaTypesetMathJax = window.ariaTypesetMathJax || function (targets) {
+            if (!window.MathJax) {
+                return;
+            }
+
+            if (typeof window.MathJax.typesetPromise === 'function') {
+                if (!targets) {
+                    return window.MathJax.typesetPromise();
+                }
+
+                if (!Array.isArray(targets)) {
+                    targets = [targets];
+                }
+
+                targets = targets.filter(function (target) {
+                    return target && target.nodeType === 1;
+                });
+
+                return window.MathJax.typesetPromise(targets.length ? targets : undefined);
+            }
+
+            if (window.MathJax.Hub && typeof window.MathJax.Hub.Queue === 'function') {
+                return window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
+            }
+        };
         window.ariaEnsureMathJaxCompat();
         (function(){var cls='aria-mathjax-ignore';var opt=window.MathJax&&window.MathJax.options;opt=opt||{};window.MathJax.options=opt;var cur=opt.ignoreHtmlClass;if(typeof cur!=='string'||cur.trim()===''){opt.ignoreHtmlClass='tex2jax_ignore|'+cls;return}if(!new RegExp('(^|\\\\|)'+cls+'($|\\\\|)').test(cur)){opt.ignoreHtmlClass=cur+'|'+cls}})();
     </script>
@@ -89,6 +95,92 @@
 <?php endif; ?>
 <script src="<?php $this->options->themeUrl('assets/js/functions.min.js?v=8b426df9ab'); ?>"></script>
 <script src="<?php $this->options->themeUrl('assets/js/main.min.js?v=de446d9d66'); ?>"></script>
+<?php if (Utils::isEnabled('enableMathJax', 'AriaConfig') && Utils::isEnabled('enableMathJaxInComments', 'AriaConfig') && Utils::isEnabled('enableAjaxComment', 'AriaConfig')): ?>
+    <script>
+        (function () {
+            var observer = null;
+            var queuedTargets = [];
+            var flushTimer = null;
+
+            function hasIgnoreClass(node) {
+                return !!(node && node.closest && node.closest('.aria-mathjax-ignore'));
+            }
+
+            function queueTarget(node) {
+                if (!node || node.nodeType !== 1 || hasIgnoreClass(node)) {
+                    return;
+                }
+
+                if (node.tagName && node.tagName.toLowerCase() === 'mjx-container') {
+                    return;
+                }
+
+                queuedTargets.push(node);
+                if (flushTimer !== null) {
+                    return;
+                }
+
+                flushTimer = window.setTimeout(flushTargets, 60);
+            }
+
+            function flushTargets() {
+                var commentsRoot = document.getElementById('comments');
+                var targets = queuedTargets.slice();
+
+                flushTimer = null;
+                queuedTargets = [];
+
+                if (!commentsRoot || !targets.length || hasIgnoreClass(commentsRoot)) {
+                    return;
+                }
+
+                if (observer) {
+                    observer.disconnect();
+                }
+
+                Promise.resolve(window.ariaTypesetMathJax && window.ariaTypesetMathJax(targets))
+                    .then(function () {
+                        if (observer) {
+                            observer.observe(commentsRoot, { childList: true, subtree: true });
+                        }
+                    }, function () {
+                        if (observer) {
+                            observer.observe(commentsRoot, { childList: true, subtree: true });
+                        }
+                    });
+            }
+
+            function installObserver() {
+                var commentsRoot = document.getElementById('comments');
+                if (!commentsRoot || hasIgnoreClass(commentsRoot) || typeof MutationObserver === 'undefined') {
+                    return;
+                }
+
+                if (observer) {
+                    observer.disconnect();
+                }
+
+                observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        Array.prototype.forEach.call(mutation.addedNodes, function (node) {
+                            queueTarget(node);
+                        });
+                    });
+                });
+
+                observer.observe(commentsRoot, { childList: true, subtree: true });
+            }
+
+            installObserver();
+
+            if (window.jQuery) {
+                window.jQuery(document).on('pjax:complete', function () {
+                    window.setTimeout(installObserver, 0);
+                });
+            }
+        })();
+    </script>
+<?php endif; ?>
 <?php echo $this->options->customScript ? "<script>" . $this->options->customScript . "</script>\n" : ""; ?>
 <?php if ($this->options->statistics) $this->options->statistics(); ?>
 <?php $this->footer(); ?>

@@ -1,7 +1,7 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php $GLOBALS['ARIA_IS_404_PAGE'] = true; ?>
 <?php $this->need('header.php'); ?>
-<div id="main" class="col-mb-12 col-8 col-offset-2">
-	<style>#header{height:70vh}#site-meta{display:none}#background{background:url(<?php $this->options->themeUrl('assets/img/404.jpg');?>) center center no-repeat;background-size:cover;z-index:-1;position:relative}.error-page{margin-bottom:30px}input[type="text"]{padding:10px}.submit{width:50%;max-width:200px}</style>
+<div id="main" class="col-mb-12 col-8 col-offset-2 error-page-main">
 	<div class="error-page">
 		<?php
         $notFoundTitle = Utils::getOptionStringValue('notFoundTitle', '404:没有找到界面呢，是书架摆错了吗？');
@@ -15,15 +15,13 @@
 		</p>
 		<form method="post">
 			<p>
-				<input type="text" name="s" class="text" autofocus />
+				<input type="text" name="s" class="text error-page-search-input" autofocus />
 			</p>
-			<p>
-				<center>
-					<button type="submit" class="submit">
-						<?php _e('搜索'); ?>
-					</button>
-				</center>
-			</p>
+			<div class="error-page-search-actions">
+				<button type="submit" class="submit error-page-search-submit">
+					<?php _e('搜索'); ?>
+				</button>
+			</div>
 		</form>
 	</div>
 

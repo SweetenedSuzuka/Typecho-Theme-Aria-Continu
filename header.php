@@ -35,6 +35,7 @@
 	<link href="<?php $this->options->themeUrl('assets/css/animate.min.css'); ?>" rel="stylesheet">
     <link href="<?php $this->options->themeUrl('assets/css/iconfont.css'); ?>" rel="stylesheet" >
     <link href="<?php $this->options->themeUrl('assets/css/style.min.css?v=213a50a4db'); ?>" rel="stylesheet">
+    <link href="<?php $this->options->themeUrl('assets/css/pages.css?v=20260515'); ?>" rel="stylesheet">
     <script src="<?php $this->options->themeUrl('assets/js/jquery.min.js'); ?>"></script>
     <?php if($this->options->customHeader) $this->options->customHeader(); ?>
 	<!--[if lt IE 9]>
@@ -44,73 +45,38 @@
 </head>
 <body>
 <?php Utils::AriaConfig(); ?>
-<div id="wrapper" onclick="toggleNav();"></div>
-<div id="nav-vertical">
-    <a class="close" href="javascript:void(0);" onclick="toggleNav();"><i class="iconfont icon-aria-close"></i></a>
-    <div id="nav-avatar"><img no-lazyload src="<?php Utils::getAdminAvatar(150); ?>"></div>
-    <ul class="nav-vertical-list">
-        <?php $slugs = Utils::getPagesInfo();Utils::showNav(0,$slugs); ?>
-    </ul>
-</div>
-		<!--[if lt IE 8]>
-    <div class="browsehappy" role="dialog"><?php _e('当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/">升级你的浏览器</a>'); ?>.</div>
-	<![endif]-->
-<div id="nav-menu" role="navigation">
-    <div id="nav-left">
-        <a href="<?php $this->options->siteUrl(); ?>"><img id="site-avatar" no-lazyload src="<?php Utils::getAdminAvatar(50); ?>">
-<?php $this->options->title(); ?></a>
-    </div>
-    <div id="nav-right">
-        <ul class="nav-right-list">
-            <?php Utils::showNav(1,$slugs); ?>
-        </ul>
-    <div id="nav-btns">
-        <i class="iconfont icon-aria-menu" id="nav-menu-btn" onclick="toggleNav();"></i>
-        <i class="iconfont icon-aria-search" id="nav-search-btn"></i>
-    </div>
-    </div>
-</div>
-<div id="search-box" class="animated" style="background: #fff">
-    <span class="close"><i class="iconfont icon-aria-close"></i></span>
-    <form id="search" method="post" action="./" role="search">
-        <?php
-        $searchPlaceholder = Utils::hasOption('searchPlaceholder')
-            ? Utils::getOptionStringValue('searchPlaceholder', '', false)
-            : '要想搜索请输入关键词';
-        ?>
-        <input type="text" name="s" id="search-text" placeholder="<?php echo htmlspecialchars($searchPlaceholder, ENT_QUOTES, 'UTF-8'); ?>" />
-        <button type="submit" id="search-button" style="background: url(<?php $this->options->themeUrl('assets/img/search.png') ?>) center center no-repeat;background-size: cover;"></button>
-    </form>
-</div>
+<?php
+$slugs = Utils::getPagesInfo();
+$searchPlaceholder = Utils::hasOption('searchPlaceholder')
+    ? Utils::getOptionStringValue('searchPlaceholder', '', false)
+    : '要想搜索请输入关键词';
+include __DIR__ . '/components/header/navigation.php';
+include __DIR__ . '/components/header/search-box.php';
+?>
 <div id="pjax-container">
-<style><?php if($this->is('post') || $this->is('page') || $this->is('single') || $this->is('archive')):; ?>#header {height: 70vh;}@media (max-width:768px) {#header {height: 40vh;}}#site-meta {display: none;}<?php endif; ?>#background {width: 100%;height: 100%;background: url(<?php 
-                    if($this->is('post') || $this->is('page') || $this->is('single'))                         
-                        if($this->fields->thumbnail)
-                            $this->fields->thumbnail(); 
-                        else
-                            echo Utils::getThumbnail();
-                    else
-                        Utils::getBackground();
-                ?>) center center no-repeat;background-size: cover;z-index: -1;position: relative;}</style>
-<header id="header" class="clearfix animated fadeInDown">
-    <div id="site-meta">
-            <h1 id="site-name"><?php $this->options->title(); ?></h1>
-            <?php
-            if (Utils::hasOption('heroSubtitle')) {
-                $heroSubtitle = Utils::getOptionStringValue('heroSubtitle', '', false);
-                if ($heroSubtitle === '') {
-                    $heroSubtitle = Utils::getOptionStringValue('description', '', false);
-                }
-            } else {
-                $heroSubtitle = '越过喧嚣找到你';
-            }
-            ?>
-            <?php if ($heroSubtitle !== ''): ?>
-                <h2 id="site-description"><?php echo htmlspecialchars($heroSubtitle, ENT_QUOTES, 'UTF-8'); ?></h2>
-            <?php endif; ?>
-    </div>
-    <div id="background"></div>
-</header><!-- end #header -->
+<?php
+$is404Page = !empty($GLOBALS['ARIA_IS_404_PAGE']);
+$isContentHeroPage = $this->is('post') || $this->is('page') || $this->is('single') || $this->is('archive');
+
+if ($this->is('post') || $this->is('page') || $this->is('single')) {
+    $headerBackgroundUrl = $this->fields->thumbnail ? $this->fields->thumbnail : Utils::getThumbnail();
+} elseif ($is404Page) {
+    $headerBackgroundUrl = Utils::get404BackgroundUrl();
+} else {
+    $headerBackgroundUrl = Utils::getBackgroundUrl();
+}
+
+if (Utils::hasOption('heroSubtitle')) {
+    $heroSubtitle = Utils::getOptionStringValue('heroSubtitle', '', false);
+    if ($heroSubtitle === '') {
+        $heroSubtitle = Utils::getOptionStringValue('description', '', false);
+    }
+} else {
+    $heroSubtitle = '越过喧嚣找到你';
+}
+?>
+<style><?php if($isContentHeroPage):; ?>#header {height: 70vh;}@media (max-width:768px) {#header {height: 40vh;}}#site-meta {display: none;}<?php elseif($is404Page):; ?>#header {height: 70vh;}#site-meta {display: none;}<?php endif; ?>#background {width: 100%;height: 100%;background: url(<?php echo htmlspecialchars($headerBackgroundUrl, ENT_QUOTES, 'UTF-8'); ?>) center center no-repeat;background-size: cover;z-index: -1;position: relative;}</style>
+<?php include __DIR__ . '/components/header/hero.php'; ?>
 <div id="body" class="animated fadeIn">
     <div class="container">
         <div class="row">

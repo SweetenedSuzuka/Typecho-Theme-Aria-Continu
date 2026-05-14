@@ -6,45 +6,9 @@
         } else {
             $commentClass .= ' comment-by-user';  //如果是评论作者的添加 .comment-by-user 样式
         }
-    } 
-    $commentLevelClass = $comments->_levels > 0 ? ' comment-child' : ' comment-parent';  //评论层数大于0为子级，否则是父级
+    }
 ?>
-
-<li id="li-<?php $comments->theId(); ?>" class="comment-body<?php 
-if ($comments->levels > 0) {
-    echo ' comment-child';
-    $comments->levelsAlt(' comment-level-odd', ' comment-level-even');
-} else {
-    echo ' comment-parent';
-}
-$comments->alt(' comment-odd', ' comment-even');
-echo $commentClass;
-?>">
-    <div id="<?php $comments->theId(); ?>">
-		<a class="comment-avatar" href="<?php $comments->permalink(); ?>">
-			<?php $comments->gravatar('120', ''); ?>
-		</a>
-		<div class="comment-content">
-			<div class="comment-text"><span class="comment-reply" style="float:right"><?php $comments->reply('<i class="iconfont icon-aria-reply"></i>'); ?></span>
-			<p><?php
-            if ('waiting' == $comments->status) {
-                $waitingText = Utils::getOptionStringValue('commentWaitingText', '正在思考这条评论和不和谐.jpg（评论正在等待审核）', false);
-                if ($waitingText !== '') {
-                    echo '<em>' . htmlspecialchars($waitingText, ENT_QUOTES, 'UTF-8') . '</em>';
-                }
-            }
-            ?><?php $comments->content(); ?></p>
-			</div>
-<p class="comment-meta">By <span><?php echo $comments->url ? "<a href=\"$comments->url\" rel=\"external nofollow\" target=\"_blank\">$comments->author</a>" : $comments->author; ?></span> 于 <?php $comments->date(); ?>. <?php if(Utils::isEnabled('showCommentUA','AriaConfig')): ?><span class="comment-ua"><?php echo Comments::parseUserAgent($comments->agent); ?></span><?php endif; ?></p>
-		</div>
-    </div><!-- 单条评论者信息及内容 -->
-    <?php if ($comments->children) { ?> 
-	<div class="comment-children">
-		<?php $comments->threadedComments($singleCommentOptions); ?> 
-	</div>
-	<?php } ?> 
-</li>
- 
+<?php include __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . 'item.php'; ?>
 <?php } ?>
 
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
@@ -75,95 +39,8 @@ echo $commentClass;
 		</div>
 
 		<?php endif; ?>
-	<div id="<?php $this->respondId(); ?>" class="respond">
-		<div class="cancel-comment-reply">
-			<?php $comments->cancelReply('<i class="iconfont icon-aria-cancel"></i>'); ?>
-		</div>
-
-		<span id="new-response">
-			<i class="iconfont icon-aria-write"></i> 添加新评论 </span>
-		<!-- New Comments begin -->
-		<form method="post" action="<?php $this->commentUrl() ?>" id="comment-form"
-		 role="form">
-			<?php if($this->user->hasLogin()): ?>
-			<p>
-				<?php _e('登录身份: '); ?>
-				<a href="<?php $this->options->profileUrl(); ?>">
-					<?php $this->user->screenName(); ?>
-				</a>.
-				<a href="<?php $this->options->logoutUrl(); ?>" title="Logout" no-pjax>
-					<?php _e('退出'); ?>&raquo;</a>
-			</p>
-			<?php else: ?>
-			<div id="comment-info">
-				<p>
-					<img no-lazyload id="comment-avatar" src="<?php echo __TYPECHO_GRAVATAR_PREFIX__ ?>">
-				</p>
-				<p class="comment-input">
-					<label for="author" class="required">
-						<i class="iconfont icon-aria-username"></i>
-					</label>
-					<input placeholder="（必填）昵称" type="text" name="author" id="author" class="text" value="<?php $this->remember('author'); ?>"
-					 required />
-				</p>
-				<p class="comment-input">
-					<label for="mail" <?php if ($this->options->commentsRequireMail): ?> class="required"<?php endif; ?>>
-						<i class="iconfont icon-aria-email"></i>
-					</label>
-					<input placeholder="<?php echo $this->options->commentsRequireMail ? '（必填）' : '（选填）';echo '邮箱'; ?>" type="email" name="mail" id="mail" class="text" value="<?php $this->remember('mail'); ?>"
-					 <?php if ($this->options->commentsRequireMail): ?> required<?php endif; ?>>
-				</p>
-				<p class="comment-input">
-					<label for="url" <?php if ($this->options->commentsRequireURL): ?> class="required"<?php endif; ?>>
-						<i class="iconfont icon-aria-link"></i>
-					</label>
-					<input type="url" name="url" id="url" class="text" placeholder="<?php echo $this->options->commentsRequireURL ? '（必填）' : '（选填）';echo '网站'; ?>"
-					 value="<?php $this->remember('url'); ?>" <?php
-					 if ($this->options->commentsRequireURL): ?> required
-					<?php endif; ?>/>
-				</p>
-			</div>
-			<?php endif; ?>
-			<?php if($this->options->commentsMarkdown): ?>
-				<div style="float:right">
-					<a href="https://guides.github.com/features/mastering-markdown/" target="_blank">
-						<i class="iconfont icon-aria-markdown"></i><span style="font-size:13px;color:#444"> 评论可以使用 Markdown 语法 </span>
-						<!--取消斜体font-style:italic;并改为中文提示 -->
-					</a>
-					<!-- 加入超链接 -->
-				</div>
-			<?php endif; ?>
-			<p>
-				<label for="textarea" class="required"></label>
-				<textarea rows="8" cols="50" name="text" id="textarea" class="textarea" placeholder="<?php $this->options->placeholder(); ?>"><?php $this->remember('text'); ?></textarea>
-			</p>
-			<div id="comment-footer">
-				<div class="OwO">
-				</div><!--end .OwO-->
-				<?php if($this->options->commentsMarkdown&&!empty($this->options->commentsHTMLTagAllowed)&&strpos($this->options->commentsHTMLTagAllowed,'img')):?>
-				<div class="comment-image" onclick="document.getElementById('textarea').value+='![图片描述](图片地址)' ">
-					<span><i class="iconfont icon-aria-picture"></i>图片</span>
-				</div>
-				<?php endif; ?>
-				<?php if(Utils::isEnabled('enableCommentToMail','AriaConfig')): ?>
-				<div id="comment-ban-mail" class="ui toggle checkbox">
-					<input name="banmail" type="checkbox" value="stop">
-					<label for="comment-ban-mail">
-						<strong>不接收</strong>回复邮件通知</label>
-				</div>
-				<?php endif; ?>
-			</div>
-			<center>
-				<button type="submit" class="submit"><i class="iconfont icon-aria-submit"></i> 投送</button>
-			</center>
-		</form>
-	</div>
+	<?php include __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . 'form.php'; ?>
 	<?php else: ?>
-    <?php
-    $commentClosedText = Utils::getOptionStringValue('commentClosedText', '评论关闭了哟', false);
-    ?>
-    <?php if ($commentClosedText !== ''): ?>
-        <span style="font-size: 20px;display: block;user-select: none;"><i class="iconfont icon-aria-close" sytle="font-size:20px"></i> <?php echo htmlspecialchars($commentClosedText, ENT_QUOTES, 'UTF-8'); ?></span>
-    <?php endif; ?>
+    <?php include __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'comments' . DIRECTORY_SEPARATOR . 'closed.php'; ?>
     <?php endif; ?>
 </div>
