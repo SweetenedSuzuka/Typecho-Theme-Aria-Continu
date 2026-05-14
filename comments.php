@@ -26,9 +26,19 @@ echo $commentClass;
 		</a>
 		<div class="comment-content">
 			<div class="comment-text"><span class="comment-reply" style="float:right"><?php $comments->reply('<i class="iconfont icon-aria-reply"></i>'); ?></span>
-			<p><?php if('waiting'==$comments->status) echo '<em>您的评论正等待被审核！</em>'; ?><?php $comments->content(); ?></p>
+			<p><?php
+            if ('waiting' == $comments->status) {
+                $waitingText = '猫猫正在思考这条评论和不和谐.jpg（评论正在等待审核）';
+                if (isset(Helper::options()->commentWaitingText)) {
+                    $waitingText = trim((string) Helper::options()->commentWaitingText);
+                }
+                if ($waitingText !== '') {
+                    echo '<em>' . htmlspecialchars($waitingText, ENT_QUOTES, 'UTF-8') . '</em>';
+                }
+            }
+            ?><?php $comments->content(); ?></p>
 			</div>
-<p class="comment-meta">By <span><?php echo $comments->url ? "<a href=\"$comments->url\" rel=\"external nofollow\" target=\"_blank\">$comments->author</a>" : $comments->author; ?></span> at <?php $comments->date(); ?>. <?php if(Utils::isEnabled('showCommentUA','AriaConfig')): ?><span class="comment-ua"><?php echo Comments::parseUserAgent($comments->agent); ?></span><?php endif; ?></p>
+<p class="comment-meta">By <span><?php echo $comments->url ? "<a href=\"$comments->url\" rel=\"external nofollow\" target=\"_blank\">$comments->author</a>" : $comments->author; ?></span> 于 <?php $comments->date(); ?>. <?php if(Utils::isEnabled('showCommentUA','AriaConfig')): ?><span class="comment-ua"><?php echo Comments::parseUserAgent($comments->agent); ?></span><?php endif; ?></p>
 		</div>
     </div><!-- 单条评论者信息及内容 -->
     <?php if ($comments->children) { ?> 
@@ -119,7 +129,11 @@ echo $commentClass;
 			<?php endif; ?>
 			<?php if($this->options->commentsMarkdown): ?>
 				<div style="float:right">
-					<i class="iconfont icon-aria-markdown"></i><span style="font-style:italic;font-size:13px;color:#444"> Markdown is supported.</span>
+					<a href="https://guides.github.com/features/mastering-markdown/" target="_blank">
+						<i class="iconfont icon-aria-markdown"></i><span style="font-size:13px;color:#444"> 评论可以使用 Markdown 语法 </span>
+						<!--取消斜体font-style:italic;并改为中文提示 -->
+					</a>
+					<!-- 加入超链接 -->
 				</div>
 			<?php endif; ?>
 			<p>
@@ -143,11 +157,19 @@ echo $commentClass;
 				<?php endif; ?>
 			</div>
 			<center>
-				<button type="submit" class="submit"><i class="iconfont icon-aria-submit"></i> 发射</button>
+				<button type="submit" class="submit"><i class="iconfont icon-aria-submit"></i> 投送</button>
 			</center>
 		</form>
 	</div>
 	<?php else: ?>
-    <span style="font-size: 20px;display: block;user-select: none;"><i class="iconfont icon-aria-close" sytle="font-size:20px"></i> 评论关闭了哟</span>
+    <?php
+    $commentClosedText = '评论关闭了哟';
+    if (isset($this->options->commentClosedText)) {
+        $commentClosedText = trim((string) $this->options->commentClosedText);
+    }
+    ?>
+    <?php if ($commentClosedText !== ''): ?>
+        <span style="font-size: 20px;display: block;user-select: none;"><i class="iconfont icon-aria-close" sytle="font-size:20px"></i> <?php echo htmlspecialchars($commentClosedText, ENT_QUOTES, 'UTF-8'); ?></span>
+    <?php endif; ?>
     <?php endif; ?>
 </div>

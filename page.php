@@ -15,7 +15,9 @@
                 <?php $this->content(); ?>
             </div>
             <?php Contents::getPostOther($this); ?>
-            <div class="post-update"><i class="iconfont icon-aria-date"></i>&nbsp;最后一次更新于<?php echo date($this->options->postDateFormat,$this->modified) ?></div>
+            <div class="post-update">
+                <?php /* ?><i class="iconfont icon-aria-date"></i>&nbsp;最后一次更新于<?php echo date($this->options->postDateFormat,$this->modified) ?><?php */ ?>
+            </div>
         </div>
     </article>
     <?php $this->need('comments.php'); ?>

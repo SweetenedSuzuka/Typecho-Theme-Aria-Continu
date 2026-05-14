@@ -156,61 +156,231 @@ class Comments
      *
      * @return string
      */
-
+//新增osName和browserName用来输出系统和浏览器名，顺便缩进代码（怎么会有不缩进的沙雕）
     public static function parseUseragent($ua)
     {
         // 解析操作系统
         $htmlTag = "";
         $os = null;
         $fontClass = null;
-        if (preg_match('/Windows NT 6.0/i', $ua)) {$os = "Windows Vista";
-            $fontClass = "windows";} elseif (preg_match('/Windows NT 6.1/i', $ua)) {$os = "Windows 7";
-            $fontClass = "windows";} elseif (preg_match('/Windows NT 6.2/i', $ua)) {$os = "Windows 8";
-            $fontClass = "windows";} elseif (preg_match('/Windows NT 6.3/i', $ua)) {$os = "Windows 8.1";
-            $fontClass = "windows";} elseif (preg_match('/Windows NT 10.0/i', $ua)) {$os = "Windows 10";
-            $fontClass = "windows";} elseif (preg_match('/Windows NT 5.1/i', $ua)) {$os = "Windows XP";
-            $fontClass = "windows";} elseif (preg_match('/Windows NT 5.2/i', $ua) && preg_match('/Win64/i', $ua)) {$os = "Windows XP 64 bit";
-            $fontClass = "windows";} elseif (preg_match('/Android ([0-9.]+)/i', $ua, $matches)) {$os = "Android " . $matches[1];
-            $fontClass = "android";} elseif (preg_match('/iPhone OS ([_0-9]+)/i', $ua, $matches)) {$os = 'iPhone ' . $matches[1];
-            $fontClass = "iphone";} elseif (preg_match('/iPad/i', $ua)) {$os = "iPad";
-            $fontClass = "ipad";} elseif (preg_match('/Mac OS X ([_0-9]+)/i', $ua, $matches)) {$os = 'Mac OS X ' . $matches[1];
-            $fontClass = "mac";} elseif (preg_match('/Gentoo/i', $ua)) {$os = 'Gentoo Linux';
-            $fontClass = "gentoo";} elseif (preg_match('/Ubuntu/i', $ua)) {$os = 'Ubuntu Linux';
-            $fontClass = "ubuntu";} elseif (preg_match('/Debian/i', $ua)) {$os = 'Debian Linux';
-            $fontClass = "debian";} elseif (preg_match('/X11; FreeBSD/i', $ua)) {$os = 'FreeBSD';
-            $fontClass = "freebsd";} elseif (preg_match('/X11; Linux/i', $ua)) {$os = 'Linux';
-            $fontClass = "linux";} else { $os = 'unknown os';
-            $fontClass = "os";}
+        $osName = null;
+        if (preg_match('/Windows NT 6.0/i', $ua)) {
+            $os = "Windows Vista";
+            $fontClass = "windows";
+        } elseif (preg_match('/Windows NT 6.1/i', $ua)) {
+            $os = "Windows 7";
+            $osName = "Windows 7";
+            $fontClass = "windows";
+        } elseif (preg_match('/Windows NT 6.2/i', $ua)) {
+            $os = "Windows 8";
+            $osName = "Windows 8";
+            $fontClass = "windows";
+        } elseif (preg_match('/Windows NT 6.3/i', $ua)) {
+            $os = "Windows 8.1";
+            $osName = "Windows 8.1";
+            $fontClass = "windows";
+        } elseif (preg_match('/Windows NT 10.0/i', $ua)) {
+            $os = "Windows 10";
+            $osName = "Windows 10/11";
+            $fontClass = "windows";
+        } elseif (preg_match('/Windows NT 5.1/i', $ua)) {
+            $os = "Windows XP";
+            $osName = "Windows XP";
+            $fontClass = "windows";
+        } elseif (preg_match('/Windows NT 5.2/i', $ua) && preg_match('/Win64/i', $ua)) {
+            $os = "Windows XP 64 bit";
+            $osName = "Windows XP x64";
+            $fontClass = "windows";
+        } elseif (preg_match('/OpenHarmony ([0-9.]+)/i', $ua, $matches)) {
+            $os = 'OpenHarmony ' . $matches[1];
+            $osName = "OpenHarmony " . $matches[1];
+            if (stripos($ua, 'Mobile') !== false) {
+                $fontClass = 'iphone';
+            } else {
+                $fontClass = 'os';
+            }
+        } elseif (preg_match('/HarmonyOS ([0-9.]+)/i', $ua, $matches)) {
+            // 目前（2025）华为的5.0用的还是OpenHarmony，所以这样写没什么用，但姑且先加上吧。
+            $os = 'HarmonyOS' . $matches[1];
+            $osName = "HarmonyOS" . $matches[1];
+            if (stripos($ua, 'Mobile') !== false) {
+                $fontClass = 'iphone';
+            } else {
+                $fontClass = 'os';
+            }
+        } elseif (preg_match('/HarmonyOS/i', $ua, $matches)) {
+            // 华为在5.0之前的UA同时包含Android 10/12和HarmonyOS两项，而且没有具体版本号。
+            $os = 'HarmonyOS';
+            $osName = "HarmonyOS";
+            $fontClass = "iphone";
+        } elseif (preg_match('/Android ([0-9.]+)/i', $ua, $matches)) {
+            $os = "Android " . $matches[1];
+            $osName = "Android " . $matches[1];
+            $fontClass = "android";
+        } elseif (preg_match('/iPhone OS ([_0-9]+)/i', $ua, $matches)) {
+            $version = str_replace('_', '.', $matches[1]);
+            $os = 'iPhoneOS ' . $version;
+            $osName = 'iPhoneOS ' . $version;
+            // $os = 'iPhone ' . $matches[1];
+            // $osName = 'iPhone ' . $matches[1];
+            $fontClass = "iphone";
+        } elseif (preg_match('/iPad/i', $ua)) {
+            $os = "iPad";
+            $osName = "iPad OS";
+            $fontClass = "ipad";
+        } elseif (preg_match('/Mac OS X ([_0-9]+)/i', $ua, $matches)) {
+            $version = str_replace('_', '.', $matches[1]);
+            $os = 'Mac OS X ' . $version;
+            $osName = 'Mac OS X ' . $version;
+            // $os = 'Mac OS X ' . $matches[1];
+            // $osName = 'Mac OS X ' . $matches[1];
+            $fontClass = "mac";
+        } elseif (preg_match('/Gentoo/i', $ua)) {
+            $os = 'Gentoo Linux';
+            $osName = "Gentoo";
+            $fontClass = "gentoo";
+        } elseif (preg_match('/Ubuntu/i', $ua)) {
+            $os = 'Ubuntu Linux';
+            $osName = "Ubuntu";
+            $fontClass = "ubuntu";
+        } elseif (preg_match('/Debian/i', $ua)) {
+            $os = 'Debian Linux';
+            $osName = "Debian";
+            $fontClass = "debian";
+        } elseif (preg_match('/X11; FreeBSD/i', $ua)) {
+            $os = 'FreeBSD';
+            $osName = "FreeBSD";
+            $fontClass = "freebsd";
+        } elseif (preg_match('/X11; Linux/i', $ua)) {
+            $os = 'Linux';
+            $osName = "Linux";
+            $fontClass = "linux";
+        } else { 
+            $os = 'unknown os';
+            $osName = "未知操作系统";
+            $fontClass = "os";
+        }
 
-        $htmlTag = "<i class=\"iconfont icon-aria-$fontClass\"></i>";
+        $htmlTag = "<i class=\"iconfont icon-aria-$fontClass\"></i><a class=\"comment-meta\"><span>$osName</span></a>";
 
         $browser = null;
+        $browserName = null;
         //解析浏览器
-        if (preg_match('#SE 2([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Sogou browser';
-            $fontClass = "sogou";} elseif (preg_match('#360([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = '360 browser ';
-            $fontClass = "360";} elseif (preg_match('#Maxthon( |\/)([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Maxthon ';
-            $fontClass = "maxthon";} elseif (preg_match('#Edge( |\/)([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Edge ';
-            $fontClass = "edge";} elseif (preg_match('#MicroMessenger/([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Wechat ';
-            $fontClass = "wechat";} elseif (preg_match('#QQ/([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'QQ Mobile ';
-            $fontClass = "qq";} elseif (preg_match('#Chrome/([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Chrome ';
-            $fontClass = "chrome";} elseif (preg_match('#CriOS/([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Chrome ';
-            $fontClass = "chrome";} elseif (preg_match('#Chromium/([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Chromium ';
-            $fontClass = "chrome";} elseif (preg_match('#Safari/([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Safari ';
-            $fontClass = "safari";} elseif (preg_match('#opera mini#i', $ua)) {
+        //华为浏览器
+        //华为浏览器不管是不是Chrome内核，都会因为UA包含Chrome被识别成Chrome浏览器，所以提到最前识别。
+        if (preg_match('#HuaweiBrowser/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'HuaweiBrowser ' . $matches[1];
+            //以目前（2025）的逻辑来说，HarmonyOS的UA只代表5.0以下的HarmonyOS版本，上面的华为浏览器还是安卓应用，因此算安卓版。
+            if ($osName === 'HarmonyOS' || strpos($osName, 'Android') === 0) {
+                $prefix = ' (Android)';
+            // } elseif (strpos($osName, 'OpenHarmony') === 0) {
+            //     $prefix = ' (OpenHarmony)';
+            } else {
+                $prefix = '';
+            }
+            // $browserName = '华为浏览器' . $prefix . ' ' . $matches[1];
+            $browserName = 'HuaweiBrowser';
+            $fontClass = "opera";
+        //如果没有自定义UA，OpenHarmony上的第三方浏览器应该会包含ArkWeb版本。
+        } elseif (preg_match('#ArkWeb/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'ArkWeb ' . $matches[1];
+            // $browserName = '华为Ark ' . $matches[1];
+            $browserName = '华为Ark ';
+            $fontClass = "opera";
+
+        //基于Chromium内核的浏览器
+        } elseif (preg_match('#SE 2([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Sogou browser';
+            $browserName = '搜狗浏览器';
+            $fontClass = "sogou";
+        } elseif (preg_match('#360([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = '360 browser ';
+            $browserName = '360浏览器';
+            $fontClass = "360";
+        } elseif (preg_match('#Maxthon( |\/)([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Maxthon ';
+            $browserName = '遨游浏览器';
+            $fontClass = "maxthon";
+        } elseif (preg_match('#Edge( |\/)([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Edge ';
+            $browserName = 'Microsoft Edge';
+            $fontClass = "edge";
+        } elseif (preg_match('#MicroMessenger/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Wechat ';
+            $browserName = '微信内置浏览器';
+            $fontClass = "wechat";
+        } elseif (preg_match('#QQ/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'QQ Mobile ';
+            $browserName = 'QQ内置浏览器';
+            $fontClass = "qq";
+        } elseif (preg_match('#QQBrowser ([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'QQ browser ';
+            $browserName = 'QQ浏览器';
+            $fontClass = "qqbrowser";
+        } elseif (preg_match('#UCWEB([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'UCWEB ';
+            $browserName = 'UC浏览器';
+            $fontClass = "uc";
+
+        //Chrome浏览器
+        } elseif (preg_match('#Chrome/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Chrome ' . $matches[1];
+            // $browserName = 'Chrome ' . $matches[1];
+            $browserName = 'Chrome';
+            $fontClass = "chrome";
+        } elseif (preg_match('#CriOS/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Chrome ' . $matches[1];
+            // $browserName = 'Chrome(iOS) ' . $matches[1];
+            $browserName = 'Chrome(iOS)';
+            $fontClass = "chrome";
+        } elseif (preg_match('#Chromium/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Chromium ' . $matches[1];
+            // $browserName = 'Chromium ' . $matches[1];
+            $browserName = 'Chromium';
+            $fontClass = "chrome";
+
+        //Safari浏览器
+        } elseif (preg_match('#Safari/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Safari ' . $matches[1];
+            // $browserName = 'Safari ' . $matches[1];
+            $browserName = 'Safari';
+            $fontClass = "safari";
+
+        //Firefox浏览器
+        } elseif (preg_match('#(Firefox|Phoenix|Firebird|BonEcho|GranParadiso|Minefield|Iceweasel)/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Firefox ' . $matches[2];
+            // $browserName = 'Firefox ' . $matches[2];
+            $browserName = 'Firefox';
+            $fontClass = "firefox";
+
+        //Opera浏览器（真的有人用吗？）
+        } elseif (preg_match('#opera mini#i', $ua)) {
             preg_match('#Opera/([a-zA-Z0-9.]+)#i', $ua, $matches);
             $browser = 'Opera Mini ';
+            $browserName = 'Opera Mini';
             $fontClass = "opera";
-        } elseif (preg_match('#Opera.([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Opera ';
-            $fontClass = "opera";} elseif (preg_match('#QQBrowser ([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'QQ browser ';
-            $fontClass = "qqbrowser";} elseif (preg_match('#UCWEB([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'UCWEB ';
-            $fontClass = "uc";} elseif (preg_match('#MSIE ([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Internet Explorer ';
-            $fontClass = "ie";} elseif (preg_match('#Trident/([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Internet Explorer 11';
-            $fontClass = "ie";} elseif (preg_match('#(Firefox|Phoenix|Firebird|BonEcho|GranParadiso|Minefield|Iceweasel)/([a-zA-Z0-9.]+)#i', $ua, $matches)) {$browser = 'Firefox ';
-            $fontClass = "firefox";} else { $browser = 'unknown br';
-            $fontClass = 'browser';}
+        } elseif (preg_match('#Opera.([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Opera ';
+            $browserName = 'Opera';
+            $fontClass = "opera";
+        
+        //IE浏览器
+        } elseif (preg_match('#MSIE ([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Internet Explorer ';
+            $browserName = 'Internet Explorer(1-10)';
+            $fontClass = "ie";
+        } elseif (preg_match('#Trident/([a-zA-Z0-9.]+)#i', $ua, $matches)) {
+            $browser = 'Internet Explorer 11';
+            $browserName = 'Internet Explorer 11';
+            $fontClass = "ie";
+        } else { 
+            $browser = 'unknown br';
+            $browserName = '未知浏览器';
+            $fontClass = 'browser';
+        }
 
         $htmlTag .= "&nbsp;";
-        $htmlTag .= "<i class=\"iconfont icon-aria-$fontClass\"></i>";
+        $htmlTag .= "<i class=\"iconfont icon-aria-$fontClass\"></i><a class=\"comment-meta\"><span>$browserName</span></a>";
         return $htmlTag;
     }
 

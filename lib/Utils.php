@@ -13,6 +13,83 @@
 class Utils
 {
     /**
+     * 获取主题配置项字符串值
+     *
+     * @param string $name
+     * @param string $default
+     *
+     * @return string
+     */
+    private static function getOptionString($name, $default = '')
+    {
+        $options = Helper::options();
+        if (!isset($options->$name)) {
+            return $default;
+        }
+
+        $value = trim((string) $options->$name);
+        return $value !== '' ? $value : $default;
+    }
+
+    /**
+     * HTML 文本转义
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private static function escapeHtml($value)
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * HTML 属性值转义
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private static function escapeAttr($value)
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * 渲染页脚链接项
+     *
+     * @param array $item
+     *
+     * @return string
+     */
+    private static function renderFooterLinkItem(array $item)
+    {
+        $text = array_key_exists('text', $item) ? trim((string) $item['text']) : '';
+        if ($text === '') {
+            return '';
+        }
+
+        $href = array_key_exists('href', $item) ? trim((string) $item['href']) : '';
+        $title = array_key_exists('title', $item) ? trim((string) $item['title']) : '';
+        $target = array_key_exists('target', $item) ? trim((string) $item['target']) : '';
+        $escapedText = self::escapeHtml($text);
+
+        if ($href === '') {
+            return '<span> • ' . $escapedText . '</span>';
+        }
+
+        $attributes = 'href="' . self::escapeAttr($href) . '"';
+        if ($title !== '') {
+            $attributes .= ' title="' . self::escapeAttr($title) . '"';
+        }
+        if ($target !== '') {
+            $attributes .= ' target="' . self::escapeAttr($target) . '"';
+        }
+
+        return '<span><a ' . $attributes . '> • ' . $escapedText . '</a></span>';
+    }
+
+    /**
      * 输出博客以及主题部分配置信息为前端提供接口
      *
      * @return void
@@ -189,31 +266,168 @@ class Utils
     }
 
     /**
+     * 获取页脚链接 HTML
+     *
+     * @return string
+     */
+    public static function getFooterWidgetHtml()
+    {
+        $items = array(
+            array(
+                'text' => self::getOptionString('footerSiteName', '网站名称'),
+                'href' => self::getOptionString('footerSiteUrl', 'https://example.com/'),
+            ),
+            array(
+                'text' => 'Typecho',
+                'href' => 'https://www.typecho.org',
+                'title' => '念念不忘，必有回响。',
+                'target' => '_blank',
+            ),
+            array(
+                'text' => 'Aria',
+                'href' => 'https://eriri.ink/archives/Typecho-Theme-Aria.html',
+                'title' => 'Typecho-Theme-Aria Ver ' . ARIA_VERSION . ' by Siphils',
+                'target' => '_blank',
+            ),
+        );
+
+        $creditsMode = self::getOptionString('footerCreditsMode', 'custom');
+        if ($creditsMode === 'original') {
+            $items[] = array(
+                'text' => 'Theme by Siphils',
+                'href' => 'https://eriri.ink/archives/Typecho-Theme-Aria.html',
+                'title' => 'Typecho-Theme-Aria Ver ' . ARIA_VERSION . ' by Siphils',
+                'target' => '_blank',
+            );
+        } elseif ($creditsMode === 'custom') {
+            $creditsText = self::getOptionString('footerCreditsText', 'Customized by Site Owner');
+            $creditsLink = self::getOptionString('footerCreditsLink', 'https://example.com/');
+            $items[] = array(
+                'text' => $creditsText,
+                'href' => $creditsLink,
+                'target' => $creditsLink !== '' ? '_blank' : '',
+            );
+        }
+
+        $data = self::convertConfigData('footerWidget', true);
+        if ($data) {
+            foreach ($data as $val) {
+                if (!is_array($val)) {
+                    continue;
+                }
+
+                $items[] = array(
+                    'text' => array_key_exists('text', $val) ? $val['text'] : '',
+                    'href' => array_key_exists('href', $val) ? $val['href'] : '',
+                    'title' => array_key_exists('title', $val) ? $val['title'] : '',
+                    'target' => array_key_exists('target', $val) ? $val['target'] : '',
+                );
+            }
+        }
+
+        $html = '';
+        foreach ($items as $item) {
+            $html .= self::renderFooterLinkItem($item);
+        }
+
+        return $html;
+    }
+
+    /**
      * 输出底部组件
      *
      * @return void
      */
     public static function getFooterWidget()
     {
-        $data = self::convertConfigData('footerWidget', true);
-        $opt = Helper::options();
-        $html = '<span><a href="' . $opt->siteUrl . '"> • ' . $opt->title . '</a></span><span><a href="http:\/\/www.typecho.org" title="念念不忘，必有回响。" target="_blank"> • Typecho</a></span><span><a href="https:\/\/eriri.ink/archives/Typecho-Theme-Aria.html" title="Typecho-Theme-Aria Ver ' . ARIA_VERSION . ' by Siphils" target="_blank"> • Aria</a></span>';
+        echo self::getFooterWidgetHtml();
+    }
 
-        if (!$data) {
-            echo $html;
-            return;
+    /**
+     * 获取页脚备案信息 HTML
+     *
+     * @return string
+     */
+    public static function getFooterRecordsHtml()
+    {
+        $options = Helper::options();
+        if (isset($options->footerRecords) && trim((string) $options->footerRecords) === '') {
+            return '';
         }
-        foreach ($data as $val) {
-            $tmp = $val;
-            if ((array) $tmp) {
-                $href = array_key_exists('href', $val) ? 'href="' . $val['href'] . '"' : "";
-                $title = array_key_exists('title', $val) ? 'title="' . $val['title'] . '"' : "";
-                $target = array_key_exists('target', $val) ? 'target="' . $val['target'] . '"' : "";
-                $text = array_key_exists('text', $val) ? $val['text'] : "";
-                $html .= "<span><a $href $title $target> • $text</span>";
+
+        $records = self::convertConfigData('footerRecords', true);
+        if (!$records) {
+            $records = array(
+                array(
+                    'text' => 'ICP备00000000号-0',
+                    'url' => 'https://beian.miit.gov.cn/',
+                    'icon' => '',
+                    'title' => 'ICP备案信息',
+                ),
+                array(
+                    'text' => '公网安备 00000000000000号',
+                    'url' => 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=00000000000000',
+                    'icon' => '',
+                    'title' => '公网安备信息',
+                ),
+            );
+        }
+
+        $html = '';
+        $separator = '';
+        foreach ($records as $record) {
+            if (!is_array($record)) {
+                continue;
             }
+
+            $text = array_key_exists('text', $record) ? trim((string) $record['text']) : '';
+            if ($text === '') {
+                continue;
+            }
+
+            $url = array_key_exists('url', $record) ? trim((string) $record['url']) : '';
+            $icon = array_key_exists('icon', $record) ? trim((string) $record['icon']) : '';
+            $title = array_key_exists('title', $record) ? trim((string) $record['title']) : $text;
+            $content = '';
+
+            if ($icon !== '') {
+                $content .= '<img src="' . self::escapeAttr($icon) . '" alt="" aria-hidden="true" style="width:1em; height:auto; vertical-align:middle; margin-right:0.3em">';
+            }
+            $content .= self::escapeHtml($text);
+
+            if ($url !== '') {
+                $html .= $separator . '<a href="' . self::escapeAttr($url) . '" title="' . self::escapeAttr($title) . '" target="_blank">' . $content . '</a>';
+            } else {
+                $html .= $separator . '<span title="' . self::escapeAttr($title) . '">' . $content . '</span>';
+            }
+
+            $separator = '<span> | </span>';
         }
-        echo $html;
+
+        return $html;
+    }
+
+    /**
+     * 获取页脚版权年份文本
+     *
+     * 支持在配置中使用 {Y}、{y}、{year} 作为当前年份占位符。
+     *
+     * @return string
+     */
+    public static function getCopyrightYears()
+    {
+        $options = Helper::options();
+        $value = trim((string) $options->cpr);
+
+        if ($value === '') {
+            $value = '2022-{Y}';
+        }
+
+        return strtr($value, array(
+            '{Y}' => date('Y'),
+            '{y}' => date('y'),
+            '{year}' => date('Y'),
+        ));
     }
 
     /**

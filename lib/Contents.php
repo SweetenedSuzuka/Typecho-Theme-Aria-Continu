@@ -50,9 +50,21 @@ class Contents
         $content = $db->fetchRow($query);
         $result = null;
         if ($content) {
-            $content = $archive->filter($content);
-            $title = $content['title'];
-            $link = $content['permalink'];
+            // 原版Aria的方法，在Typecho1.3不生效
+            // $content = $archive->filter($content);
+            // $title = $content['title'];
+            // $link = $content['permalink'];
+            // 这个能用，但是链接会保留{xxx}的参数，虽然会被正确解析，但是html里面会留着，看着有点不舒服
+            // $link = Typecho_Router::url(
+            //     'post',
+            //     $content,
+            //     $options->index
+            // );
+            // 再换一个方法
+            $widget = Typecho_Widget::widget('Widget_Archive@nextprev', 'type=post', null);
+            $widget->push($content);
+            $link = $widget->permalink;
+            $title = $widget->title;
 
             $query = $db->select()->from('table.fields')
                 ->where('table.fields.cid = ?', $content['cid'])
@@ -72,6 +84,7 @@ class Contents
         }
         return $result;
     }
+
 
     /**
      * 输出上下文内容，包括缩略图、标题、链接

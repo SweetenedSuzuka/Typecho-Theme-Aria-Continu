@@ -7,6 +7,12 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
 	<meta name="renderer" content="webkit">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="robots" content="noarchive">
+    <!-- 声明禁止爬虫进行快照 -->
+    <meta name="ia_archiver" content="noindex,nofollow">
+    <!--Internet Archive爬虫进行快照 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <!-- 添加Font Awesome图标 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="white">
     <meta name="apple-mobile-web-app-title" content="<?php $this->options->title() ?>">
@@ -67,7 +73,13 @@
 <div id="search-box" class="animated" style="background: #fff">
     <span class="close"><i class="iconfont icon-aria-close"></i></span>
     <form id="search" method="post" action="./" role="search">
-        <input type="text" name="s" id="search-text" placeholder="想要看什么？" />
+        <?php
+        $searchPlaceholder = '要看书架吗？请吧';
+        if (isset($this->options->searchPlaceholder)) {
+            $searchPlaceholder = trim((string) $this->options->searchPlaceholder);
+        }
+        ?>
+        <input type="text" name="s" id="search-text" placeholder="<?php echo htmlspecialchars($searchPlaceholder, ENT_QUOTES, 'UTF-8'); ?>" />
         <button type="submit" id="search-button" style="background: url(<?php $this->options->themeUrl('assets/img/search.png') ?>) center center no-repeat;background-size: cover;"></button>
     </form>
 </div>
@@ -84,7 +96,20 @@
 <header id="header" class="clearfix animated fadeInDown">
     <div id="site-meta">
             <h1 id="site-name"><?php $this->options->title(); ?></h1>
-            <h2 id="site-description"><?php $this->options->description(); ?></h2>
+            <?php
+            $heroSubtitle = '';
+            if (isset($this->options->heroSubtitle)) {
+                $heroSubtitle = trim((string) $this->options->heroSubtitle);
+                if ($heroSubtitle === '' && isset($this->options->description)) {
+                    $heroSubtitle = trim((string) $this->options->description);
+                }
+            } else {
+                $heroSubtitle = '越过喧嚣找到你';
+            }
+            ?>
+            <?php if ($heroSubtitle !== ''): ?>
+                <h2 id="site-description"><?php echo htmlspecialchars($heroSubtitle, ENT_QUOTES, 'UTF-8'); ?></h2>
+            <?php endif; ?>
     </div>
     <div id="background"></div>
 </header><!-- end #header -->
