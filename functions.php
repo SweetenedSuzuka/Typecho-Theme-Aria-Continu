@@ -182,7 +182,7 @@ echo '<div class="tip"><span class="current-ver"><strong><code>Ver ' . ARIA_VERS
     );
     $form->addInput($footerRecords);
 
-    $customScript = new Typecho_Widget_Helper_Form_Element_Textarea('customScript', null, null, _t('自定义JS'), _t('会加载在main.min.js文件加载之前'));
+    $customScript = new Typecho_Widget_Helper_Form_Element_Textarea('customScript', null, null, _t('自定义JS'), _t('会加载在主题主脚本 `main.js` 文件加载之前'));
     $form->addInput($customScript);
 
     $footerWidget = new Typecho_Widget_Helper_Form_Element_Textarea('footerWidget', null, null, _t('底部额外链接组件'), _t('填入 JSON 片段，不需要最外层包裹，忘记格式可以全部删掉并保存，然后会恢复默认，照着填即可；至少填一个，可以无限增加；如果一个都不想填，请直接关闭开关'));
