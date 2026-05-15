@@ -93,14 +93,14 @@ include __DIR__ . '/components/footer/content.php';
     <script>window.ariaEnsureMathJaxCompat&&window.ariaEnsureMathJaxCompat();</script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4.1.2/tex-mml-chtml.js"></script>
 <?php endif; ?>
-<script src="<?php $this->options->themeUrl('assets/js/functions.min.js?v=8b426df9ab'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/modules/base.js?v=20260515'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/modules/core.js?v=20260515'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/modules/comment.js?v=20260515'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/modules/action.js?v=20260515'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/modules/toc.js?v=20260515'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/modules/jquery-resize.js?v=20260515'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/main.js?v=20260515'); ?>"></script>
+<script src="<?php echo Utils::getThemeAssetUrl('assets/js/functions.min.js'); ?>"></script>
+<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/base.js'); ?>"></script>
+<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/core.js'); ?>"></script>
+<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/comment.js'); ?>"></script>
+<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/action.js'); ?>"></script>
+<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/toc.js'); ?>"></script>
+<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/jquery-resize.js'); ?>"></script>
+<script src="<?php echo Utils::getThemeAssetUrl('assets/js/main.js'); ?>"></script>
 <?php if (Utils::isEnabled('enableMathJax', 'AriaConfig') && Utils::isEnabled('enableMathJaxInComments', 'AriaConfig') && Utils::isEnabled('enableAjaxComment', 'AriaConfig')): ?>
     <script>
         (function () {

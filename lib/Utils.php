@@ -131,6 +131,24 @@ class Utils
     }
 
     /**
+     * 获取带版本号的主题静态资源 URL
+     *
+     * @param string $relativePath
+     *
+     * @return string
+     */
+    public static function getThemeAssetUrl($relativePath)
+    {
+        $relativePath = ltrim((string) $relativePath, '/');
+        $themeUrl = rtrim((string) Helper::options()->themeUrl, '/');
+        $themeDir = dirname(__DIR__);
+        $assetPath = $themeDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+        $version = file_exists($assetPath) ? (string) filemtime($assetPath) : ARIA_VERSION;
+
+        return $themeUrl . '/' . $relativePath . '?v=' . rawurlencode($version);
+    }
+
+    /**
      * 渲染页脚链接项
      *
      * @param array $item

@@ -34,8 +34,8 @@
 	<link href="<?php $this->options->themeUrl('assets/OwO/OwO.min.css'); ?>" rel="stylesheet">
 	<link href="<?php $this->options->themeUrl('assets/css/animate.min.css'); ?>" rel="stylesheet">
     <link href="<?php $this->options->themeUrl('assets/css/iconfont.css'); ?>" rel="stylesheet" >
-    <link href="<?php $this->options->themeUrl('assets/css/style.min.css?v=213a50a4db'); ?>" rel="stylesheet">
-    <link href="<?php $this->options->themeUrl('assets/css/pages.css?v=20260515'); ?>" rel="stylesheet">
+    <link href="<?php echo Utils::getThemeAssetUrl('assets/css/style.min.css'); ?>" rel="stylesheet">
+    <link href="<?php echo Utils::getThemeAssetUrl('assets/css/pages.css'); ?>" rel="stylesheet">
     <script src="<?php $this->options->themeUrl('assets/js/jquery.min.js'); ?>"></script>
     <?php if($this->options->customHeader) $this->options->customHeader(); ?>
 	<!--[if lt IE 9]>

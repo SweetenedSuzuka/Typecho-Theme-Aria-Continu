@@ -12,10 +12,29 @@ Aria.helpers.toggleNav = function () {
 };
 
 Aria.helpers.goTop = function (target) {
-  $(target).animate({ opacity: 0 });
-  $("body,html").animate({ scrollTop: 0 }, 1e3, function () {
-    $(target).animate({ opacity: 1 });
-  });
+  var button = $(target);
+  var scrollingElement =
+    document.scrollingElement || document.documentElement || document.body;
+
+  button.stop(!0, !0).animate({ opacity: 0.4 }, 150);
+
+  if (typeof window.scrollTo === "function") {
+    try {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.setTimeout(function () {
+        button.animate({ opacity: 1 }, 150);
+      }, 500);
+      return;
+    } catch (error) {
+      // Fall back to jQuery animation for older browsers.
+    }
+  }
+
+  $(scrollingElement)
+    .stop(!0)
+    .animate({ scrollTop: 0 }, 600, function () {
+      button.animate({ opacity: 1 }, 150);
+    });
 };
 
 Aria.helpers.togglePostOther = function (target) {
