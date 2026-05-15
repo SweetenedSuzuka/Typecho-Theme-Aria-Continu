@@ -3,6 +3,8 @@
  */
 var Aria = (window.Aria = window.Aria || {});
 Aria.helpers = Aria.helpers || {};
+Aria.compat = Aria.compat || {};
+Aria.state = Aria.state || {};
 
 Aria.helpers.toggleNav = function () {
   $("#nav-vertical").toggleClass("nav-open");
@@ -27,17 +29,31 @@ Aria.helpers.togglePostOther = function (target) {
   panel.fadeIn().css("display", "flex");
 };
 
-function toggleNav() {
-  Aria.helpers.toggleNav();
-}
+Aria.compat.installLegacyGlobals = function () {
+  if (Aria.state.legacyGlobalsInstalled) {
+    return;
+  }
 
-function goTop(target) {
-  Aria.helpers.goTop(target);
-}
-
-function togglePostOther(target) {
-  Aria.helpers.togglePostOther(target);
-}
+  Aria.state.legacyGlobalsInstalled = !0;
+  window.toggleNav =
+    typeof window.toggleNav === "function"
+      ? window.toggleNav
+      : function () {
+          Aria.helpers.toggleNav();
+        };
+  window.goTop =
+    typeof window.goTop === "function"
+      ? window.goTop
+      : function (target) {
+          Aria.helpers.goTop(target);
+        };
+  window.togglePostOther =
+    typeof window.togglePostOther === "function"
+      ? window.togglePostOther
+      : function (target) {
+          Aria.helpers.togglePostOther(target);
+        };
+};
 
 $.fn.extend({
   animateCss: function (animationName, callback) {

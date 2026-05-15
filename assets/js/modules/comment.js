@@ -1,79 +1,78 @@
 var Aria = (window.Aria = window.Aria || {});
 
-Aria.commentPlus = {
-  init: function () {
-    this.emotion();
-    this.ajaxAvatar();
+function bindEmotion() {
+  var container = $(".OwO").eq(0);
+  if (!container.length || container.attr("data-aria-owo-bound") === "true") {
+    return;
+  }
 
-    if (THEME_CONFIG.ENABLE_AJAX_COMMENT) {
-      this.ajaxComment();
-    }
-  },
+  container.attr("data-aria-owo-bound", "true");
+  new OwO({
+    logo: '<i class="iconfont icon-aria-emotion"></i>表情',
+    container: container.get(0),
+    target: document.getElementsByClassName("textarea")[0],
+    api: THEME_CONFIG.OWO_JSON,
+    position: "down",
+    width: "100%",
+    maxHeight: "250px",
+  });
+}
 
-  emotion: function () {
-    if (!$(".OwO").length) {
+function bindAjaxAvatar() {
+  var mailInput = $("input#mail");
+  if (!$("#comment-avatar").length || !mailInput.length) {
+    return;
+  }
+
+  function updateAvatar() {
+    var email = mailInput.val();
+
+    if (email === "") {
       return;
     }
 
-    new OwO({
-      logo: '<i class="iconfont icon-aria-emotion"></i>表情',
-      container: document.getElementsByClassName("OwO")[0],
-      target: document.getElementsByClassName("textarea")[0],
-      api: THEME_CONFIG.OWO_JSON,
-      position: "down",
-      width: "100%",
-      maxHeight: "250px",
+    $.ajax({
+      type: "GET",
+      data: {
+        action: "ajax_avatar_get",
+        form: THEME_CONFIG.SITE_URL,
+        email: email,
+      },
+      success: function (avatarUrl) {
+        $("#comment-avatar").attr("src", avatarUrl);
+      },
     });
-  },
+  }
 
-  ajaxAvatar: function () {
-    if (!$("#comment-avatar").length) {
-      return;
-    }
+  if (mailInput.val() !== "") {
+    updateAvatar();
+  }
 
-    function updateAvatar(selector) {
-      var email = $(selector).val();
+  mailInput.off("blur.ariaAvatar").on("blur.ariaAvatar", updateAvatar);
+}
 
-      if (email === "") {
-        return;
-      }
+function bindAjaxComment() {
+  var currentReplyId = "";
 
-      $.ajax({
-        type: "GET",
-        data: {
-          action: "ajax_avatar_get",
-          form: THEME_CONFIG.SITE_URL,
-          email: email,
-        },
-        success: function (avatarUrl) {
-          $("#comment-avatar").attr("src", avatarUrl);
-        },
-      });
-    }
-
-    if ($("input#mail").val() !== "") {
-      updateAvatar("input#mail");
-    }
-
-    $("input#mail").blur(updateAvatar("input#mail"));
-  },
-
-  ajaxComment: function () {
-    var currentReplyId = "";
-
-    var bindReplyEvents = function () {
-      $(".comment-reply a").click(function () {
+  function bindReplyEvents() {
+    $(".comment-reply a")
+      .off("click.ariaReply")
+      .on("click.ariaReply", function () {
         currentReplyId = $(this).parent().parent().parent().parent().attr("id");
       });
 
-      $(".cancel-comment-reply a").click(function () {
+    $(".cancel-comment-reply a")
+      .off("click.ariaReplyCancel")
+      .on("click.ariaReplyCancel", function () {
         currentReplyId = "";
       });
-    };
+  }
 
-    bindReplyEvents();
+  bindReplyEvents();
 
-    $("#comment-form").submit(function () {
+  $("#comment-form")
+    .off("submit.ariaAjaxComment")
+    .on("submit.ariaAjaxComment", function () {
       var submitButton = $(".submit").eq(0);
       var form = $("#comment-form");
       var currentCommentId = "";
@@ -186,5 +185,14 @@ Aria.commentPlus = {
 
       return !1;
     });
-  },
+}
+
+Aria.commentPlus = Aria.commentPlus || {};
+Aria.commentPlus.init = function () {
+  bindEmotion();
+  bindAjaxAvatar();
+
+  if (THEME_CONFIG.ENABLE_AJAX_COMMENT) {
+    bindAjaxComment();
+  }
 };

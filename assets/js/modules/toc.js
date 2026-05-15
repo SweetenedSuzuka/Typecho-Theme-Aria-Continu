@@ -1,27 +1,6 @@
 var Aria = (window.Aria = window.Aria || {});
 
-Aria.toc = {};
-
-Aria.toc.init = function () {
-  if (!$("#toc").length) {
-    return;
-  }
-
-  this.createDirectory(
-    document.getElementsByClassName("post-content")[0],
-    document.getElementById("toc"),
-    !0,
-  );
-
-  new SmoothScroll('#toc a[href*="#"]', { offset: 80 });
-
-  $("#toc-container").height($(".post-body").eq(0).height());
-  $(".post-body").resize(function () {
-    $("#toc-container").height($(".post-body").eq(0).height());
-  });
-};
-
-Aria.toc.children = function (nodes, match) {
+function children(nodes, match) {
   var node;
   var index;
   var total;
@@ -49,9 +28,9 @@ Aria.toc.children = function (nodes, match) {
   }
 
   return result;
-};
+}
 
-Aria.toc.createDirectory = function (container, mountPoint) {
+function createDirectory(container, mountPoint) {
   var titles = [];
   var titleIds = [];
 
@@ -60,7 +39,7 @@ Aria.toc.createDirectory = function (container, mountPoint) {
     var previousLevel = 1;
     var currentLevel = 1;
     var offsetSum = 0;
-    var headings = Aria.toc.children(element.childNodes, /^h[2-3]$/);
+    var headings = children(element.childNodes, /^h[2-3]$/);
     var result = [];
 
     (Math.random() + "").replace(/\D/, "");
@@ -135,5 +114,34 @@ Aria.toc.createDirectory = function (container, mountPoint) {
   }
 
   mountPoint.appendChild(rootList);
-  window.Aria.toc.titleId = titleIds;
+  Aria.toc.titleId = titleIds;
+}
+
+Aria.toc = Aria.toc || {};
+Aria.toc.titleId = Aria.toc.titleId || [];
+
+Aria.toc.init = function () {
+  var toc = $("#toc");
+  if (!toc.length) {
+    this.titleId = [];
+    return;
+  }
+
+  toc.empty();
+  createDirectory(
+    document.getElementsByClassName("post-content")[0],
+    toc.get(0),
+    !0,
+  );
+
+  if (!Aria.state.tocScroll) {
+    Aria.state.tocScroll = new SmoothScroll('#toc a[href*="#"]', { offset: 80 });
+  }
+
+  $("#toc-container").height($(".post-body").eq(0).height());
+  $(".post-body")
+    .off("resize.ariaToc")
+    .on("resize.ariaToc", function () {
+      $("#toc-container").height($(".post-body").eq(0).height());
+    });
 };
