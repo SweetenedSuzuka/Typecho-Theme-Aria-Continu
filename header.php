@@ -34,7 +34,11 @@
 	<link href="<?php $this->options->themeUrl('assets/OwO/OwO.min.css'); ?>" rel="stylesheet">
 	<link href="<?php $this->options->themeUrl('assets/css/animate.min.css'); ?>" rel="stylesheet">
     <link href="<?php $this->options->themeUrl('assets/css/iconfont.css'); ?>" rel="stylesheet" >
-    <link href="<?php echo Utils::getThemeAssetUrl('assets/css/style.min.css'); ?>" rel="stylesheet">
+    <link href="<?php echo Utils::getThemeAssetUrl('assets/css/restored/base.css'); ?>" rel="stylesheet">
+    <link href="<?php echo Utils::getThemeAssetUrl('assets/css/restored/layout.css'); ?>" rel="stylesheet">
+    <link href="<?php echo Utils::getThemeAssetUrl('assets/css/restored/post.css'); ?>" rel="stylesheet">
+    <link href="<?php echo Utils::getThemeAssetUrl('assets/css/restored/comments.css'); ?>" rel="stylesheet">
+    <link href="<?php echo Utils::getThemeAssetUrl('assets/css/restored/extras.css'); ?>" rel="stylesheet">
     <link href="<?php echo Utils::getThemeAssetUrl('assets/css/pages.css'); ?>" rel="stylesheet">
     <script src="<?php $this->options->themeUrl('assets/js/jquery.min.js'); ?>"></script>
     <?php if($this->options->customHeader) $this->options->customHeader(); ?>
@@ -74,8 +78,27 @@ if (Utils::hasOption('heroSubtitle')) {
 } else {
     $heroSubtitle = '越过喧嚣找到你';
 }
+
+$headerClassNames = array('clearfix', 'animated', 'fadeInDown');
+
+if ($isContentHeroPage || $is404Page) {
+    $headerClassNames[] = 'header--compact';
+    $headerClassNames[] = 'header--hide-meta';
+}
+
+if ($isContentHeroPage) {
+    $headerClassNames[] = 'header--compact-mobile';
+}
+
+$headerBackgroundCss = sprintf(
+    "--aria-header-bg: url('%s');",
+    str_replace(
+        array('\\', "'"),
+        array('\\\\', "\\'"),
+        $headerBackgroundUrl
+    )
+);
 ?>
-<style><?php if($isContentHeroPage):; ?>#header {height: 70vh;}@media (max-width:768px) {#header {height: 40vh;}}#site-meta {display: none;}<?php elseif($is404Page):; ?>#header {height: 70vh;}#site-meta {display: none;}<?php endif; ?>#background {width: 100%;height: 100%;background: url(<?php echo htmlspecialchars($headerBackgroundUrl, ENT_QUOTES, 'UTF-8'); ?>) center center no-repeat;background-size: cover;z-index: -1;position: relative;}</style>
 <?php include __DIR__ . '/components/header/hero.php'; ?>
 <div id="body" class="animated fadeIn">
     <div class="container">

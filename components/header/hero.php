@@ -1,4 +1,8 @@
-<header id="header" class="clearfix animated fadeInDown">
+<header
+    id="header"
+    class="<?php echo htmlspecialchars(implode(' ', $headerClassNames), ENT_QUOTES, 'UTF-8'); ?>"
+    style="<?php echo htmlspecialchars($headerBackgroundCss, ENT_QUOTES, 'UTF-8'); ?>"
+>
     <div id="site-meta">
             <h1 id="site-name"><?php $this->options->title(); ?></h1>
             <?php if ($heroSubtitle !== ''): ?>
