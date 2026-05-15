@@ -194,14 +194,14 @@ class Contents
     {
         $html = '<div class="post-other">';
         $AriaConfig = Helper::options()->AriaConfig;
-        $rewardConfig = Utils::convertConfigData('rewardConfig', false);
+        $rewardConfig = Utils::getRewardConfigMap();
         $showQRCode = Utils::isEnabled('showQRCode', 'AriaConfig');
 
         if ($rewardConfig) {
             $html .= '<div class="post-reward"><a href="javascript:void(0);" data-aria-action="toggle-post-other" no-pjax ><i class="iconfont icon-aria-reward"></i></a>
                 <ul>';
             foreach ($rewardConfig as $key => $data) {
-                $html .= '<li><img no-lazyload src="' . $data . '">' . $key . '</li>';
+                $html .= '<li><img no-lazyload src="' . htmlspecialchars($data, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($key, ENT_QUOTES, 'UTF-8') . '</li>';
             }
             $html .= "</ul></div>";
         }

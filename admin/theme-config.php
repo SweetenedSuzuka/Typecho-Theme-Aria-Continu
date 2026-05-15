@@ -66,7 +66,7 @@ function themeConfig($form)
             "icon":"iconfont icon-aria-about"
         }',
         _t('导航栏配置'),
-        _t('输入导航栏的配置信息')
+        _t('输入导航栏的配置信息；如需在 text 中换行，请使用 `[[br]]` 作为换行标记。该标记仅在导航栏文本中生效，不支持任意 HTML。')
     );
     $form->addInput($navConfig);
 

@@ -155,6 +155,19 @@ class Utils
     }
 
     /**
+     * 导航文本转义，并仅允许显式换行标记生效
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private static function renderNavText($value)
+    {
+        $text = self::escapeHtml($value);
+        return str_replace(array('[[br]]', "\r\n", "\n", "\r"), '<br>', $text);
+    }
+
+    /**
      * HTML 属性值转义
      *
      * @param string $value
@@ -230,7 +243,7 @@ class Utils
 
         $showHitokoto = self::isFeatureEnabled('showHitokoto', 'AriaConfig');
         $showQRCode = self::isEnabled('showQRCode', 'AriaConfig');
-        $showReward = $options->rewardConfig ? true : false;
+        $showReward = count(self::getRewardConfigMap()) > 0;
         $enablePjax = self::isEnabled('enablePjax', 'AriaConfig');
         $enableAjaxComment = self::isEnabled('enableAjaxComment', 'AriaConfig');
         $enableFancybox = self::isEnabled('enableFancybox', 'AriaConfig');
@@ -338,23 +351,293 @@ class Utils
      */
     public static function convertConfigData($item, $mode)
     {
-        $options = Helper::options();
-        //根据$item获取对应的设置中的string数据
-        $data = $options->$item ? $options->$item : false;
-        $content = null;
-        if (!$data) {
-            //不存在对应的设置名或内容为空
-            $content = false;
-        } else {
-            if ($mode) {
-                //转换为数组
-                $content = json_decode("[" . $data . "]", true);
-            } else {
-                //转换为键值对
-                $content = json_decode(trim("{" . $data . "}"), true);
+        if (!self::hasOption($item)) {
+            return false;
+        }
+
+        return self::decodeConfigFragment((string) Helper::options()->$item, $mode);
+    }
+
+    /**
+     * 解析旧式 JSON 片段配置
+     *
+     * @param string $raw
+     * @param bool $mode true 为列表，false 为对象
+     *
+     * @return array|bool
+     */
+    private static function decodeConfigFragment($raw, $mode)
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return false;
+        }
+
+        $json = $mode ? '[' . $raw . ']' : '{' . $raw . '}';
+        $decoded = json_decode($json, true);
+
+        return is_array($decoded) ? $decoded : false;
+    }
+
+    /**
+     * 归一化链接类配置项
+     *
+     * @param array $item
+     * @param bool $allowSlug
+     *
+     * @return array|null
+     */
+    private static function normalizeLinkConfigItem(array $item, $allowSlug = false)
+    {
+        $text = array_key_exists('text', $item) ? trim((string) $item['text']) : '';
+        $href = array_key_exists('href', $item) ? trim((string) $item['href']) : '';
+        $title = array_key_exists('title', $item) ? trim((string) $item['title']) : '';
+        $target = array_key_exists('target', $item) ? trim((string) $item['target']) : '';
+        $icon = array_key_exists('icon', $item) ? trim((string) $item['icon']) : '';
+        $slug = $allowSlug && array_key_exists('slug', $item) ? trim((string) $item['slug']) : '';
+
+        if ($text === '' && $slug === '') {
+            return null;
+        }
+
+        return array(
+            'text' => $text,
+            'href' => $href,
+            'title' => $title,
+            'target' => $target,
+            'icon' => $icon,
+            'slug' => $slug,
+        );
+    }
+
+    /**
+     * 归一化导航配置项
+     *
+     * @param array $item
+     *
+     * @return array|null
+     */
+    private static function normalizeNavConfigItem(array $item)
+    {
+        $normalized = self::normalizeLinkConfigItem($item, true);
+        if ($normalized === null) {
+            return null;
+        }
+
+        $normalized['sub'] = array();
+        if (array_key_exists('sub', $item) && is_array($item['sub'])) {
+            foreach ($item['sub'] as $subItem) {
+                if (!is_array($subItem)) {
+                    continue;
+                }
+
+                $normalizedSubItem = self::normalizeNavConfigItem($subItem);
+                if ($normalizedSubItem !== null) {
+                    $normalized['sub'][] = $normalizedSubItem;
+                }
             }
         }
-        return $content;
+
+        return $normalized;
+    }
+
+    /**
+     * 默认导航配置
+     *
+     * @return array
+     */
+    private static function getDefaultNavConfigItems()
+    {
+        return array(
+            array(
+                'text' => '首页',
+                'href' => Helper::options()->siteUrl,
+                'icon' => 'iconfont icon-aria-home',
+                'title' => '',
+                'target' => '',
+                'slug' => '',
+                'sub' => array(),
+            ),
+            array(
+                'text' => '归档',
+                'href' => '#',
+                'icon' => 'iconfont icon-aria-archives',
+                'title' => '',
+                'target' => '',
+                'slug' => '',
+                'sub' => array(),
+            ),
+            array(
+                'text' => '留言',
+                'href' => '#',
+                'icon' => 'iconfont icon-aria-guestbook',
+                'title' => '',
+                'target' => '',
+                'slug' => '',
+                'sub' => array(),
+            ),
+            array(
+                'text' => '朋友',
+                'href' => '#',
+                'icon' => 'iconfont icon-aria-friends',
+                'title' => '',
+                'target' => '',
+                'slug' => '',
+                'sub' => array(),
+            ),
+            array(
+                'text' => '关于',
+                'href' => '#',
+                'icon' => 'iconfont icon-aria-about',
+                'title' => '',
+                'target' => '',
+                'slug' => '',
+                'sub' => array(),
+            ),
+        );
+    }
+
+    /**
+     * 获取归一化后的导航配置
+     *
+     * @return array
+     */
+    public static function getNavConfigItems()
+    {
+        $data = self::convertConfigData('navConfig', true);
+        if (!$data) {
+            return self::getDefaultNavConfigItems();
+        }
+
+        $items = array();
+        foreach ($data as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $normalized = self::normalizeNavConfigItem($item);
+            if ($normalized !== null) {
+                $items[] = $normalized;
+            }
+        }
+
+        return !empty($items) ? $items : self::getDefaultNavConfigItems();
+    }
+
+    /**
+     * 获取归一化后的页脚扩展链接配置
+     *
+     * @return array
+     */
+    public static function getFooterWidgetItems()
+    {
+        $data = self::convertConfigData('footerWidget', true);
+        if (!$data) {
+            return array();
+        }
+
+        $items = array();
+        foreach ($data as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $normalized = self::normalizeLinkConfigItem($item);
+            if ($normalized !== null) {
+                $items[] = $normalized;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * 默认页脚备案配置
+     *
+     * @return array
+     */
+    private static function getDefaultFooterRecords()
+    {
+        return array(
+            array(
+                'text' => 'ICP备00000000号-0',
+                'url' => 'https://beian.miit.gov.cn/',
+                'icon' => '',
+                'title' => 'ICP备案信息',
+            ),
+            array(
+                'text' => '公网安备 00000000000000号',
+                'url' => 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=00000000000000',
+                'icon' => '',
+                'title' => '公网安备信息',
+            ),
+        );
+    }
+
+    /**
+     * 获取归一化后的页脚备案配置
+     *
+     * @return array
+     */
+    public static function getFooterRecords()
+    {
+        $options = Helper::options();
+        if (isset($options->footerRecords) && trim((string) $options->footerRecords) === '') {
+            return array();
+        }
+
+        $records = self::convertConfigData('footerRecords', true);
+        if (!$records) {
+            $records = self::getDefaultFooterRecords();
+        }
+
+        $items = array();
+        foreach ($records as $record) {
+            if (!is_array($record)) {
+                continue;
+            }
+
+            $text = array_key_exists('text', $record) ? trim((string) $record['text']) : '';
+            if ($text === '') {
+                continue;
+            }
+
+            $items[] = array(
+                'text' => $text,
+                'url' => array_key_exists('url', $record) ? trim((string) $record['url']) : '',
+                'icon' => array_key_exists('icon', $record) ? trim((string) $record['icon']) : '',
+                'title' => array_key_exists('title', $record) ? trim((string) $record['title']) : $text,
+            );
+        }
+
+        return $items;
+    }
+
+    /**
+     * 获取归一化后的打赏配置
+     *
+     * @return array
+     */
+    public static function getRewardConfigMap()
+    {
+        $data = self::convertConfigData('rewardConfig', false);
+        if (!$data) {
+            return array();
+        }
+
+        $items = array();
+        foreach ($data as $label => $url) {
+            $label = trim((string) $label);
+            $url = trim((string) $url);
+
+            if ($label === '' || $url === '') {
+                continue;
+            }
+
+            $items[$label] = $url;
+        }
+
+        return $items;
     }
 
     /**
@@ -485,20 +768,8 @@ class Utils
             );
         }
 
-        $data = self::convertConfigData('footerWidget', true);
-        if ($data) {
-            foreach ($data as $val) {
-                if (!is_array($val)) {
-                    continue;
-                }
-
-                $items[] = array(
-                    'text' => array_key_exists('text', $val) ? $val['text'] : '',
-                    'href' => array_key_exists('href', $val) ? $val['href'] : '',
-                    'title' => array_key_exists('title', $val) ? $val['title'] : '',
-                    'target' => array_key_exists('target', $val) ? $val['target'] : '',
-                );
-            }
+        foreach (self::getFooterWidgetItems() as $item) {
+            $items[] = $item;
         }
 
         $html = '';
@@ -526,27 +797,9 @@ class Utils
      */
     public static function getFooterRecordsHtml()
     {
-        $options = Helper::options();
-        if (isset($options->footerRecords) && trim((string) $options->footerRecords) === '') {
+        $records = self::getFooterRecords();
+        if (empty($records)) {
             return '';
-        }
-
-        $records = self::convertConfigData('footerRecords', true);
-        if (!$records) {
-            $records = array(
-                array(
-                    'text' => 'ICP备00000000号-0',
-                    'url' => 'https://beian.miit.gov.cn/',
-                    'icon' => '',
-                    'title' => 'ICP备案信息',
-                ),
-                array(
-                    'text' => '公网安备 00000000000000号',
-                    'url' => 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=00000000000000',
-                    'icon' => '',
-                    'title' => '公网安备信息',
-                ),
-            );
         }
 
         $html = '';
@@ -615,84 +868,53 @@ class Utils
      */
     public static function showNav($mode, $slugs)
     {
-        $data = self::convertConfigData('navConfig', true);
-        if (!$data) {
+        $data = self::getNavConfigItems();
+        if (empty($data)) {
             return;
         }
 
-        $text = null;
-        $href = null;
-        $icon = null;
-        $target = null;
-        $sub = null;
+        $itemClass = $mode ? 'nav-right-item' : 'nav-vertical-item';
+        $subListClass = $mode ? 'nav-sub' : 'nav-vertical-sub';
+        $subItemClass = $mode ? 'sub-item' : 'vertical-sub-item';
+        $labelPrefix = $mode ? '' : '  ';
+        $html = '';
 
-        if ($data) {
-            $html = '';
-            if ($mode) {
-                foreach ($data as $v) {
-                    $text = array_key_exists('text', $v) ? $v['text'] : "";
-                    $href = array_key_exists('href', $v) ? 'href="' . $v['href'] . '"' : "";
-                    $icon = array_key_exists('icon', $v) ? 'class="' . $v['icon'] . '"' : "";
-                    $target = array_key_exists('target', $v) ? 'target="' . $v['target'] . '"' : "";
-                    $slug = (array_key_exists('slug', $v) && $slugs && array_key_exists($v['slug'], $slugs)) ? $slugs[$v['slug']] : false;
-                    if ($slug) {
-                        $href = 'href="' . $slug['permarlink'] . '"';
-                        $text = $slug['title'];
-                    }
-                    $html .= "<li class=\"nav-right-item\"><a $href $target><i $icon></i>$text</a>";
-                    if (array_key_exists('sub', $v)) {
-                        $html .= '<ul class="nav-sub">';
-                        foreach ($v['sub'] as $_k => $_v) {
-                            $text = array_key_exists('text', $_v) ? $_v['text'] : "";
-                            $href = array_key_exists('href', $_v) ? 'href="' . $_v['href'] . '"' : "";
-                            $icon = array_key_exists('icon', $_v) ? 'class="' . $_v['icon'] . '"' : "";
-                            $target = array_key_exists('target', $_v) ? 'target="' . $_v['target'] . '"' : "";
-                            $slug = (array_key_exists('slug', $_v) && $slugs && array_key_exists($_v['slug'], $slugs)) ? $slugs[$_v['slug']] : false;
-                            if ($slug) {
-                                $href = 'href="' . $slug['permarlink'] . '"';
-                                $text = $slug['title'];
-                            }
-                            $html .= "<li class=\"sub-item\"><a $href $target><i $icon></i>$text</a></li>";
-                        }
-                        $html .= "</ul>";
-                    }
-                    $html .= "</li>";
-                }
-            } else {
-                foreach ($data as $v) {
-                    $text = array_key_exists('text', $v) ? $v['text'] : "";
-                    $href = array_key_exists('href', $v) ? 'href="' . $v['href'] . '"' : "";
-                    $icon = array_key_exists('icon', $v) ? 'class="' . $v['icon'] . '"' : "";
-                    $target = array_key_exists('target', $v) ? 'target="' . $v['target'] . '"' : "";
-                    $slug = (array_key_exists('slug', $v) && $slugs && array_key_exists($v['slug'], $slugs)) ? $slugs[$v['slug']] : false;
-                    if ($slug) {
-                        $href = 'href="' . $slug['permarlink'] . '"';
-                        $text = $slug['title'];
-                    }
-                    $html .= "<li class=\"nav-vertical-item\"><a $href $target><i $icon></i>  $text</a>";
-                    if (array_key_exists('sub', $v)) {
-                        $html .= '<ul class="nav-vertical-sub">';
-                        foreach ($v['sub'] as $_k => $_v) {
-                            $text = array_key_exists('text', $_v) ? $_v['text'] : "";
-                            $href = array_key_exists('href', $_v) ? 'href="' . $_v['href'] . '"' : "";
-                            $icon = array_key_exists('icon', $_v) ? 'class="' . $_v['icon'] . '"' : "";
-                            $target = array_key_exists('target', $_v) ? 'target="' . $_v['target'] . '"' : "";
-                            $slug = (array_key_exists('slug', $_v) && $slugs && array_key_exists($_v['slug'], $slugs)) ? $slugs[$_v['slug']] : false;
-                            if ($slug) {
-                                $href = 'href="' . $slug['permarlink'] . '"';
-                                $text = $slug['title'];
-                            }
-                            $html .= "<li class=\"vertical-sub-item\"><a $href $target><i $icon></i>  $text</a></li>";
-                        }
-                        $html .= "</ul>";
-                    }
-                    $html .= "</li>";
-                }
+        foreach ($data as $item) {
+            $resolvedItem = $item;
+            if ($item['slug'] !== '' && $slugs && array_key_exists($item['slug'], $slugs)) {
+                $resolvedItem['href'] = $slugs[$item['slug']]['permarlink'];
+                $resolvedItem['text'] = $slugs[$item['slug']]['title'];
             }
 
-            echo $html;
+            $href = $resolvedItem['href'] !== '' ? ' href="' . self::escapeAttr($resolvedItem['href']) . '"' : '';
+            $target = $resolvedItem['target'] !== '' ? ' target="' . self::escapeAttr($resolvedItem['target']) . '"' : '';
+            $iconHtml = $resolvedItem['icon'] !== '' ? '<i class="' . self::escapeAttr($resolvedItem['icon']) . '"></i>' : '';
+            $textHtml = self::renderNavText($resolvedItem['text']);
+
+            $html .= '<li class="' . $itemClass . '"><a' . $href . $target . '>' . $iconHtml . $labelPrefix . $textHtml . '</a>';
+
+            if (!empty($item['sub'])) {
+                $html .= '<ul class="' . $subListClass . '">';
+                foreach ($item['sub'] as $subItem) {
+                    $resolvedSubItem = $subItem;
+                    if ($subItem['slug'] !== '' && $slugs && array_key_exists($subItem['slug'], $slugs)) {
+                        $resolvedSubItem['href'] = $slugs[$subItem['slug']]['permarlink'];
+                        $resolvedSubItem['text'] = $slugs[$subItem['slug']]['title'];
+                    }
+
+                    $subHref = $resolvedSubItem['href'] !== '' ? ' href="' . self::escapeAttr($resolvedSubItem['href']) . '"' : '';
+                    $subTarget = $resolvedSubItem['target'] !== '' ? ' target="' . self::escapeAttr($resolvedSubItem['target']) . '"' : '';
+                    $subIconHtml = $resolvedSubItem['icon'] !== '' ? '<i class="' . self::escapeAttr($resolvedSubItem['icon']) . '"></i>' : '';
+                    $subTextHtml = self::renderNavText($resolvedSubItem['text']);
+
+                    $html .= '<li class="' . $subItemClass . '"><a' . $subHref . $subTarget . '>' . $subIconHtml . $labelPrefix . $subTextHtml . '</a></li>';
+                }
+                $html .= '</ul>';
+            }
+
+            $html .= '</li>';
         }
-        //转换失败
-        echo false;
+
+        echo $html;
     }
 }
