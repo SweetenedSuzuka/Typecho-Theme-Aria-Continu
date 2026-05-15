@@ -23,7 +23,7 @@ include __DIR__ . '/components/footer/content.php';
 <?php endif; ?>
 <!-- 评论颜文字 -->
 <script src="<?php $this->options->themeUrl('assets/OwO/OwO.min.js') ?>"></script>
-<?php if (Utils::isEnabled('enableMathJax', 'AriaConfig')): ?>
+<?php if (Utils::isFeatureEnabled('enableMathJax', 'AriaConfig')): ?>
     <script>
         window.ariaEnsureMathJaxCompat = window.ariaEnsureMathJaxCompat || function () {
             window.MathJax = window.MathJax || {};
@@ -101,7 +101,7 @@ include __DIR__ . '/components/footer/content.php';
 <script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/toc.js'); ?>"></script>
 <script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/jquery-resize.js'); ?>"></script>
 <script src="<?php echo Utils::getThemeAssetUrl('assets/js/main.js'); ?>"></script>
-<?php if (Utils::isEnabled('enableMathJax', 'AriaConfig') && Utils::isEnabled('enableMathJaxInComments', 'AriaConfig') && Utils::isEnabled('enableAjaxComment', 'AriaConfig')): ?>
+<?php if (Utils::isFeatureEnabled('enableMathJax', 'AriaConfig') && Utils::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig') && Utils::isEnabled('enableAjaxComment', 'AriaConfig')): ?>
     <script>
         (function () {
             var observer = null;

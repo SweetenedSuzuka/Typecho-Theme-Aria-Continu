@@ -7,7 +7,7 @@
  * 部分工具
  *
  * @author     Siphils
- * @version    since 1.10.0
+ * @version    since 1.11.0
  */
 
 class Utils
@@ -81,7 +81,43 @@ class Utils
             return $default;
         }
 
-        return trim((string) Helper::options()->$name) === '1';
+        $value = Helper::options()->$name;
+
+        if (is_array($value)) {
+            foreach ($value as $item) {
+                $item = strtolower(trim((string) $item));
+                if (in_array($item, array('1', 'true', 'on', 'yes'), true)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        $value = strtolower(trim((string) $value));
+        return in_array($value, array('1', 'true', 'on', 'yes'), true);
+    }
+
+    /**
+     * 获取独立布尔配置项的启用状态，缺失时回退到旧的 Checkbox 配置组
+     *
+     * @param string $name
+     * @param string $legacyConfig
+     * @param bool $default
+     *
+     * @return bool
+     */
+    public static function isFeatureEnabled($name, $legacyConfig = 'AriaConfig', $default = false)
+    {
+        if (self::hasOption($name)) {
+            return self::isOptionEnabled($name, $default);
+        }
+
+        if (self::hasOption($legacyConfig)) {
+            return self::isEnabled($name, $legacyConfig);
+        }
+
+        return $default;
     }
 
     /**
@@ -192,14 +228,14 @@ class Utils
         $AriaConfig = Helper::options()->AriaConfig;
         $options = Helper::options();
 
-        $showHitokoto = self::isEnabled('showHitokoto', 'AriaConfig');
+        $showHitokoto = self::isFeatureEnabled('showHitokoto', 'AriaConfig');
         $showQRCode = self::isEnabled('showQRCode', 'AriaConfig');
         $showReward = $options->rewardConfig ? true : false;
         $enablePjax = self::isEnabled('enablePjax', 'AriaConfig');
         $enableAjaxComment = self::isEnabled('enableAjaxComment', 'AriaConfig');
         $enableFancybox = self::isEnabled('enableFancybox', 'AriaConfig');
         $enableLazyload = self::isEnabled('enableLazyload', 'AriaConfig');
-        $enableMathJax = self::isEnabled('enableMathJax', 'AriaConfig');
+        $enableMathJax = self::isFeatureEnabled('enableMathJax', 'AriaConfig');
         $OwOJson = $options->OwOJson ? $options->OwOJson : $options->themeUrl . "/assets/OwO/OwO.json";
         $hitokotoOrigin = $options->hitokotoOrigin ? $options->hitokotoOrigin : 'https://v1.hitokoto.cn/?c=a&encode=text';
         $gravatarPrefix = __TYPECHO_GRAVATAR_PREFIX__;

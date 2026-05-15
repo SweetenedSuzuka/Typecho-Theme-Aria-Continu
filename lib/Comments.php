@@ -7,7 +7,7 @@
  * 评论相关组件
  *
  * @author     Siphils
- * @version    since 1.10.0
+ * @version    since 1.11.0
  */
 
 class Comments

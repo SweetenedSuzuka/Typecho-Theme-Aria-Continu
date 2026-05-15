@@ -5,7 +5,7 @@
 <footer id="footer" role="contentinfo">
     <?php $this->options->customFooter(); ?>
     <!-- 调用一言接口 -->
-    <?php if (Utils::isEnabled('showHitokoto', 'AriaConfig')): ?>
+    <?php if (Utils::isFeatureEnabled('showHitokoto', 'AriaConfig')): ?>
         <p id="hitokoto" class="footer-line"></p>
     <?php endif; ?>
     <p id="footer-info" class="footer-line">
