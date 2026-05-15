@@ -1,4 +1,4 @@
-<div id="go-top" onclick="goTop(this);">
+<div id="go-top" data-aria-action="go-top">
     <img no-lazyload src="<?php $this->options->themeUrl('assets/img/goTop.png'); ?>">
     <!--div id="scroll-percentage"></div-->
 </div>

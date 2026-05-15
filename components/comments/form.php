@@ -65,7 +65,7 @@
             <div class="OwO">
             </div><!--end .OwO-->
             <?php if($this->options->commentsMarkdown&&!empty($this->options->commentsHTMLTagAllowed)&&strpos($this->options->commentsHTMLTagAllowed,'img')):?>
-            <div class="comment-image" onclick="document.getElementById('textarea').value+='![图片描述](图片地址)' ">
+            <div class="comment-image" data-aria-action="insert-comment-image">
                 <span><i class="iconfont icon-aria-picture"></i>图片</span>
             </div>
             <?php endif; ?>

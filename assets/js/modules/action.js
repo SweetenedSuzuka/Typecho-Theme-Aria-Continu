@@ -7,6 +7,7 @@ Aria.action = {
     this.closeNav();
     this.nav();
     this.search();
+    this.bindActions();
     new WOW().init();
   },
 
@@ -16,7 +17,9 @@ Aria.action = {
   },
 
   gotop: function () {
-    $(window).scroll(function () {
+    $(window)
+      .off("scroll.ariaGoTop")
+      .on("scroll.ariaGoTop", function () {
       if ($(window).scrollTop() > 100) {
         $("#go-top").fadeIn(500);
         $("#site-avatar").css({
@@ -62,20 +65,20 @@ Aria.action = {
         $("#toc a").removeClass("toc-active");
         $('#toc a[href="' + currentAnchor + '"]').addClass("toc-active");
       }
-    });
+      });
   },
 
   nav: function () {
-    $(".nav-right-item").hover(
-      function () {
+    $(".nav-right-item")
+      .off("mouseenter.ariaNavSub mouseleave.ariaNavSub")
+      .on("mouseenter.ariaNavSub", function () {
         $(".nav-sub", this).addClass("fast");
         $(".nav-sub", this).show();
         $(".nav-sub", this).animateCss("show-sub");
-      },
-      function () {
+      })
+      .on("mouseleave.ariaNavSub", function () {
         $(".nav-sub", this).hide();
-      },
-    );
+      });
   },
 
   closeNav: function () {
@@ -92,13 +95,59 @@ Aria.action = {
       $("#search-box").css("display", "none");
     }
 
-    $("#nav-search-btn").on("click", function () {
-      $("#search-box").css("display", "flex");
-      $("#search-box").animateCss("zoomIn", function () {});
-    });
+    $("#nav-search-btn")
+      .off("click.ariaSearch")
+      .on("click.ariaSearch", function () {
+        $("#search-box").css("display", "flex");
+        $("#search-box").animateCss("zoomIn", function () {});
+      });
 
-    $("#search-box>.close").on("click", function () {
-      $("#search-box").hide();
-    });
+    $("#search-box>.close")
+      .off("click.ariaSearch")
+      .on("click.ariaSearch", function () {
+        $("#search-box").hide();
+      });
+  },
+
+  bindActions: function () {
+    $(document)
+      .off("click.ariaToggleNav", "[data-aria-action='toggle-nav']")
+      .on("click.ariaToggleNav", "[data-aria-action='toggle-nav']", function (event) {
+        event.preventDefault();
+        Aria.helpers.toggleNav();
+      });
+
+    $(document)
+      .off("click.ariaGoTop", "[data-aria-action='go-top']")
+      .on("click.ariaGoTop", "[data-aria-action='go-top']", function (event) {
+        event.preventDefault();
+        Aria.helpers.goTop(this);
+      });
+
+    $(document)
+      .off("click.ariaPostOther", "[data-aria-action='toggle-post-other']")
+      .on(
+        "click.ariaPostOther",
+        "[data-aria-action='toggle-post-other']",
+        function (event) {
+          event.preventDefault();
+          Aria.helpers.togglePostOther(this);
+        },
+      );
+
+    $(document)
+      .off("click.ariaCommentImage", "[data-aria-action='insert-comment-image']")
+      .on(
+        "click.ariaCommentImage",
+        "[data-aria-action='insert-comment-image']",
+        function () {
+          var textarea = document.getElementById("textarea");
+          if (!textarea) {
+            return;
+          }
+
+          textarea.value += "![图片描述](图片地址)";
+        },
+      );
   },
 };

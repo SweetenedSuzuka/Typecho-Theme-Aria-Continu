@@ -1,6 +1,6 @@
-<div id="wrapper" onclick="toggleNav();"></div>
+<div id="wrapper" data-aria-action="toggle-nav"></div>
 <div id="nav-vertical">
-    <a class="close" href="javascript:void(0);" onclick="toggleNav();"><i class="iconfont icon-aria-close"></i></a>
+    <a class="close" href="javascript:void(0);" data-aria-action="toggle-nav"><i class="iconfont icon-aria-close"></i></a>
     <div id="nav-avatar"><img no-lazyload src="<?php Utils::getAdminAvatar(150); ?>"></div>
     <ul class="nav-vertical-list">
         <?php Utils::showNav(0, $slugs); ?>
@@ -19,7 +19,7 @@
             <?php Utils::showNav(1, $slugs); ?>
         </ul>
     <div id="nav-btns">
-        <i class="iconfont icon-aria-menu" id="nav-menu-btn" onclick="toggleNav();"></i>
+        <i class="iconfont icon-aria-menu" id="nav-menu-btn" data-aria-action="toggle-nav"></i>
         <i class="iconfont icon-aria-search" id="nav-search-btn"></i>
     </div>
     </div>

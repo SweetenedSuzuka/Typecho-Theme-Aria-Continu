@@ -2,20 +2,21 @@
  * Aria front-end base globals and shared jQuery helpers.
  */
 var Aria = (window.Aria = window.Aria || {});
+Aria.helpers = Aria.helpers || {};
 
-function toggleNav() {
+Aria.helpers.toggleNav = function () {
   $("#nav-vertical").toggleClass("nav-open");
   $("#wrapper").toggle();
-}
+};
 
-function goTop(target) {
+Aria.helpers.goTop = function (target) {
   $(target).animate({ opacity: 0 });
   $("body,html").animate({ scrollTop: 0 }, 1e3, function () {
     $(target).animate({ opacity: 1 });
   });
-}
+};
 
-function togglePostOther(target) {
+Aria.helpers.togglePostOther = function (target) {
   var panel = $(target).next();
 
   if (panel.css("display") !== "none") {
@@ -24,6 +25,18 @@ function togglePostOther(target) {
   }
 
   panel.fadeIn().css("display", "flex");
+};
+
+function toggleNav() {
+  Aria.helpers.toggleNav();
+}
+
+function goTop(target) {
+  Aria.helpers.goTop(target);
+}
+
+function togglePostOther(target) {
+  Aria.helpers.togglePostOther(target);
 }
 
 $.fn.extend({
