@@ -15,14 +15,14 @@ echo $commentClass;
         </a>
         <div class="comment-content">
             <div class="comment-text"><span class="comment-reply" style="float:right"><?php $comments->reply('<i class="iconfont icon-aria-reply"></i>'); ?></span>
-            <p><?php
+            <?php
             if ('waiting' == $comments->status) {
                 $waitingText = isset($commentsViewData['waitingText']) ? (string) $commentsViewData['waitingText'] : '';
                 if ($waitingText !== '') {
-                    echo '<em>' . htmlspecialchars($waitingText, ENT_QUOTES, 'UTF-8') . '</em>';
+                    echo '<p><em>' . htmlspecialchars($waitingText, ENT_QUOTES, 'UTF-8') . '</em></p>';
                 }
             }
-            ?><?php $comments->content(); ?></p>
+            ?><?php $comments->content(); ?>
             </div>
 <?php
 $commentAuthor = htmlspecialchars((string) $comments->author, ENT_QUOTES, 'UTF-8');
