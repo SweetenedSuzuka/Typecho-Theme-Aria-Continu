@@ -974,19 +974,52 @@ JS;
             'form' => array(
                 'className' => self::getCommentFormClassName(),
                 'style' => self::getCommentFormStyle(),
+                'newResponseText' => '添加新评论',
                 'requireMail' => $commentsRequireMail,
                 'requireUrl' => $commentsRequireUrl,
                 'supportsMarkdown' => $commentsMarkdown,
+                'markdownGuideUrl' => 'https://guides.github.com/features/mastering-markdown/',
+                'markdownHintText' => '评论可以使用 Markdown 语法',
                 'supportsImageInsertion' => $commentsMarkdown
                     && $allowedHtmlTags !== ''
                     && strpos($allowedHtmlTags, 'img') !== false,
+                'imageInsertText' => '图片',
                 'showCommentToMail' => self::isEnabled('enableCommentToMail', 'AriaConfig'),
+                'banMailStrongText' => '不接收',
+                'banMailLabelText' => '回复邮件通知',
+                'guestAvatarPrefix' => __TYPECHO_GRAVATAR_PREFIX__,
+                'nicknamePlaceholder' => '（必填）昵称',
                 'mailPlaceholder' => ($commentsRequireMail ? '（必填）' : '（选填）') . '邮箱',
                 'urlPlaceholder' => ($commentsRequireUrl ? '（必填）' : '（选填）') . '网站',
                 'textPlaceholder' => isset($options->placeholder)
                     ? (string) $options->placeholder
                     : '',
+                'submitText' => '投送',
             ),
+        );
+    }
+
+    /**
+     * 获取文章页与页面页的视图数据
+     *
+     * @param Widget_Archive $archive
+     * @param string $context
+     *
+     * @return array
+     */
+    public static function getPostViewData($archive, $context = 'post')
+    {
+        $isPostContext = $context === 'post';
+
+        return array(
+            'meta' => array(
+                'showCategory' => $isPostContext,
+                'categorySeparator' => ' • ',
+                'viewsSuffix' => '次阅读',
+            ),
+            'showTags' => $isPostContext,
+            'showNextPrev' => $isPostContext,
+            'showToc' => !empty($archive->fields->showTOC),
         );
     }
 

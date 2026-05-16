@@ -5,7 +5,7 @@
     </div>
 
     <span id="new-response">
-        <i class="iconfont icon-aria-write"></i> 添加新评论 </span>
+        <i class="iconfont icon-aria-write"></i> <?php echo htmlspecialchars($commentsViewData['form']['newResponseText'], ENT_QUOTES, 'UTF-8'); ?> </span>
     <!-- New Comments begin -->
     <form method="post" action="<?php $this->commentUrl() ?>" id="comment-form"
      role="form">
@@ -21,13 +21,13 @@
         <?php else: ?>
         <div id="comment-info">
             <p>
-                <img no-lazyload id="comment-avatar" src="<?php echo __TYPECHO_GRAVATAR_PREFIX__ ?>">
+                <img no-lazyload id="comment-avatar" src="<?php echo htmlspecialchars($commentsViewData['form']['guestAvatarPrefix'], ENT_QUOTES, 'UTF-8'); ?>">
             </p>
             <p class="comment-input">
                 <label for="author" class="required">
                     <i class="iconfont icon-aria-username"></i>
                 </label>
-                <input placeholder="（必填）昵称" type="text" name="author" id="author" class="text" value="<?php $this->remember('author'); ?>"
+                <input placeholder="<?php echo htmlspecialchars($commentsViewData['form']['nicknamePlaceholder'], ENT_QUOTES, 'UTF-8'); ?>" type="text" name="author" id="author" class="text" value="<?php $this->remember('author'); ?>"
                  required />
             </p>
             <p class="comment-input">
@@ -50,8 +50,8 @@
         <?php endif; ?>
         <?php if (!empty($commentsViewData['form']['supportsMarkdown'])): ?>
             <div style="float:right">
-                <a href="https://guides.github.com/features/mastering-markdown/" target="_blank">
-                    <i class="iconfont icon-aria-markdown"></i><span style="font-size:13px;color:#444"> 评论可以使用 Markdown 语法 </span>
+                <a href="<?php echo htmlspecialchars($commentsViewData['form']['markdownGuideUrl'], ENT_QUOTES, 'UTF-8'); ?>" target="_blank">
+                    <i class="iconfont icon-aria-markdown"></i><span style="font-size:13px;color:#444"> <?php echo htmlspecialchars($commentsViewData['form']['markdownHintText'], ENT_QUOTES, 'UTF-8'); ?> </span>
                     <!--取消斜体font-style:italic;并改为中文提示 -->
                 </a>
                 <!-- 加入超链接 -->
@@ -66,19 +66,19 @@
             </div><!--end .OwO-->
             <?php if (!empty($commentsViewData['form']['supportsImageInsertion'])): ?>
             <div class="comment-image" data-aria-action="insert-comment-image">
-                <span><i class="iconfont icon-aria-picture"></i>图片</span>
+                <span><i class="iconfont icon-aria-picture"></i><?php echo htmlspecialchars($commentsViewData['form']['imageInsertText'], ENT_QUOTES, 'UTF-8'); ?></span>
             </div>
             <?php endif; ?>
             <?php if (!empty($commentsViewData['form']['showCommentToMail'])): ?>
             <div id="comment-ban-mail" class="ui toggle checkbox">
                 <input name="banmail" type="checkbox" value="stop">
                 <label for="comment-ban-mail">
-                    <strong>不接收</strong>回复邮件通知</label>
+                    <strong><?php echo htmlspecialchars($commentsViewData['form']['banMailStrongText'], ENT_QUOTES, 'UTF-8'); ?></strong><?php echo htmlspecialchars($commentsViewData['form']['banMailLabelText'], ENT_QUOTES, 'UTF-8'); ?></label>
             </div>
             <?php endif; ?>
         </div>
         <center>
-            <button type="submit" class="submit"><i class="iconfont icon-aria-submit"></i> 投送</button>
+            <button type="submit" class="submit"><i class="iconfont icon-aria-submit"></i> <?php echo htmlspecialchars($commentsViewData['form']['submitText'], ENT_QUOTES, 'UTF-8'); ?></button>
         </center>
     </form>
 </div>
