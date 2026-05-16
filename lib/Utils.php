@@ -885,8 +885,17 @@ JS;
             self::getThemeAssetUrl('assets/js/modules/action.js'),
             self::getThemeAssetUrl('assets/js/modules/toc.js'),
             self::getThemeAssetUrl('assets/js/modules/jquery-resize.js'),
-            self::getThemeAssetUrl('assets/js/main.js'),
         ));
+    }
+
+    /**
+     * 获取主题主脚本地址
+     *
+     * @return string
+     */
+    private static function getMainScriptUrl()
+    {
+        return self::getThemeAssetUrl('assets/js/main.js');
     }
 
     /**
@@ -941,6 +950,7 @@ JS;
             'goTopImageUrl' => self::getThemeAssetUrl('assets/img/goTop.png'),
             'scripts' => self::getFooterScriptUrls(),
             'customScriptHtml' => self::getCustomScriptHtml(),
+            'mainScriptUrl' => self::getMainScriptUrl(),
             'statisticsHtml' => self::getStatisticsHtml(),
         );
     }
