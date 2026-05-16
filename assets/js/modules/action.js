@@ -2,6 +2,10 @@ var Aria = (window.Aria = window.Aria || {});
 
 function headroom() {
   var navigation = document.querySelector("#nav-menu");
+  if (!navigation) {
+    return;
+  }
+
   new Headroom(navigation).init();
 }
 

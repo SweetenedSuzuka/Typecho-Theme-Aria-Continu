@@ -55,7 +55,7 @@ function bindAjaxComment() {
   var currentReplyId = "";
 
   function createResponseRoot(response) {
-    var parsedNodes = $.parseHTML(response, document, !0) || [];
+    var parsedNodes = $.parseHTML(response, document, !1) || [];
     return $("<div></div>").append(parsedNodes);
   }
 

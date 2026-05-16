@@ -303,8 +303,8 @@ class Comments
         $coid = $widget->coid;
         $parent = self::getCommentParentId($coid);
         if ($parent != "0") {
-            $author = self::getCommentAuthor($parent);
-            $tag = '<a href="#comment-' . $parent . '">@' . $author . '</a><br>';
+            $author = htmlspecialchars(self::getCommentAuthor($parent), ENT_QUOTES, 'UTF-8');
+            $tag = '<a href="#comment-' . (int) $parent . '">@' . $author . '</a><br>';
             return $tag . $content;
         } else {
             return $content;

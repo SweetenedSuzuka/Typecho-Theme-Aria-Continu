@@ -215,7 +215,7 @@ $.extend(Aria, {
       type: "GET",
       url: THEME_CONFIG.HITOKOTO_ORIGIN,
       success: function (text) {
-        $("#hitokoto").html(text);
+        $("#hitokoto").text(text);
       },
     });
   },
