@@ -24,7 +24,11 @@ echo $commentClass;
             }
             ?><?php $comments->content(); ?></p>
             </div>
-<p class="comment-meta">By <span><?php echo $comments->url ? "<a href=\"$comments->url\" rel=\"external nofollow\" target=\"_blank\">$comments->author</a>" : $comments->author; ?></span> 于 <?php $comments->date(); ?>. <?php if (!empty($commentsViewData['showUserAgent'])): ?><span class="comment-ua"><?php echo Comments::parseUserAgent($comments->agent); ?></span><?php endif; ?></p>
+<?php
+$commentAuthor = htmlspecialchars((string) $comments->author, ENT_QUOTES, 'UTF-8');
+$commentUrl = trim((string) $comments->url);
+?>
+<p class="comment-meta">By <span><?php if ($commentUrl !== ''): ?><a href="<?php echo htmlspecialchars($commentUrl, ENT_QUOTES, 'UTF-8'); ?>" rel="external nofollow" target="_blank"><?php echo $commentAuthor; ?></a><?php else: ?><?php echo $commentAuthor; ?><?php endif; ?></span> 于 <?php $comments->date(); ?>. <?php if (!empty($commentsViewData['showUserAgent'])): ?><span class="comment-ua"><?php echo Comments::parseUserAgent($comments->agent); ?></span><?php endif; ?></p>
         </div>
     </div><!-- 单条评论者信息及内容 -->
     <?php if ($comments->children) { ?>
