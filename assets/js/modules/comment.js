@@ -54,6 +54,11 @@ function bindAjaxAvatar() {
 function bindAjaxComment() {
   var currentReplyId = "";
 
+  function createResponseRoot(response) {
+    var parsedNodes = $.parseHTML(response, document, !0) || [];
+    return $("<div></div>").append(parsedNodes);
+  }
+
   function bindReplyEvents() {
     $(".comment-reply a")
       .off("click.ariaReply")
@@ -108,10 +113,13 @@ function bindAjaxComment() {
         url: $(this).attr("action"),
         data: formData,
         success: function (response) {
-          if (!$("#comments", response).length) {
+          var responseRoot = createResponseRoot(response);
+
+          if (!responseRoot.find("#comments").length) {
+            var responseMessage = $.trim(responseRoot.find(".container").first().text());
             var message =
-              $("title").eq(0).text().trim().toLowerCase() === "error"
-                ? $(".container", response).eq(0).text()
+              responseRoot.find("title").eq(0).text().trim().toLowerCase() === "error"
+                ? responseMessage || "评论提交失败！"
                 : "评论提交失败！";
 
             notifier.alert(message);
@@ -124,9 +132,16 @@ function bindAjaxComment() {
 
           $("input,textarea", form).attr("disabled", !1);
           $("#textarea").val("");
-          currentCommentId = $(".comment-list", response)
-            .html()
-            .match(/id=\"?comment-\d+/g)
+
+          var responseCommentHtml = responseRoot.find(".comment-list").html() || "";
+          var commentMatches = responseCommentHtml.match(/id=\"?comment-\d+/g);
+          if (!commentMatches || !commentMatches.length) {
+            finishSubmit(!0);
+            notifier.confirm("评论提交成功！");
+            return !1;
+          }
+
+          currentCommentId = commentMatches
             .join()
             .match(/\d+/g)
             .sort(function (left, right) {
@@ -137,13 +152,13 @@ function bindAjaxComment() {
           if (currentReplyId === "") {
             if ($(".comment-list").length) {
               if (!$(".prev").length) {
-                currentComment = $("#li-comment-" + currentCommentId, response);
+                currentComment = responseRoot.find("#li-comment-" + currentCommentId);
                 $(".comment-list")
                   .first()
                   .prepend(currentComment.addClass("animated fadeInUp"));
               }
             } else {
-              currentComment = $("#li-comment-" + currentCommentId, response);
+              currentComment = responseRoot.find("#li-comment-" + currentCommentId);
               $("#response").after(
                 '<div class="comment-data"><ol class="comment-list"></ol></div>',
               );
@@ -157,7 +172,7 @@ function bindAjaxComment() {
               1e3,
             );
           } else {
-            currentComment = $("#li-comment-" + currentCommentId, response);
+            currentComment = responseRoot.find("#li-comment-" + currentCommentId);
 
             if (!$("#" + currentReplyId).find(".comment-children").length) {
               $("#" + currentReplyId).append(

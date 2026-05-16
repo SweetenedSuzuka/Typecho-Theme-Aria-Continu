@@ -7,7 +7,7 @@
  * 
  * @package Aria Continuo
  * @author SweetenedSuzuka
- * @version 1.12.0
+ * @version 1.13.0
  * @link https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continuo
  * 
  * Based on Aria by Siphils

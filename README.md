@@ -5,7 +5,7 @@
 > 书写自己的篇章  
 > 让期许不再落幕
 
-[![Version](https://img.shields.io/badge/version-1.12.0-blue.svg)](#更新日志)
+[![Version](https://img.shields.io/badge/version-1.13.0-blue.svg)](#更新日志)
 [![Typecho](https://img.shields.io/badge/Typecho-Compatible-green.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%202.0-blue.svg)](#)
 
@@ -47,7 +47,7 @@ Aria，即咏叹调。
 
 **Continuo**，即“通奏低音”。
 
-这是乐曲中贯穿全曲的低音线，用近乎沉默的底色，支撑着所有响亮奏鸣的旋律。  
+这是乐曲中贯穿全曲的低音线，这些音符用近乎沉默的底色，支撑着所有响亮奏鸣的旋律。  
 
 我希望它能够接过 Aria 的接力棒。
 
@@ -75,6 +75,26 @@ Aria，即咏叹调。
 ---
 
 # 更新日志
+
+### 2026-05-16 1.13.0  
+
+* 新增可配置项：  
+  * 新增评论框背景图开关（字段名：`customCommentBoxBackgroundEnabled`）与地址设置（字段名：`customCommentBoxBackgroundUrl`），默认关闭  
+  * 开启后支持相对主题目录路径和绝对 URL，图片显示在评论输入框右下角  
+  * 关闭时不显示评论框背景图，恢复原版输入框样式
+* 继续收口模板与视图数据边界：  
+  * `Utils` 新增 `getPostViewData()`，统一承接文章页与页面页头部展示所需的阅读量后缀、分类/标签/上下篇/TOC 显示开关  
+  * `Utils` 新增 `getPostCardViewData()`，统一承接文章卡片所需的缩略图、加载占位图、分类分隔符、懒加载与分隔线开关  
+  * 文章页与页面页共用 `<article>` 主体结构下沉为 `components/post-content.php` 统一片段  
+  * 评论展示层与表单配置（邮箱/网址必填态、Markdown 提示、评论区邮件通知等）继续从片段内收口到统一视图数据  
+  * 页头片段进一步压缩直读配置，站点标题与站点首页 URL 并入统一视图数据  
+* 兼容性与稳定性调整：  
+  * 加固 AJAX 评论对响应内容的解析：成功回调改为独立解析响应树，失败提示不再误用当前页面标题和容器  
+  * 恢复自定义 JS 在 `main.js` 之前的正确加载顺序，修复后台设置说明与实际顺序不一致的回归问题  
+  * 统一 MathJax 在 PJAX 链路中的触发入口，降低 PJAX 完成后数学公式排版的脆弱性  
+  * 评论作者名与外链地址补上显式 HTML 转义，低版本兼容脚本地址由 `http://` 统一改为 `https://`  
+* 性能优化：  
+  * `getPostView()` 优先复用当前上下文中的 `views` 字段（如列表或单篇上下文已自带该字段），减少无效数据库查询  
 
 ### 2026-05-16 1.12.0  
 

@@ -8,7 +8,7 @@
  *
  * Based on original work by Siphils
  * @author     SweetenedSuzuka
- * @version    since 1.12.0
+ * @version    since 1.13.0
  */
 
 class Utils
