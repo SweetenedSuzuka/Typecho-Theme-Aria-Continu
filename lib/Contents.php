@@ -210,8 +210,13 @@ class Contents
         }
 
         if (!array_key_exists($cid, self::$postViewsCache)) {
-            $row = $db->fetchRow($db->select('views')->from('table.contents')->where('cid = ?', $cid));
-            self::$postViewsCache[$cid] = isset($row['views']) ? (int) $row['views'] : 0;
+            $archiveViews = self::getArchiveViewsValue($archive);
+            if ($archiveViews !== null) {
+                self::$postViewsCache[$cid] = $archiveViews;
+            } else {
+                $row = $db->fetchRow($db->select('views')->from('table.contents')->where('cid = ?', $cid));
+                self::$postViewsCache[$cid] = isset($row['views']) ? (int) $row['views'] : 0;
+            }
         }
 
         $viewsCount = self::$postViewsCache[$cid];
@@ -228,6 +233,38 @@ class Contents
             }
         }
         echo $viewsCount;
+    }
+
+    /**
+     * 尝试从当前文章对象中直接读取浏览量
+     *
+     * 某些列表和单篇上下文已经自带 `views` 字段，此时可避免再次查询数据库；
+     * 如果当前上下文未提供该字段，则返回 null 并回退到数据库查询。
+     *
+     * @param mixed $archive
+     *
+     * @return int|null
+     */
+    private static function getArchiveViewsValue($archive)
+    {
+        if (is_array($archive) && array_key_exists('views', $archive) && is_numeric($archive['views'])) {
+            return (int) $archive['views'];
+        }
+
+        if (!is_object($archive)) {
+            return null;
+        }
+
+        if (isset($archive->row) && is_array($archive->row) && array_key_exists('views', $archive->row) && is_numeric($archive->row['views'])) {
+            return (int) $archive->row['views'];
+        }
+
+        $views = null;
+        if (method_exists($archive, '__get') || property_exists($archive, 'views')) {
+            $views = $archive->views;
+        }
+
+        return is_numeric($views) ? (int) $views : null;
     }
 
     /**
