@@ -237,6 +237,12 @@
 	max-height: 500px
 }
 
+.comment-form--custom-background #comment-form textarea {
+	background-image: var(--aria-comment-box-bg);
+	background-position: right bottom;
+	background-repeat: no-repeat;
+}
+
 .comment-new {
 	background: #000;
 	position: absolute;

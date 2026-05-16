@@ -38,6 +38,24 @@ function themeConfig($form)
     );
     $form->addInput($customPageBackgroundUrl);
 
+    $customCommentBoxBackgroundEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'customCommentBoxBackgroundEnabled',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(Utils::isOptionEnabled('customCommentBoxBackgroundEnabled', false)),
+        _t('启用评论框背景自定义'),
+        _t('控制是否为评论输入框右下角显示自定义背景图；关闭时保持原版样式')
+    );
+    $form->addInput($customCommentBoxBackgroundEnabled->multiMode());
+
+    $customCommentBoxBackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text(
+        'customCommentBoxBackgroundUrl',
+        null,
+        '',
+        _t('评论框背景图地址'),
+        _t('支持完整 URL，或相对于当前主题目录的路径；图片会显示在评论输入框右下角，建议使用透明背景图片；留空则不显示背景图')
+    );
+    $form->addInput($customCommentBoxBackgroundUrl);
+
     $heroSubtitle = new Typecho_Widget_Helper_Form_Element_Text('heroSubtitle', null, '越过喧嚣找到你', _t('首页副标题'), _t('显示在首页标题下方；优先级：主题设置 > Typecho 站点描述；留空则回退为站点描述（两者都为空则不输出）'));
     $form->addInput($heroSubtitle);
 

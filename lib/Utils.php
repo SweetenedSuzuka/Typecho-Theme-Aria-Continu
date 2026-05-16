@@ -971,6 +971,8 @@ JS;
             'closedText' => self::getOptionStringValue('commentClosedText', '评论关闭了哟', false),
             'showUserAgent' => self::isEnabled('showCommentUA', 'AriaConfig'),
             'form' => array(
+                'className' => self::getCommentFormClassName(),
+                'style' => self::getCommentFormStyle(),
                 'requireMail' => $commentsRequireMail,
                 'requireUrl' => $commentsRequireUrl,
                 'supportsMarkdown' => $commentsMarkdown,
@@ -984,6 +986,56 @@ JS;
                     ? (string) $options->placeholder
                     : '',
             ),
+        );
+    }
+
+    /**
+     * 获取评论框背景图 URL
+     *
+     * @return string
+     */
+    public static function getCustomCommentBoxBackgroundUrl()
+    {
+        $customPath = self::getOptionStringValue('customCommentBoxBackgroundUrl', '', false);
+        if ($customPath === '') {
+            return '';
+        }
+
+        return self::resolveThemeRelativeOrAbsoluteUrl($customPath);
+    }
+
+    /**
+     * 获取评论表单 class
+     *
+     * @return string
+     */
+    private static function getCommentFormClassName()
+    {
+        return self::isOptionEnabled('customCommentBoxBackgroundEnabled', false)
+            && self::getCustomCommentBoxBackgroundUrl() !== ''
+            ? 'comment-form--custom-background'
+            : '';
+    }
+
+    /**
+     * 获取评论表单样式
+     *
+     * @return string
+     */
+    private static function getCommentFormStyle()
+    {
+        $backgroundUrl = self::getCustomCommentBoxBackgroundUrl();
+        if (!self::isOptionEnabled('customCommentBoxBackgroundEnabled', false) || $backgroundUrl === '') {
+            return '';
+        }
+
+        return sprintf(
+            "--aria-comment-box-bg: url('%s');",
+            str_replace(
+                array('\\', "'"),
+                array('\\\\', "\\'"),
+                $backgroundUrl
+            )
         );
     }
 

@@ -159,7 +159,6 @@ legend {
 
 textarea {
 	/* 增加评论框背景 */
-	background: url(/usr/longer%20file/backgroundOfCommentBox.png) right bottom no-repeat;
 	overflow: auto
 }
 
