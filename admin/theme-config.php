@@ -20,6 +20,24 @@ function themeConfig($form)
     $backgroundUrl = new Typecho_Widget_Helper_Form_Element_Textarea('backgroundUrl', null, null, _t('首页背景图片'), _t('需要输入http(s)://，每一行写一个URL，随机展示'));
     $form->addInput($backgroundUrl);
 
+    $customPageBackgroundEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'customPageBackgroundEnabled',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(Utils::isOptionEnabled('customPageBackgroundEnabled', false)),
+        _t('启用网页背景自定义'),
+        _t('设置整个网页的背景图，关闭后将会使用Aria默认的纯色样式')
+    );
+    $form->addInput($customPageBackgroundEnabled->multiMode());
+
+    $customPageBackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text(
+        'customPageBackgroundUrl',
+        null,
+        '/assets/img/background.webp',
+        _t('网页背景图地址'),
+        _t('支持完整 URL，或相对于当前主题目录的路径，例如 /assets/img/background.webp；留空时回退到默认值')
+    );
+    $form->addInput($customPageBackgroundUrl);
+
     $heroSubtitle = new Typecho_Widget_Helper_Form_Element_Text('heroSubtitle', null, '越过喧嚣找到你', _t('首页副标题'), _t('显示在首页标题下方；优先级：主题设置 > Typecho 站点描述；留空则回退为站点描述（两者都为空则不输出）'));
     $form->addInput($heroSubtitle);
 

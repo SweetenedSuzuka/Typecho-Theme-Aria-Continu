@@ -4,26 +4,14 @@
 </div><!-- end #body -->
 </div><!-- end #pjax-container -->
 <?php
-$footerRecordsEnabled = Utils::isOptionEnabled('footerRecordsEnabled', true);
-$footerRecordsHtml = $footerRecordsEnabled ? Utils::getFooterRecordsHtml() : '';
+$footerViewData = Utils::getFooterViewData();
+$mathJaxViewData = Utils::getMathJaxViewData();
 include __DIR__ . '/components/footer/content.php';
 ?>
-<!-- pajx -->
-<?php if (Utils::isEnabled('enablePjax', 'AriaConfig')): ?>
-    <script src="<?php $this->options->themeUrl('assets/js/jquery.pjax.min.js'); ?>"></script>
-<?php endif; ?>
-<!-- fancybox插件 -->
-<?php if (Utils::isEnabled('enableFancybox', 'AriaConfig')): ?>
-    <script src="<?php $this->options->themeUrl('assets/js/jquery.fancybox.min.js'); ?>"></script>
-<?php endif; ?>
-<!-- highlight高亮 懒加载 -->
-<script src="<?php $this->options->themeUrl('assets/js/highlight.min.js'); ?>"></script>
-<?php if (Utils::isEnabled('enableLazyload', 'AriaConfig')): ?>
-    <script src="<?php $this->options->themeUrl('assets/js/jquery.lazyload.min.js'); ?>"></script>
-<?php endif; ?>
-<!-- 评论颜文字 -->
-<script src="<?php $this->options->themeUrl('assets/OwO/OwO.min.js') ?>"></script>
-<?php if (Utils::isFeatureEnabled('enableMathJax', 'AriaConfig')): ?>
+<?php foreach ($footerViewData['scripts'] as $scriptUrl): ?>
+    <script src="<?php echo htmlspecialchars($scriptUrl, ENT_QUOTES, 'UTF-8'); ?>"></script>
+<?php endforeach; ?>
+<?php if ($mathJaxViewData['enabled']): ?>
     <script>
         window.ariaEnsureMathJaxCompat = window.ariaEnsureMathJaxCompat || function () {
             window.MathJax = window.MathJax || {};
@@ -83,25 +71,11 @@ include __DIR__ . '/components/footer/content.php';
         window.ariaEnsureMathJaxCompat();
         (function(){var cls='aria-mathjax-ignore';var opt=window.MathJax&&window.MathJax.options;opt=opt||{};window.MathJax.options=opt;var cur=opt.ignoreHtmlClass;if(typeof cur!=='string'||cur.trim()===''){opt.ignoreHtmlClass='tex2jax_ignore|'+cls;return}if(!new RegExp('(^|\\\\|)'+cls+'($|\\\\|)').test(cur)){opt.ignoreHtmlClass=cur+'|'+cls}})();
     </script>
-    <script><?php
-        $mathJaxConfig = isset($this->options->MathJaxConfig) ? trim((string) $this->options->MathJaxConfig) : '';
-        if ($mathJaxConfig === '') {
-            $mathJaxConfig = "MathJax = MathJax || {};\nMathJax.tex = MathJax.tex || {};\nMathJax.tex.inlineMath = [['$', '$'], ['\\\\(', '\\\\)']];\nMathJax.tex.displayMath = [['$$', '$$'], ['\\\\[', '\\\\]']];\nMathJax.tex.processEscapes = true;";
-        }
-        echo $mathJaxConfig;
-    ?></script>
+    <script><?php echo $mathJaxViewData['configScript']; ?></script>
     <script>window.ariaEnsureMathJaxCompat&&window.ariaEnsureMathJaxCompat();</script>
-    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4.1.2/tex-mml-chtml.js"></script>
+    <script defer src="<?php echo htmlspecialchars($mathJaxViewData['cdnUrl'], ENT_QUOTES, 'UTF-8'); ?>"></script>
 <?php endif; ?>
-<script src="<?php echo Utils::getThemeAssetUrl('assets/js/functions.min.js'); ?>"></script>
-<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/base.js'); ?>"></script>
-<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/core.js'); ?>"></script>
-<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/comment.js'); ?>"></script>
-<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/action.js'); ?>"></script>
-<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/toc.js'); ?>"></script>
-<script src="<?php echo Utils::getThemeAssetUrl('assets/js/modules/jquery-resize.js'); ?>"></script>
-<script src="<?php echo Utils::getThemeAssetUrl('assets/js/main.js'); ?>"></script>
-<?php if (Utils::isFeatureEnabled('enableMathJax', 'AriaConfig') && Utils::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig') && Utils::isEnabled('enableAjaxComment', 'AriaConfig')): ?>
+<?php if ($mathJaxViewData['enabledInComments'] && Utils::isEnabled('enableAjaxComment', 'AriaConfig')): ?>
     <script>
         (function () {
             var observer = null;
@@ -187,8 +161,8 @@ include __DIR__ . '/components/footer/content.php';
         })();
     </script>
 <?php endif; ?>
-<?php echo $this->options->customScript ? "<script>" . $this->options->customScript . "</script>\n" : ""; ?>
-<?php if ($this->options->statistics) $this->options->statistics(); ?>
+<?php echo $footerViewData['customScriptHtml']; ?>
+<?php echo $footerViewData['statisticsHtml']; ?>
 <?php $this->footer(); ?>
 </body>
 

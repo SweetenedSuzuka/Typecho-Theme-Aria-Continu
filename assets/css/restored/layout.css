@@ -9,14 +9,17 @@ body {
 	font-family: BlinkMacSystemFont, "Microsoft YaHei", "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	font-size: 95%;
 	width: 100%;
-	/* 修改主页背景 */
+}
+
+/* 仅在显式开启时应用自定义网页背景 */
+body.body--custom-background {
 	margin: 0;
-	background-image: url(/usr/longer%20file/background.webp);
+	background-image: var(--aria-page-bg);
 	background-size: cover;
 	z-index: -2;
 	background-repeat: no-repeat;
 	background-attachment: fixed;
-	background-position: center
+	background-position: center;
 }
 
 h1,
