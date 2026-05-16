@@ -243,7 +243,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
         },
         {
             "text":"公网安备 00000000000000号",
-            "url":"http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=00000000000000",
+            "url":"https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=00000000000000",
             "icon":"",
             "title":"公网安备信息"
         }',
@@ -295,7 +295,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
         array(
             'enablePjax' => '开启PJAX（启用后会强制关闭评论反垃圾保护）',
             'enableAjaxComment' => '开启AJAX评论',
-            'enableFancybox' => '文章/评论图片使用<a href="http://fancyapps.com" target="_blank">fancybox</a>',
+            'enableFancybox' => '文章/评论图片使用<a href="https://fancyapps.com/" target="_blank">fancybox</a>',
             'enableLazyload' => '开启图片懒加载<a href="https://appelsiini.net/projects/lazyload" target="_blank">lazyload</a>',
             'enableCommentToMail' => '是否接收评论邮件回复按钮，需要配合<a href="https://9sb.org/58">CommentToMail</a>（文章中最后一个插件)使用',
             'showQRCode' => '文章底部显示本文链接二维码',
