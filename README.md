@@ -5,7 +5,7 @@
 > 书写自己的篇章  
 > 让期许不再落幕
 
-[![Version](https://img.shields.io/badge/version-1.13.0-blue.svg)](#更新日志)
+[![Version](https://img.shields.io/badge/version-1.13.1-blue.svg)](#更新日志)
 [![Typecho](https://img.shields.io/badge/Typecho-Compatible-green.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%202.0-blue.svg)](#)
 
@@ -75,6 +75,21 @@ Aria，即咏叹调。
 ---
 
 # 更新日志
+
+### 2026-05-17 1.13.1  
+
+* 修复评论 Markdown 结构输出：  
+  * 移除评论模板中包裹 `<?php $comments->content(); ?>` 的额外外层 `<p>`，避免主题模板继续破坏已经生成好的评论 HTML 结构  
+  * 当 Typecho 已开启“在评论中使用 Markdown 语法”时，主题会在请求内自动补齐评论 Markdown 常用的基础标签白名单，恢复链接、引用、列表、代码、粗体、斜体、删除线等常见结构  
+  * 自动补齐仅作为兼容层生效：不修改数据库中的原始设置，不覆盖用户已手动配置的允许标签，也不默认放开标题标签  
+* 继续收紧前端内容注入边界：  
+  * 目录项改为读取标题纯文本，不再把标题内容直接作为 HTML 写入目录链接  
+  * Fancybox 外层链接改为通过 DOM API 创建，不再手工拼接 `href` 与 `data-caption` 属性字符串  
+* 兼容性与稳定性调整：  
+  * 一言文案改为使用 `.text()` 注入，避免将外部返回内容直接作为 HTML 插入  
+  * AJAX 评论响应解析不再保留脚本节点，并为异常响应场景补充更稳妥的安全回退  
+  * `Headroom` 初始化增加导航节点缺失保护，降低旧结构或异常页面下的前端报错概率  
+  * 评论回复前缀中的父评论作者名加入显式转义  
 
 ### 2026-05-16 1.13.0  
 
