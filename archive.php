@@ -16,10 +16,7 @@
     </div>
     <?php while($this->next()): ?>
         <?php
-        $ariaCardCategorySeparator = ' ';
-        $ariaCardUseLazyload = false;
-        $ariaCardShowLine = false;
-        $ariaCardMoreTitle = '';
+        $postCardViewData = Utils::getPostCardViewData($this, 'archive');
         ?>
         <?php include __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'post-card.php'; ?>
     <?php endwhile; ?>

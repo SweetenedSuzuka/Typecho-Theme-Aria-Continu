@@ -6,7 +6,8 @@
  * Utils.php
  * 部分工具
  *
- * @author     Siphils
+ * Based on original work by Siphils
+ * @author     SweetenedSuzuka
  * @version    since 1.12.0
  */
 
@@ -986,6 +987,47 @@ JS;
                     ? (string) $options->placeholder
                     : '',
             ),
+        );
+    }
+
+    /**
+     * 获取文章卡片缩略图 URL
+     *
+     * @param Widget_Archive $archive
+     *
+     * @return string
+     */
+    private static function getPostCardThumbnailUrl($archive)
+    {
+        ob_start();
+        if ($archive->fields->thumbnail) {
+            $archive->fields->thumbnail();
+        } else {
+            echo self::getThumbnail();
+        }
+
+        return trim(ob_get_clean());
+    }
+
+    /**
+     * 获取文章卡片视图数据
+     *
+     * @param Widget_Archive $archive
+     * @param string $context
+     *
+     * @return array
+     */
+    public static function getPostCardViewData($archive, $context = 'index')
+    {
+        $isArchiveContext = $context === 'archive';
+
+        return array(
+            'thumbnailUrl' => self::getPostCardThumbnailUrl($archive),
+            'loadingImageUrl' => self::getThemeAssetUrl('assets/img/loading.svg'),
+            'categorySeparator' => $isArchiveContext ? ' ' : ' • ',
+            'useLazyload' => !$isArchiveContext && self::isEnabled('enableLazyload', 'AriaConfig'),
+            'showLine' => !$isArchiveContext,
+            'moreTitle' => $isArchiveContext ? '' : 'Read More',
         );
     }
 

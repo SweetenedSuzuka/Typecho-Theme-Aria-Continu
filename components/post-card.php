@@ -1,16 +1,24 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php
-$ariaCardCategorySeparator = isset($ariaCardCategorySeparator) ? $ariaCardCategorySeparator : ' • ';
-$ariaCardUseLazyload = !empty($ariaCardUseLazyload);
-$ariaCardShowLine = !empty($ariaCardShowLine);
-$ariaCardMoreTitle = isset($ariaCardMoreTitle) ? $ariaCardMoreTitle : '';
-ob_start();
-if ($this->fields->thumbnail) {
-    $this->fields->thumbnail();
-} else {
-    echo Utils::getThumbnail();
-}
-$ariaCardThumbnail = trim(ob_get_clean());
+$postCardViewData = isset($postCardViewData) && is_array($postCardViewData) ? $postCardViewData : array();
+$ariaCardCategorySeparator = isset($postCardViewData['categorySeparator'])
+    ? (string) $postCardViewData['categorySeparator']
+    : (isset($ariaCardCategorySeparator) ? (string) $ariaCardCategorySeparator : ' • ');
+$ariaCardUseLazyload = isset($postCardViewData['useLazyload'])
+    ? !empty($postCardViewData['useLazyload'])
+    : !empty($ariaCardUseLazyload);
+$ariaCardShowLine = isset($postCardViewData['showLine'])
+    ? !empty($postCardViewData['showLine'])
+    : !empty($ariaCardShowLine);
+$ariaCardMoreTitle = isset($postCardViewData['moreTitle'])
+    ? (string) $postCardViewData['moreTitle']
+    : (isset($ariaCardMoreTitle) ? (string) $ariaCardMoreTitle : '');
+$ariaCardThumbnail = isset($postCardViewData['thumbnailUrl'])
+    ? trim((string) $postCardViewData['thumbnailUrl'])
+    : Utils::getThumbnail();
+$ariaCardLoadingImageUrl = isset($postCardViewData['loadingImageUrl'])
+    ? trim((string) $postCardViewData['loadingImageUrl'])
+    : Utils::getThemeAssetUrl('assets/img/loading.svg');
 ?>
 <article itemscope itemtype="http://schema.org/BlogPosting" class="card animated wow fadeIn" data-wow-duration="1s" data-wow-offset="10">
     <div class="card-title">
@@ -21,11 +29,11 @@ $ariaCardThumbnail = trim(ob_get_clean());
     </div>
     <?php if ($ariaCardUseLazyload): ?>
         <a href="<?php $this->permalink(); ?>">
-            <div class="card-thumbnail lazyload" data-original="<?php echo $ariaCardThumbnail; ?>" style="background:url(<?php $this->options->themeUrl('assets/img/loading.svg') ?>) center center no-repeat;background-size: 100% auto;">
+            <div class="card-thumbnail lazyload" data-original="<?php echo htmlspecialchars($ariaCardThumbnail, ENT_QUOTES, 'UTF-8'); ?>" style="background:url(<?php echo htmlspecialchars($ariaCardLoadingImageUrl, ENT_QUOTES, 'UTF-8'); ?>) center center no-repeat;background-size: 100% auto;">
             </div>
         </a>
     <?php else: ?>
-        <a class="card-thumbnail" href="<?php $this->permalink(); ?>" style="background:url(<?php echo $ariaCardThumbnail; ?>) center center no-repeat;background-size: 100% auto;">
+        <a class="card-thumbnail" href="<?php $this->permalink(); ?>" style="background:url(<?php echo htmlspecialchars($ariaCardThumbnail, ENT_QUOTES, 'UTF-8'); ?>) center center no-repeat;background-size: 100% auto;">
         </a>
     <?php endif; ?>
     <div class="card-body">

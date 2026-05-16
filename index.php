@@ -32,10 +32,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
         if ($postCategorySlug !== '' && in_array($postCategorySlug, $homeExcludeSlugs, true)) {
             continue;
         }
-        $ariaCardCategorySeparator = ' • ';
-        $ariaCardUseLazyload = Utils::isEnabled('enableLazyload', 'AriaConfig');
-        $ariaCardShowLine = true;
-        $ariaCardMoreTitle = 'Read More';
+        $postCardViewData = Utils::getPostCardViewData($this, 'index');
         ?>
         <?php include __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'post-card.php'; ?>
 	<?php endwhile; ?>
