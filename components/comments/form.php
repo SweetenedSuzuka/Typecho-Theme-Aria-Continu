@@ -31,24 +31,24 @@
                  required />
             </p>
             <p class="comment-input">
-                <label for="mail" <?php if ($this->options->commentsRequireMail): ?> class="required"<?php endif; ?>>
+                <label for="mail" <?php if (!empty($commentsViewData['form']['requireMail'])): ?> class="required"<?php endif; ?>>
                     <i class="iconfont icon-aria-email"></i>
                 </label>
-                <input placeholder="<?php echo $this->options->commentsRequireMail ? '（必填）' : '（选填）'; echo '邮箱'; ?>" type="email" name="mail" id="mail" class="text" value="<?php $this->remember('mail'); ?>"
-                 <?php if ($this->options->commentsRequireMail): ?> required<?php endif; ?>>
+                <input placeholder="<?php echo htmlspecialchars($commentsViewData['form']['mailPlaceholder'], ENT_QUOTES, 'UTF-8'); ?>" type="email" name="mail" id="mail" class="text" value="<?php $this->remember('mail'); ?>"
+                 <?php if (!empty($commentsViewData['form']['requireMail'])): ?> required<?php endif; ?>>
             </p>
             <p class="comment-input">
-                <label for="url" <?php if ($this->options->commentsRequireURL): ?> class="required"<?php endif; ?>>
+                <label for="url" <?php if (!empty($commentsViewData['form']['requireUrl'])): ?> class="required"<?php endif; ?>>
                     <i class="iconfont icon-aria-link"></i>
                 </label>
-                <input type="url" name="url" id="url" class="text" placeholder="<?php echo $this->options->commentsRequireURL ? '（必填）' : '（选填）'; echo '网站'; ?>"
+                <input type="url" name="url" id="url" class="text" placeholder="<?php echo htmlspecialchars($commentsViewData['form']['urlPlaceholder'], ENT_QUOTES, 'UTF-8'); ?>"
                  value="<?php $this->remember('url'); ?>" <?php
-                 if ($this->options->commentsRequireURL): ?> required
+                 if (!empty($commentsViewData['form']['requireUrl'])): ?> required
                 <?php endif; ?>/>
             </p>
         </div>
         <?php endif; ?>
-        <?php if($this->options->commentsMarkdown): ?>
+        <?php if (!empty($commentsViewData['form']['supportsMarkdown'])): ?>
             <div style="float:right">
                 <a href="https://guides.github.com/features/mastering-markdown/" target="_blank">
                     <i class="iconfont icon-aria-markdown"></i><span style="font-size:13px;color:#444"> 评论可以使用 Markdown 语法 </span>
@@ -59,17 +59,17 @@
         <?php endif; ?>
         <p>
             <label for="textarea" class="required"></label>
-            <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" placeholder="<?php $this->options->placeholder(); ?>"><?php $this->remember('text'); ?></textarea>
+            <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" placeholder="<?php echo htmlspecialchars($commentsViewData['form']['textPlaceholder'], ENT_QUOTES, 'UTF-8'); ?>"><?php $this->remember('text'); ?></textarea>
         </p>
         <div id="comment-footer">
             <div class="OwO">
             </div><!--end .OwO-->
-            <?php if($this->options->commentsMarkdown&&!empty($this->options->commentsHTMLTagAllowed)&&strpos($this->options->commentsHTMLTagAllowed,'img')):?>
+            <?php if (!empty($commentsViewData['form']['supportsImageInsertion'])): ?>
             <div class="comment-image" data-aria-action="insert-comment-image">
                 <span><i class="iconfont icon-aria-picture"></i>图片</span>
             </div>
             <?php endif; ?>
-            <?php if(Utils::isEnabled('enableCommentToMail','AriaConfig')): ?>
+            <?php if (!empty($commentsViewData['form']['showCommentToMail'])): ?>
             <div id="comment-ban-mail" class="ui toggle checkbox">
                 <input name="banmail" type="checkbox" value="stop">
                 <label for="comment-ban-mail">

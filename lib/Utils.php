@@ -953,6 +953,13 @@ JS;
     {
         $mathJaxEnabled = self::isFeatureEnabled('enableMathJax', 'AriaConfig');
         $mathJaxEnabledInComments = self::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig');
+        $options = Helper::options();
+        $commentsRequireMail = !empty($options->commentsRequireMail);
+        $commentsRequireUrl = !empty($options->commentsRequireURL);
+        $commentsMarkdown = !empty($options->commentsMarkdown);
+        $allowedHtmlTags = isset($options->commentsHTMLTagAllowed)
+            ? (string) $options->commentsHTMLTagAllowed
+            : '';
 
         return array(
             'ignoreMathJax' => $mathJaxEnabled && !$mathJaxEnabledInComments,
@@ -963,6 +970,20 @@ JS;
             ),
             'closedText' => self::getOptionStringValue('commentClosedText', '评论关闭了哟', false),
             'showUserAgent' => self::isEnabled('showCommentUA', 'AriaConfig'),
+            'form' => array(
+                'requireMail' => $commentsRequireMail,
+                'requireUrl' => $commentsRequireUrl,
+                'supportsMarkdown' => $commentsMarkdown,
+                'supportsImageInsertion' => $commentsMarkdown
+                    && $allowedHtmlTags !== ''
+                    && strpos($allowedHtmlTags, 'img') !== false,
+                'showCommentToMail' => self::isEnabled('enableCommentToMail', 'AriaConfig'),
+                'mailPlaceholder' => ($commentsRequireMail ? '（必填）' : '（选填）') . '邮箱',
+                'urlPlaceholder' => ($commentsRequireUrl ? '（必填）' : '（选填）') . '网站',
+                'textPlaceholder' => isset($options->placeholder)
+                    ? (string) $options->placeholder
+                    : '',
+            ),
         );
     }
 
