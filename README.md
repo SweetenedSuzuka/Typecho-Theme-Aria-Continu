@@ -1,11 +1,11 @@
 <div align="center">
 
-# Typecho Theme · Aria Continuo
+# Typecho Theme · 咏叹调 通奏低音 · Aria Continuo
 
 > 书写自己的篇章  
 > 让期许不再落幕
 
-[![Version](https://img.shields.io/badge/version-1.11.0-blue.svg)](#更新日志)
+[![Version](https://img.shields.io/badge/version-1.12.0-blue.svg)](#更新日志)
 [![Typecho](https://img.shields.io/badge/Typecho-Compatible-green.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%202.0-blue.svg)](#)
 
@@ -29,7 +29,8 @@ Aria，即咏叹调。
 曾经有过这样一种设计语言：它不迷恋超大圆角，也不偏执于锐利的板正；它不属于拟物，也尚未被扁平完全定义。  
 
 那是 Windows 7 的 Aero 仍在发光、iOS 7 掀起扁平革命的年代。  
-人们惊叹于 Windows 8 与 Windows 10 的高效与方正。
+人们惊叹于 Windows 8 与 Windows 10 的高效与方正，感叹于 Material 与 卡片的精美。
+有人在玻璃与光影之间寻找新生，有人在模糊与透明之间规划未来。
 
 那是一个尚未被统一的设计时代——有人在色块的碰撞里找秩序，有人在拟物的圆润里寻温度。风格各异，百花齐放。  
 
@@ -74,6 +75,26 @@ Aria，即咏叹调。
 ---
 
 # 更新日志
+
+### 2026-05-16 1.12.0  
+
+* 新增可配置项：  
+  * 新增网页背景图开关（字段名：`customPageBackgroundEnabled`）与地址设置（字段名：`customPageBackgroundUrl`），默认关闭  
+  * 支持填写相对于主题目录的路径，例如 `/assets/img/background.webp`，也支持直接填写绝对 URL  
+  * 后台仅在开启该功能时显示背景图地址输入框  
+  * 关闭时会使用Aria风格的 `body` 样式，开启后再应用自定义背景图  
+* 继续收口模板与视图数据边界：  
+  * `header.php` 继续收口页头资源、站点标题、站点首页 URL、搜索框与 Hero 所需数据，页头片段进一步改为消费统一视图数据  
+  * `footer.php` 继续收口脚本清单、自定义注入、统计代码、MathJax 兼容层和评论区补排版逻辑  
+  * 评论展示层新增统一视图数据入口，等待提示、关闭提示、UA 开关与评论区 MathJax 忽略态不再散落在片段内直接读取  
+* 继续整理主题设置与显示行为：  
+  * 网页背景图设置已接入后台联动显示  
+  * `MathJaxConfig`、页脚链接、备案信息、页头资源、评论展示相关配置继续从模板中下沉到 `Utils`  
+* 兼容性与稳定性调整：  
+  * MathJax 配置、兼容层与评论区追加渲染逻辑继续整理，减少模板中的长内联逻辑  
+  * 归档时间轴不再依赖 `pageSize=10000` 的查询方式，显示结构保持不变，同时去掉固定文章数量上限  
+  * 对导航页映射、上下篇、评论链路与浏览量输出补充请求内缓存  
+  * 评论回复链路中父级评论与作者信息的读取继续压缩，减少展示层上的重复查询  
 
 ### 2026-05-15 1.11.0  
 

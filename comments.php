@@ -13,8 +13,9 @@
 
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 
+<?php $commentsViewData = Utils::getCommentsViewData(); ?>
 
-<div id="comments"<?php echo (Utils::isFeatureEnabled('enableMathJax', 'AriaConfig') && !Utils::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig')) ? ' class="aria-mathjax-ignore"' : ''; ?>>
+<div id="comments"<?php echo $commentsViewData['ignoreMathJax'] ? ' class="aria-mathjax-ignore"' : ''; ?>>
 	<?php if($this->allow('comment')): ?>
 
 	<?php Comments::commentReply($this); ?>

@@ -17,14 +17,14 @@ echo $commentClass;
             <div class="comment-text"><span class="comment-reply" style="float:right"><?php $comments->reply('<i class="iconfont icon-aria-reply"></i>'); ?></span>
             <p><?php
             if ('waiting' == $comments->status) {
-                $waitingText = Utils::getOptionStringValue('commentWaitingText', '正在思考这条评论和不和谐.jpg（评论正在等待审核）', false);
+                $waitingText = isset($commentsViewData['waitingText']) ? (string) $commentsViewData['waitingText'] : '';
                 if ($waitingText !== '') {
                     echo '<em>' . htmlspecialchars($waitingText, ENT_QUOTES, 'UTF-8') . '</em>';
                 }
             }
             ?><?php $comments->content(); ?></p>
             </div>
-<p class="comment-meta">By <span><?php echo $comments->url ? "<a href=\"$comments->url\" rel=\"external nofollow\" target=\"_blank\">$comments->author</a>" : $comments->author; ?></span> 于 <?php $comments->date(); ?>. <?php if(Utils::isEnabled('showCommentUA','AriaConfig')): ?><span class="comment-ua"><?php echo Comments::parseUserAgent($comments->agent); ?></span><?php endif; ?></p>
+<p class="comment-meta">By <span><?php echo $comments->url ? "<a href=\"$comments->url\" rel=\"external nofollow\" target=\"_blank\">$comments->author</a>" : $comments->author; ?></span> 于 <?php $comments->date(); ?>. <?php if (!empty($commentsViewData['showUserAgent'])): ?><span class="comment-ua"><?php echo Comments::parseUserAgent($comments->agent); ?></span><?php endif; ?></p>
         </div>
     </div><!-- 单条评论者信息及内容 -->
     <?php if ($comments->children) { ?>

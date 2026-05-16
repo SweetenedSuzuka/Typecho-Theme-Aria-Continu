@@ -7,7 +7,7 @@
  * 部分工具
  *
  * @author     Siphils
- * @version    since 1.11.0
+ * @version    since 1.12.0
  */
 
 class Utils
@@ -941,6 +941,28 @@ JS;
             'scripts' => self::getFooterScriptUrls(),
             'customScriptHtml' => self::getCustomScriptHtml(),
             'statisticsHtml' => self::getStatisticsHtml(),
+        );
+    }
+
+    /**
+     * 获取评论展示视图数据
+     *
+     * @return array
+     */
+    public static function getCommentsViewData()
+    {
+        $mathJaxEnabled = self::isFeatureEnabled('enableMathJax', 'AriaConfig');
+        $mathJaxEnabledInComments = self::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig');
+
+        return array(
+            'ignoreMathJax' => $mathJaxEnabled && !$mathJaxEnabledInComments,
+            'waitingText' => self::getOptionStringValue(
+                'commentWaitingText',
+                '正在思考这条评论和不和谐.jpg（评论正在等待审核）',
+                false
+            ),
+            'closedText' => self::getOptionStringValue('commentClosedText', '评论关闭了哟', false),
+            'showUserAgent' => self::isEnabled('showCommentUA', 'AriaConfig'),
         );
     }
 

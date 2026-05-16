@@ -8,7 +8,7 @@
  *
  * Based on original work by Siphils
  * @author     SweetenedSuzuka
- * @version    since 1.11.0
+ * @version    since 1.12.0
  */
 
 class Comments

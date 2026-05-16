@@ -7,7 +7,7 @@
  * 
  * @package Aria Continuo
  * @author SweetenedSuzuka
- * @version 1.11.0
+ * @version 1.12.0
  * @link https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continuo
  * 
  * Based on Aria by Siphils
@@ -23,7 +23,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
     $homeExcludeEnabled = Utils::isOptionEnabled('homeExcludeCategoriesEnabled', true);
     $homeExcludeCategoriesText = Utils::hasOption('homeExcludeCategories')
         ? Utils::getOptionStringValue('homeExcludeCategories', '', false)
-        : 'negawakubakonotenikoufukuwo';
+        : '填写分类的缩略名，可以参见Typecho后台的管理-分类';
     $homeExcludeSlugs = $homeExcludeEnabled ? Utils::splitOptionList($homeExcludeCategoriesText) : array();
     ?>
 	<?php while($this->next()): ?>
