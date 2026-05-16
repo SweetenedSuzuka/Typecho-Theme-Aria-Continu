@@ -22,10 +22,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
         </ul>
     </div>
     <div id="timeline-container" class="animated bounceInLeft">
-		<?php $this->widget('Widget_Contents_Post_Recent','pageSize=10000')->to($post);?>
-		<?php while($post->next()): ?>
-			<?php Contents::pageArchives($post); ?>
-		<?php endwhile; ?>
+        <?php echo Contents::getArchiveTimelineHtml(); ?>
     </div><!-- end timeline container -->
     <!-- 输出所有TAG -->
     <?php if($tags->have()): ?>

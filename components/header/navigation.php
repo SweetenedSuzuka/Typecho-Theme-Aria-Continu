@@ -11,8 +11,8 @@
 	<![endif]-->
 <div id="nav-menu" role="navigation">
     <div id="nav-left">
-        <a href="<?php $this->options->siteUrl(); ?>"><img id="site-avatar" no-lazyload src="<?php echo htmlspecialchars($headerViewData['navigation']['adminAvatarUrl'], ENT_QUOTES, 'UTF-8'); ?>">
-<?php $this->options->title(); ?></a>
+        <a href="<?php echo htmlspecialchars($headerViewData['navigation']['siteUrl'], ENT_QUOTES, 'UTF-8'); ?>"><img id="site-avatar" no-lazyload src="<?php echo htmlspecialchars($headerViewData['navigation']['adminAvatarUrl'], ENT_QUOTES, 'UTF-8'); ?>">
+<?php echo htmlspecialchars($headerViewData['navigation']['siteTitle'], ENT_QUOTES, 'UTF-8'); ?></a>
     </div>
     <div id="nav-right">
         <ul class="nav-right-list">

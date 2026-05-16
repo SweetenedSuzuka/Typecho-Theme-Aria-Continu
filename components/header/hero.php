@@ -4,7 +4,7 @@
     style="<?php echo htmlspecialchars($headerViewData['hero']['backgroundCss'], ENT_QUOTES, 'UTF-8'); ?>"
 >
     <div id="site-meta">
-            <h1 id="site-name"><?php $this->options->title(); ?></h1>
+            <h1 id="site-name"><?php echo htmlspecialchars($headerViewData['hero']['siteTitle'], ENT_QUOTES, 'UTF-8'); ?></h1>
             <?php if ($headerViewData['hero']['subtitle'] !== ''): ?>
                 <h2 id="site-description"><?php echo htmlspecialchars($headerViewData['hero']['subtitle'], ENT_QUOTES, 'UTF-8'); ?></h2>
             <?php endif; ?>

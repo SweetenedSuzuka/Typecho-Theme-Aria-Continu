@@ -6,7 +6,8 @@
  * Contents.php
  * 文章/页面相关组件
  *
- * @author     Siphils
+ * Based on original work by Siphils
+ * @author     SweetenedSuzuka
  * @version    since 1.11.0
  */
 
@@ -20,6 +21,41 @@ class Contents
     private static $hasViewsColumn = null;
 
     /**
+     * 归档时间轴 HTML 请求内缓存
+     *
+     * @var string|null
+     */
+    private static $archiveTimelineHtml = null;
+
+    /**
+     * 上下篇结果请求内缓存
+     *
+     * @var array
+     */
+    private static $nextPrevCache = array();
+
+    /**
+     * 文章字段值请求内缓存
+     *
+     * @var array
+     */
+    private static $fieldValueCache = array();
+
+    /**
+     * 文章浏览量请求内缓存
+     *
+     * @var array
+     */
+    private static $postViewsCache = array();
+
+    /**
+     * 已记录浏览的文章 ID 请求内缓存
+     *
+     * @var array|null
+     */
+    private static $viewedContentIds = null;
+
+    /**
      * 从数据库查询上/下篇文章内容信息
      * 返回内容包括文章缩略、标题、链接
      *
@@ -31,13 +67,16 @@ class Contents
 
     public static function getNextPrev($mode, $archive)
     {
-        $options = Helper::options();
+        $cacheKey = ($mode ? 'prev:' : 'next:') . (int) $archive->cid;
+        if (array_key_exists($cacheKey, self::$nextPrevCache)) {
+            return self::$nextPrevCache[$cacheKey];
+        }
+
         $db = Typecho_Db::get();
+        static $archiveWidgets = array();
         //数据准备
         $where = null;
         $sorted = null;
-        $name = 'thumbnail';
-        $thumbnail = 'str_value';
         //$mode为true查询上文，false查询下文
         if ($mode) {
             $where = 'table.contents.created < ?';
@@ -68,28 +107,55 @@ class Contents
             //     $options->index
             // );
             // 再换一个方法
-            $widget = Typecho_Widget::widget('Widget_Archive@nextprev', 'type=post', null);
+            $archiveType = (string) $archive->type;
+            if (!array_key_exists($archiveType, $archiveWidgets)) {
+                $archiveWidgets[$archiveType] = Typecho_Widget::widget('Widget_Archive@nextprev', 'type=' . $archiveType, null);
+            }
+            $widget = $archiveWidgets[$archiveType];
             $widget->push($content);
             $link = $widget->permalink;
             $title = $widget->title;
 
-            $query = $db->select()->from('table.fields')
-                ->where('table.fields.cid = ?', $content['cid'])
-                ->where('table.fields.name = ?', $name)
-                ->limit(1);
-
-            $content = $db->fetchRow($query);
-            if ($content) {
-                $img = $content[$thumbnail] ? $content[$thumbnail] : Utils::getThumbnail();
-            } else {
-                $img = Utils::getThumbnail();
-            }
+            $thumbnail = self::getFieldStringValue($db, (int) $content['cid'], 'thumbnail');
+            $img = $thumbnail !== '' ? $thumbnail : Utils::getThumbnail();
 
             $result = array('img' => $img, 'title' => $title, 'link' => $link);
         } else {
             $result = false;
         }
+        self::$nextPrevCache[$cacheKey] = $result;
         return $result;
+    }
+
+    /**
+     * 获取字段字符串值，并在请求内缓存
+     *
+     * @param Typecho_Db $db
+     * @param int $cid
+     * @param string $name
+     *
+     * @return string
+     */
+    private static function getFieldStringValue($db, $cid, $name)
+    {
+        $cacheKey = $cid . ':' . $name;
+        if (array_key_exists($cacheKey, self::$fieldValueCache)) {
+            return self::$fieldValueCache[$cacheKey];
+        }
+
+        $row = $db->fetchRow(
+            $db->select('str_value')
+                ->from('table.fields')
+                ->where('table.fields.cid = ?', $cid)
+                ->where('table.fields.name = ?', $name)
+                ->limit(1)
+        );
+
+        self::$fieldValueCache[$cacheKey] = is_array($row) && !empty($row['str_value'])
+            ? (string) $row['str_value']
+            : '';
+
+        return self::$fieldValueCache[$cacheKey];
     }
 
 
@@ -135,7 +201,7 @@ class Contents
      */
     public static function getPostView($archive)
     {
-        $cid = $archive->cid;
+        $cid = (int) $archive->cid;
         $db = Typecho_Db::get();
 
         if (!self::hasViewsColumn($db)) {
@@ -143,25 +209,46 @@ class Contents
             return;
         }
 
-        $row = $db->fetchRow($db->select('views')->from('table.contents')->where('cid = ?', $cid));
-        $viewsCount = isset($row['views']) ? (int) $row['views'] : 0;
+        if (!array_key_exists($cid, self::$postViewsCache)) {
+            $row = $db->fetchRow($db->select('views')->from('table.contents')->where('cid = ?', $cid));
+            self::$postViewsCache[$cid] = isset($row['views']) ? (int) $row['views'] : 0;
+        }
+
+        $viewsCount = self::$postViewsCache[$cid];
 
         if ($archive->is('single')) {
-            $views = Typecho_Cookie::get('extend_contents_views');
-            if (empty($views)) {
-                $views = array();
-            } else {
-                $views = explode(',', $views);
-            }
-            if (!in_array($cid, $views)) {
+            $views = self::getViewedContentIds();
+            if (!in_array($cid, $views, true)) {
                 $viewsCount++;
                 $db->query($db->update('table.contents')->rows(array('views' => $viewsCount))->where('cid = ?', $cid));
-                array_push($views, $cid);
-                $views = implode(',', $views);
-                Typecho_Cookie::set('extend_contents_views', $views); //记录查看cookie
+                self::$postViewsCache[$cid] = $viewsCount;
+                $views[] = $cid;
+                self::$viewedContentIds = $views;
+                Typecho_Cookie::set('extend_contents_views', implode(',', $views)); //记录查看cookie
             }
         }
         echo $viewsCount;
+    }
+
+    /**
+     * 获取已记录浏览的文章 ID 列表
+     *
+     * @return array
+     */
+    private static function getViewedContentIds()
+    {
+        if (self::$viewedContentIds !== null) {
+            return self::$viewedContentIds;
+        }
+
+        $views = Typecho_Cookie::get('extend_contents_views');
+        if (empty($views)) {
+            self::$viewedContentIds = array();
+            return self::$viewedContentIds;
+        }
+
+        self::$viewedContentIds = array_values(array_filter(array_map('intval', explode(',', $views))));
+        return self::$viewedContentIds;
     }
 
     /**
@@ -242,6 +329,69 @@ class Contents
         }
         $html .= '<div class="timeline-box"><div class="timeline-post timeline-item">' . '<a href="' . $href . '" target="_blank">' . $title . '</a><span class="timeline-post-time">' . $d . '</span></div></div>';
         echo $html;
+    }
+
+    /**
+     * 获取归档时间轴 HTML
+     *
+     * 使用更轻量的查询替代 `Widget_Contents_Post_Recent pageSize=10000`，
+     * 只读取时间轴实际需要的字段，并在一次请求内复用结果。
+     *
+     * @return string
+     */
+    public static function getArchiveTimelineHtml()
+    {
+        if (self::$archiveTimelineHtml !== null) {
+            return self::$archiveTimelineHtml;
+        }
+
+        $db = Typecho_Db::get();
+        $rows = $db->fetchAll(
+            $db->select('cid', 'title', 'slug', 'created', 'type', 'status', 'password')
+                ->from('table.contents')
+                ->where('table.contents.status = ?', 'publish')
+                ->where('table.contents.type = ?', 'post')
+                ->where('table.contents.password IS NULL')
+                ->order('table.contents.created', Typecho_Db::SORT_DESC)
+        );
+
+        if (empty($rows)) {
+            self::$archiveTimelineHtml = '';
+            return self::$archiveTimelineHtml;
+        }
+
+        $widget = Typecho_Widget::widget('Widget_Archive@pageArchives', 'type=post', null);
+        $lastMonthKey = null;
+        $html = '';
+
+        foreach ($rows as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+
+            $widget->push($row);
+            $monthKey = date('Y-m', $widget->created);
+            if ($lastMonthKey !== $monthKey) {
+                $lastMonthKey = $monthKey;
+                $monthArchiveUrl = Helper::options()->siteUrl . date('Y/m', $widget->created);
+                $html .= '<div class="timeline-ym timeline-item"><a href="'
+                    . htmlspecialchars($monthArchiveUrl, ENT_QUOTES, 'UTF-8')
+                    . '" target="_blank">'
+                    . date('Y 年 m 月', $widget->created)
+                    . '</a></div>';
+            }
+
+            $html .= '<div class="timeline-box"><div class="timeline-post timeline-item"><a href="'
+                . htmlspecialchars($widget->permalink, ENT_QUOTES, 'UTF-8')
+                . '" target="_blank">'
+                . htmlspecialchars($widget->title, ENT_QUOTES, 'UTF-8')
+                . '</a><span class="timeline-post-time">'
+                . date('d 日', $widget->created)
+                . '</span></div></div>';
+        }
+
+        self::$archiveTimelineHtml = $html;
+        return self::$archiveTimelineHtml;
     }
 
     /**

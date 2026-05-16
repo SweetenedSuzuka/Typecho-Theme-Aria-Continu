@@ -6,12 +6,226 @@
  * Comments.php
  * 评论相关组件
  *
- * @author     Siphils
+ * Based on original work by Siphils
+ * @author     SweetenedSuzuka
  * @version    since 1.11.0
  */
 
 class Comments
 {
+    /**
+     * 已审核评论信息请求内缓存
+     *
+     * @var array
+     */
+    private static $approvedCommentRowCache = array();
+
+    /**
+     * 评论父级 ID 请求内缓存
+     *
+     * @var array
+     */
+    private static $commentParentCache = array();
+
+    /**
+     * 评论作者名请求内缓存
+     *
+     * @var array
+     */
+    private static $commentAuthorCache = array();
+
+    /**
+     * 评论楼层关系请求内缓存
+     *
+     * @var array
+     */
+    private static $commentThreadMapCache = array();
+
+    /**
+     * 文章永久链接请求内缓存
+     *
+     * @var array
+     */
+    private static $contentPermalinkCache = array();
+
+    /**
+     * UA 解析结果请求内缓存
+     *
+     * @var array
+     */
+    private static $parsedUserAgentCache = array();
+
+    /**
+     * 获取已审核评论行
+     *
+     * @param int $coid
+     *
+     * @return array|false
+     */
+    private static function getApprovedCommentRow($coid)
+    {
+        $cacheKey = (int) $coid;
+        if (array_key_exists($cacheKey, self::$approvedCommentRowCache)) {
+            return self::$approvedCommentRowCache[$cacheKey];
+        }
+
+        $db = Typecho_Db::get();
+        $row = $db->fetchRow(
+            $db->select('coid', 'cid', 'parent', 'type', 'author', 'text')
+                ->from('table.comments')
+                ->where('coid = ? AND status = ?', $cacheKey, 'approved')
+        );
+
+        self::$approvedCommentRowCache[$cacheKey] = empty($row) ? false : $row;
+        return self::$approvedCommentRowCache[$cacheKey];
+    }
+
+    /**
+     * 获取评论父级 ID
+     *
+     * @param int $coid
+     *
+     * @return int
+     */
+    private static function getCommentParentId($coid)
+    {
+        $cacheKey = (int) $coid;
+        if (array_key_exists($cacheKey, self::$commentParentCache)) {
+            return self::$commentParentCache[$cacheKey];
+        }
+
+        $approvedRow = self::getApprovedCommentRow($cacheKey);
+        if (is_array($approvedRow) && array_key_exists('parent', $approvedRow)) {
+            self::$commentParentCache[$cacheKey] = (int) $approvedRow['parent'];
+            return self::$commentParentCache[$cacheKey];
+        }
+
+        $db = Typecho_Db::get();
+        $row = $db->fetchRow(
+            $db->select('parent')
+                ->from('table.comments')
+                ->where('coid = ?', $cacheKey)
+        );
+
+        self::$commentParentCache[$cacheKey] = is_array($row) && array_key_exists('parent', $row)
+            ? (int) $row['parent']
+            : 0;
+
+        return self::$commentParentCache[$cacheKey];
+    }
+
+    /**
+     * 获取评论作者名
+     *
+     * @param int $coid
+     *
+     * @return string
+     */
+    private static function getCommentAuthor($coid)
+    {
+        $cacheKey = (int) $coid;
+        if (array_key_exists($cacheKey, self::$commentAuthorCache)) {
+            return self::$commentAuthorCache[$cacheKey];
+        }
+
+        $approvedRow = self::getApprovedCommentRow($cacheKey);
+        if (is_array($approvedRow) && array_key_exists('author', $approvedRow)) {
+            self::$commentAuthorCache[$cacheKey] = (string) $approvedRow['author'];
+            return self::$commentAuthorCache[$cacheKey];
+        }
+
+        $db = Typecho_Db::get();
+        $row = $db->fetchRow(
+            $db->select('author')
+                ->from('table.comments')
+                ->where('coid = ?', $cacheKey)
+        );
+
+        self::$commentAuthorCache[$cacheKey] = is_array($row) && array_key_exists('author', $row)
+            ? (string) $row['author']
+            : '';
+
+        return self::$commentAuthorCache[$cacheKey];
+    }
+
+    /**
+     * 获取文章永久链接
+     *
+     * @param int $cid
+     *
+     * @return string
+     */
+    private static function getContentPermalink($cid)
+    {
+        $cacheKey = (int) $cid;
+        if (array_key_exists($cacheKey, self::$contentPermalinkCache)) {
+            return self::$contentPermalinkCache[$cacheKey];
+        }
+
+        static $contentsWidget = null;
+        if ($contentsWidget === null) {
+            $contentsWidget = Typecho_Widget::widget('Widget_Abstract_Contents');
+        }
+
+        $db = Typecho_Db::get();
+        $row = $db->fetchRow(
+            $contentsWidget->select()->where('table.contents.cid = ?', $cacheKey)
+        );
+        if (!is_array($row)) {
+            self::$contentPermalinkCache[$cacheKey] = '';
+            return self::$contentPermalinkCache[$cacheKey];
+        }
+
+        $content = $contentsWidget->push($row);
+        self::$contentPermalinkCache[$cacheKey] = isset($content['permalink'])
+            ? rtrim((string) $content['permalink'], '/')
+            : '';
+
+        return self::$contentPermalinkCache[$cacheKey];
+    }
+
+    /**
+     * 获取评论楼层映射
+     *
+     * @param int $cid
+     * @param bool $commentOnly
+     * @param string $order
+     *
+     * @return array
+     */
+    private static function getCommentThreadMap($cid, $commentOnly, $order)
+    {
+        $cacheKey = (int) $cid . ':' . ($commentOnly ? 'comment' : 'all') . ':' . strtoupper((string) $order);
+        if (array_key_exists($cacheKey, self::$commentThreadMapCache)) {
+            return self::$commentThreadMapCache[$cacheKey];
+        }
+
+        $db = Typecho_Db::get();
+        $select = $db->select('coid', 'parent')
+            ->from('table.comments')
+            ->where('cid = ? AND status = ?', (int) $cid, 'approved')
+            ->order('coid');
+        if ($commentOnly) {
+            $select->where('type = ?', 'comment');
+        }
+
+        $comments = $db->fetchAll($select);
+        if (strtoupper((string) $order) === 'DESC') {
+            $comments = array_reverse($comments);
+        }
+
+        $threadMap = array();
+        foreach ($comments as $comment) {
+            if (!is_array($comment) || !isset($comment['coid'])) {
+                continue;
+            }
+            $threadMap[(int) $comment['coid']] = isset($comment['parent']) ? (int) $comment['parent'] : 0;
+        }
+
+        self::$commentThreadMapCache[$cacheKey] = $threadMap;
+        return self::$commentThreadMapCache[$cacheKey];
+    }
+
     /**
      * 由$coid查询评论相关内容
      * 返回未解析评论内容以及链接
@@ -23,36 +237,23 @@ class Comments
 
     public static function getInfo($coid)
     {
-        $db = Typecho_Db::get();
         $options = Helper::options();
-        $contents = Typecho_Widget::widget('Widget_Abstract_Contents');
-        $row = $db->fetchRow($db->select('cid, type, author, text')->from('table.comments')->where('coid = ? AND status = ?', $coid, 'approved'));
+        $row = self::getApprovedCommentRow($coid);
         if (empty($row)) {
             return 'Comment not found!';
         }
 
-        $cid = $row['cid'];
-        $select = $db->select('coid, parent')->from('table.comments')->where('cid = ? AND status = ?', $cid, 'approved')->order('coid');
-        if ($options->commentsShowCommentOnly) {
-            $select->where('type = ?', 'comment');
-        }
-
-        $comments = $db->fetchAll($select);
-        if ($options->commentsOrder == 'DESC') {
-            $comments = array_reverse($comments);
-        }
-
-        foreach ($comments as $key => $val) {
-            $array[$val['coid']] = $val['parent'];
-        }
+        $cid = (int) $row['cid'];
+        $threadMap = self::getCommentThreadMap($cid, (bool) $options->commentsShowCommentOnly, (string) $options->commentsOrder);
 
         $i = $coid;
+        $break = $i;
         while ($i != 0) {
             $break = $i;
-            $i = $array[$i];
+            $i = array_key_exists($i, $threadMap) ? $threadMap[$i] : 0;
         }
         $count = 0;
-        foreach ($array as $key => $val) {
+        foreach ($threadMap as $key => $val) {
             if ($val == 0) {
                 $count++;
             }
@@ -62,8 +263,7 @@ class Comments
             }
 
         }
-        $parentContent = $contents->push($db->fetchRow($contents->select()->where('table.contents.cid = ?', $cid)));
-        $permalink = rtrim($parentContent['permalink'], '/');
+        $permalink = self::getContentPermalink($cid);
         $page = ($options->commentsPageBreak) ? '/comment-page-' . ceil($count / $options->commentsPageSize) : (substr($permalink, -5, 5) == '.html' ? '' : '/');
         return array("author" => $row['author'], "text" => $row['text'], "href" => "{$permalink}{$page}#{$row['type']}-{$coid}");
     }
@@ -101,13 +301,9 @@ class Comments
     public static function commentAt($content, $widget)
     {
         $coid = $widget->coid;
-        $db = Typecho_Db::get();
-        $prow = $db->fetchRow($db->select('parent')->from('table.comments')->where('coid = ?', $coid));
-        $parent = $prow['parent'];
+        $parent = self::getCommentParentId($coid);
         if ($parent != "0") {
-            $arow = $db->fetchRow($db->select('author')->from('table.comments')
-                    ->where('coid = ?', $parent));
-            $author = $arow['author'];
+            $author = self::getCommentAuthor($parent);
             $tag = '<a href="#comment-' . $parent . '">@' . $author . '</a><br>';
             return $tag . $content;
         } else {
@@ -159,6 +355,11 @@ class Comments
 //新增osName和browserName用来输出系统和浏览器名，顺便缩进代码（怎么会有不缩进的沙雕）
     public static function parseUseragent($ua)
     {
+        $cacheKey = (string) $ua;
+        if (array_key_exists($cacheKey, self::$parsedUserAgentCache)) {
+            return self::$parsedUserAgentCache[$cacheKey];
+        }
+
         // 解析操作系统
         $htmlTag = "";
         $os = null;
@@ -381,7 +582,8 @@ class Comments
 
         $htmlTag .= "&nbsp;";
         $htmlTag .= "<i class=\"iconfont icon-aria-$fontClass\"></i><a class=\"comment-meta\"><span>$browserName</span></a>";
-        return $htmlTag;
+        self::$parsedUserAgentCache[$cacheKey] = $htmlTag;
+        return self::$parsedUserAgentCache[$cacheKey];
     }
 
 }
