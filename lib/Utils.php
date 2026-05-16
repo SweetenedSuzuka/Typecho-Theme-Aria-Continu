@@ -124,13 +124,7 @@ class Utils
      */
     public static function getThemeAssetUrl($relativePath)
     {
-        $relativePath = ltrim((string) $relativePath, '/');
-        $themeUrl = rtrim((string) Helper::options()->themeUrl, '/');
-        $themeDir = dirname(__DIR__);
-        $assetPath = $themeDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
-        $version = file_exists($assetPath) ? (string) filemtime($assetPath) : ARIA_VERSION;
-
-        return $themeUrl . '/' . $relativePath . '?v=' . rawurlencode($version);
+        return ThemeAssetHelper::getThemeAssetUrl($relativePath);
     }
 
     /**
@@ -142,50 +136,7 @@ class Utils
      */
     public static function getThemeStaticUrl($relativePath)
     {
-        $relativePath = ltrim((string) $relativePath, '/');
-        $themeUrl = rtrim((string) Helper::options()->themeUrl, '/');
-
-        return $themeUrl . '/' . $relativePath;
-    }
-
-    /**
-     * 判断是否为绝对 URL
-     *
-     * @param string $value
-     *
-     * @return bool
-     */
-    private static function isAbsoluteUrl($value)
-    {
-        $value = trim((string) $value);
-        if ($value === '') {
-            return false;
-        }
-
-        return preg_match('#^(?:[a-z][a-z0-9+\-.]*:)?//#i', $value) === 1
-            || preg_match('#^[a-z][a-z0-9+\-.]*:#i', $value) === 1;
-    }
-
-    /**
-     * 将主题目录相对路径或绝对路径解析为可用 URL
-     *
-     * @param string $value
-     * @param string $defaultRelativePath
-     *
-     * @return string
-     */
-    private static function resolveThemeRelativeOrAbsoluteUrl($value, $defaultRelativePath = '')
-    {
-        $value = trim((string) $value);
-        if ($value === '') {
-            return $defaultRelativePath !== '' ? self::getThemeStaticUrl($defaultRelativePath) : '';
-        }
-
-        if (self::isAbsoluteUrl($value)) {
-            return $value;
-        }
-
-        return self::getThemeStaticUrl($value);
+        return ThemeAssetHelper::getThemeStaticUrl($relativePath);
     }
 
     /**
@@ -527,12 +478,7 @@ JS;
      */
     public static function getCustomPageBackgroundUrl()
     {
-        $customPath = self::getOptionStringValue(
-            'customPageBackgroundUrl',
-            '/assets/img/background.webp'
-        );
-
-        return self::resolveThemeRelativeOrAbsoluteUrl($customPath, 'assets/img/background.webp');
+        return ThemeAssetHelper::getCustomPageBackgroundUrl();
     }
 
     /**
@@ -897,51 +843,7 @@ JS;
      */
     public static function getCommentsViewData()
     {
-        $mathJaxEnabled = self::isFeatureEnabled('enableMathJax', 'AriaConfig');
-        $mathJaxEnabledInComments = self::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig');
-        $options = Helper::options();
-        $commentsRequireMail = !empty($options->commentsRequireMail);
-        $commentsRequireUrl = !empty($options->commentsRequireURL);
-        $commentsMarkdown = !empty($options->commentsMarkdown);
-        $allowedHtmlTags = isset($options->commentsHTMLTagAllowed)
-            ? (string) $options->commentsHTMLTagAllowed
-            : '';
-
-        return array(
-            'ignoreMathJax' => $mathJaxEnabled && !$mathJaxEnabledInComments,
-            'waitingText' => self::getOptionStringValue(
-                'commentWaitingText',
-                '正在思考这条评论和不和谐.jpg（评论正在等待审核）',
-                false
-            ),
-            'closedText' => self::getOptionStringValue('commentClosedText', '评论关闭了哟', false),
-            'showUserAgent' => self::isEnabled('showCommentUA', 'AriaConfig'),
-            'form' => array(
-                'className' => self::getCommentFormClassName(),
-                'style' => self::getCommentFormStyle(),
-                'newResponseText' => '添加新评论',
-                'requireMail' => $commentsRequireMail,
-                'requireUrl' => $commentsRequireUrl,
-                'supportsMarkdown' => $commentsMarkdown,
-                'markdownGuideUrl' => 'https://guides.github.com/features/mastering-markdown/',
-                'markdownHintText' => '评论可以使用 Markdown 语法',
-                'supportsImageInsertion' => $commentsMarkdown
-                    && $allowedHtmlTags !== ''
-                    && strpos($allowedHtmlTags, 'img') !== false,
-                'imageInsertText' => '图片',
-                'showCommentToMail' => self::isEnabled('enableCommentToMail', 'AriaConfig'),
-                'banMailStrongText' => '不接收',
-                'banMailLabelText' => '回复邮件通知',
-                'guestAvatarPrefix' => __TYPECHO_GRAVATAR_PREFIX__,
-                'nicknamePlaceholder' => '（必填）昵称',
-                'mailPlaceholder' => ($commentsRequireMail ? '（必填）' : '（选填）') . '邮箱',
-                'urlPlaceholder' => ($commentsRequireUrl ? '（必填）' : '（选填）') . '网站',
-                'textPlaceholder' => isset($options->placeholder)
-                    ? (string) $options->placeholder
-                    : '',
-                'submitText' => '投送',
-            ),
-        );
+        return ThemeViewData::getCommentsViewData();
     }
 
     /**
@@ -954,37 +856,7 @@ JS;
      */
     public static function getPostViewData($archive, $context = 'post')
     {
-        $isPostContext = $context === 'post';
-
-        return array(
-            'meta' => array(
-                'showCategory' => $isPostContext,
-                'categorySeparator' => ' • ',
-                'viewsSuffix' => '次阅读',
-            ),
-            'showTags' => $isPostContext,
-            'showNextPrev' => $isPostContext,
-            'showToc' => !empty($archive->fields->showTOC),
-        );
-    }
-
-    /**
-     * 获取文章卡片缩略图 URL
-     *
-     * @param Widget_Archive $archive
-     *
-     * @return string
-     */
-    private static function getPostCardThumbnailUrl($archive)
-    {
-        ob_start();
-        if ($archive->fields->thumbnail) {
-            $archive->fields->thumbnail();
-        } else {
-            echo self::getThumbnail();
-        }
-
-        return trim(ob_get_clean());
+        return ThemeViewData::getPostViewData($archive, $context);
     }
 
     /**
@@ -997,16 +869,7 @@ JS;
      */
     public static function getPostCardViewData($archive, $context = 'index')
     {
-        $isArchiveContext = $context === 'archive';
-
-        return array(
-            'thumbnailUrl' => self::getPostCardThumbnailUrl($archive),
-            'loadingImageUrl' => self::getThemeAssetUrl('assets/img/loading.svg'),
-            'categorySeparator' => $isArchiveContext ? ' ' : ' • ',
-            'useLazyload' => !$isArchiveContext && self::isEnabled('enableLazyload', 'AriaConfig'),
-            'showLine' => !$isArchiveContext,
-            'moreTitle' => $isArchiveContext ? '' : 'Read More',
-        );
+        return ThemeViewData::getPostCardViewData($archive, $context);
     }
 
     /**
@@ -1016,47 +879,7 @@ JS;
      */
     public static function getCustomCommentBoxBackgroundUrl()
     {
-        $customPath = self::getOptionStringValue('customCommentBoxBackgroundUrl', '', false);
-        if ($customPath === '') {
-            return '';
-        }
-
-        return self::resolveThemeRelativeOrAbsoluteUrl($customPath);
-    }
-
-    /**
-     * 获取评论表单 class
-     *
-     * @return string
-     */
-    private static function getCommentFormClassName()
-    {
-        return self::isOptionEnabled('customCommentBoxBackgroundEnabled', false)
-            && self::getCustomCommentBoxBackgroundUrl() !== ''
-            ? 'comment-form--custom-background'
-            : '';
-    }
-
-    /**
-     * 获取评论表单样式
-     *
-     * @return string
-     */
-    private static function getCommentFormStyle()
-    {
-        $backgroundUrl = self::getCustomCommentBoxBackgroundUrl();
-        if (!self::isOptionEnabled('customCommentBoxBackgroundEnabled', false) || $backgroundUrl === '') {
-            return '';
-        }
-
-        return sprintf(
-            "--aria-comment-box-bg: url('%s');",
-            str_replace(
-                array('\\', "'"),
-                array('\\\\', "\\'"),
-                $backgroundUrl
-            )
-        );
+        return ThemeAssetHelper::getCustomCommentBoxBackgroundUrl();
     }
 
     /**
@@ -1274,17 +1097,7 @@ JS;
      */
     public static function getBackgroundUrl()
     {
-        $options = Helper::options();
-
-        if ($options->backgroundUrl) {
-            $str = $options->backgroundUrl;
-            $imgs = trim($str);
-            $urls = explode("\r\n", $imgs);
-            $n = mt_rand(0, count($urls) - 1);
-            return $urls[$n];
-        }
-
-        return $options->themeUrl . '/assets/img/background.jpg';
+        return ThemeAssetHelper::getBackgroundUrl();
     }
 
     /**
@@ -1294,14 +1107,7 @@ JS;
      */
     public static function get404BackgroundUrl()
     {
-        $options = Helper::options();
-        $customUrl = trim((string) $options->notFoundBackgroundUrl);
-
-        if ($customUrl !== '') {
-            return $customUrl;
-        }
-
-        return $options->themeUrl . '/assets/img/404.jpg';
+        return ThemeAssetHelper::get404BackgroundUrl();
     }
 
     /**
@@ -1309,16 +1115,7 @@ JS;
      */
     public static function getThumbnail()
     {
-        $options = Helper::options();
-        if ($options->defaultThumbnail) {
-            $str = $options->defaultThumbnail;
-            $imgs = trim($str);
-            $urls = explode("\r\n", $imgs);
-            $n = mt_rand(0, count($urls) - 1);
-            return $urls[$n];
-        } else {
-            return $options->themeUrl . '/assets/img/thumbnail.jpg';
-        }
+        return ThemeAssetHelper::getThumbnail();
     }
 
     /**
