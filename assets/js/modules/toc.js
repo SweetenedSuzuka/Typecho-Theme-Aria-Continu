@@ -46,7 +46,7 @@ function createDirectory(container, mountPoint) {
 
     while (headings.length) {
       heading = headings.shift();
-      textStore.push(heading.innerHTML);
+      textStore.push(heading.textContent || heading.innerText || "");
 
       var headingLevel = +heading.tagName.match(/\d/)[0];
       if (previousLevel < headingLevel) {
@@ -108,7 +108,7 @@ function createDirectory(container, mountPoint) {
     var anchor = document.createElement("a");
     anchor.href = "#" + titleIds[index];
     anchor.setAttribute("class", "toc-a");
-    anchor.innerHTML = titles[index];
+    anchor.textContent = titles[index];
     listItem.appendChild(anchor);
     currentList.appendChild(listItem);
   }

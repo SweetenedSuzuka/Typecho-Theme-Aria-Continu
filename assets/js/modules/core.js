@@ -173,29 +173,28 @@ $.extend(Aria, {
     $("img:not([class~='link-avatar'],[no-fancybox])", ".post-content")
       .not("[data-aria-fancybox-bound]")
       .attr("data-aria-fancybox-bound", "true")
-      .wrap(
-      function () {
-        return (
-          '<a href="' +
-          this.src +
-          '" data-caption="' +
-          this.title +
-          '" no-pjax class="fancybox" data-fancybox="gallery" style="outline:0"></a>'
-        );
-      },
-      );
+      .wrap(function () {
+        var anchor = document.createElement("a");
+        anchor.href = this.src;
+        anchor.setAttribute("data-caption", this.title || "");
+        anchor.setAttribute("no-pjax", "");
+        anchor.className = "fancybox";
+        anchor.setAttribute("data-fancybox", "gallery");
+        anchor.style.outline = "0";
+        return anchor;
+      });
 
     $("img", ".comment-text")
       .not("[data-aria-fancybox-bound]")
       .attr("data-aria-fancybox-bound", "true")
       .wrap(function () {
-        return (
-          '<a href="' +
-          this.src +
-          '" data-caption="' +
-          this.title +
-          '" no-pjax class="fancybox" style="outline:0"></a>'
-        );
+        var anchor = document.createElement("a");
+        anchor.href = this.src;
+        anchor.setAttribute("data-caption", this.title || "");
+        anchor.setAttribute("no-pjax", "");
+        anchor.className = "fancybox";
+        anchor.style.outline = "0";
+        return anchor;
       });
 
     $("a.fancybox").fancybox({
