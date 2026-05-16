@@ -64,7 +64,27 @@ function trackPageView() {
 }
 
 function typesetMath() {
-  if (THEME_CONFIG.ENABLE_MATHJAX && typeof MathJax !== "undefined") {
+  if (!THEME_CONFIG.ENABLE_MATHJAX || typeof MathJax === "undefined") {
+    return;
+  }
+
+  if (typeof window.ariaEnsureMathJaxCompat === "function") {
+    window.ariaEnsureMathJaxCompat();
+  }
+
+  var pjaxContainer = document.getElementById("pjax-container");
+
+  if (typeof window.ariaTypesetMathJax === "function") {
+    window.ariaTypesetMathJax(pjaxContainer || undefined);
+    return;
+  }
+
+  if (typeof MathJax.typesetPromise === "function") {
+    MathJax.typesetPromise(pjaxContainer ? [pjaxContainer] : undefined);
+    return;
+  }
+
+  if (MathJax.Hub && typeof MathJax.Hub.Queue === "function") {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
   }
 }
