@@ -27,8 +27,6 @@ class ThemeScriptAssets
 
         $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/highlight.min.js');
 
-        $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/OwO/OwO.min.js');
-
         return array_merge($scripts, array(
             ThemeAssetHelper::getThemeAssetUrl('assets/js/functions.min.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/base.js'),

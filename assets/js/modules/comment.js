@@ -134,6 +134,32 @@ function bindReplyStateTracking() {
   });
 }
 
+function loadOwOScript() {
+  if (typeof window.OwO === "function") {
+    return Promise.resolve(window.OwO);
+  }
+
+  if (Aria.state.owoScriptPromise) {
+    return Aria.state.owoScriptPromise;
+  }
+
+  Aria.state.owoScriptPromise = new Promise(function (resolve, reject) {
+    var script = document.createElement("script");
+
+    script.src = THEME_CONFIG.OWO_SCRIPT;
+    script.async = !0;
+    script.onload = function () {
+      resolve(window.OwO);
+    };
+    script.onerror = function () {
+      reject(new Error("Failed to load OwO script"));
+    };
+    document.body.appendChild(script);
+  });
+
+  return Aria.state.owoScriptPromise;
+}
+
 function bindEmotion() {
   var container = document.querySelector(".OwO");
   var target = document.querySelector(".textarea");
@@ -142,16 +168,26 @@ function bindEmotion() {
     return;
   }
 
-  container.setAttribute("data-aria-owo-bound", "true");
-  new OwO({
-    logo: '<i class="iconfont icon-aria-emotion"></i>表情',
-    container: container,
-    target: target,
-    api: THEME_CONFIG.OWO_JSON,
-    position: "down",
-    width: "100%",
-    maxHeight: "250px",
-  });
+  loadOwOScript()
+    .then(function () {
+      if (typeof window.OwO !== "function") {
+        return;
+      }
+
+      container.setAttribute("data-aria-owo-bound", "true");
+      new window.OwO({
+        logo: '<i class="iconfont icon-aria-emotion"></i>表情',
+        container: container,
+        target: target,
+        api: THEME_CONFIG.OWO_JSON,
+        position: "down",
+        width: "100%",
+        maxHeight: "250px",
+      });
+    })
+    .catch(function (error) {
+      console.warn("OwO load failed", error);
+    });
 }
 
 function bindAjaxAvatar() {
@@ -210,7 +246,6 @@ function bindAjaxComment() {
   var form = doc.getElementById("comment-form");
   var submitButton = form ? form.querySelector(".submit") : null;
   var textarea = getCommentTextarea();
-  var notifier = new Notyf({ delay: 3e3 });
 
   function parseResponseDocument(responseText) {
     return new DOMParser().parseFromString(responseText, "text/html");
@@ -370,7 +405,7 @@ function bindAjaxComment() {
         titleText = getText(responseDoc.querySelector("title")).toLowerCase();
         responseMessage = getText(responseDoc.querySelector(".container"));
         message = titleText === "error" ? responseMessage || "评论提交失败！" : "评论提交失败！";
-        notifier.alert(message);
+        Aria.notify.error(message);
         finishSubmit(!1);
         return;
       }
@@ -378,7 +413,7 @@ function bindAjaxComment() {
       latestComment = getLatestCommentNode(responseDoc);
       if (!latestComment) {
         finishSubmit(!0);
-        notifier.confirm("评论提交成功！");
+        Aria.notify.success("评论提交成功！");
         return;
       }
 
@@ -394,7 +429,7 @@ function bindAjaxComment() {
         parentComment = doc.getElementById(ariaCommentState.currentReplyId);
         if (!parentComment) {
           finishSubmit(!1);
-          notifier.alert("回复目标不存在，页面将刷新后重试。");
+          Aria.notify.error("回复目标不存在，页面将刷新后重试。");
           window.location.reload();
           return;
         }
@@ -414,7 +449,7 @@ function bindAjaxComment() {
 
       updateCommentsCount();
       finishSubmit(!0);
-      notifier.confirm("评论提交成功！");
+      Aria.notify.success("评论提交成功！");
     } catch (error) {
       console.error("Ajax Comment Error", error);
       window.location.reload();

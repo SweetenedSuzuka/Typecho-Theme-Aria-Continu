@@ -5,7 +5,7 @@
 > 书写自己的篇章  
 > 让期许不再落幕
 
-[![Version](https://img.shields.io/badge/version-1.13.1-blue.svg)](#更新日志)
+[![Version](https://img.shields.io/badge/version-1.14.0-blue.svg)](#更新日志)
 [![Typecho](https://img.shields.io/badge/Typecho-Compatible-green.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%202.0-blue.svg)](#)
 

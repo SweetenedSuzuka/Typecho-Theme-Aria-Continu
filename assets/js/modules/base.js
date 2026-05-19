@@ -5,6 +5,7 @@ var Aria = (window.Aria = window.Aria || {});
 Aria.helpers = Aria.helpers || {};
 Aria.compat = Aria.compat || {};
 Aria.state = Aria.state || {};
+Aria.notify = Aria.notify || {};
 
 Aria.helpers.toggleNav = function () {
   $("#nav-vertical").toggleClass("nav-open");
@@ -72,6 +73,46 @@ Aria.compat.installLegacyGlobals = function () {
       : function (target) {
           Aria.helpers.togglePostOther(target);
         };
+};
+
+Aria.notify.getInstance = function () {
+  if (Aria.state.notifier) {
+    return Aria.state.notifier;
+  }
+
+  if (typeof window.Notyf !== "function") {
+    return null;
+  }
+
+  Aria.state.notifier = new window.Notyf({ delay: 3e3 });
+  return Aria.state.notifier;
+};
+
+Aria.notify.success = function (message) {
+  var notifier = Aria.notify.getInstance();
+
+  if (notifier && typeof notifier.confirm === "function") {
+    notifier.confirm(message);
+    return;
+  }
+
+  console.log(message);
+};
+
+Aria.notify.error = function (message) {
+  var notifier = Aria.notify.getInstance();
+
+  if (notifier && typeof notifier.alert === "function") {
+    notifier.alert(message);
+    return;
+  }
+
+  if (typeof window.alert === "function") {
+    window.alert(message);
+    return;
+  }
+
+  console.error(message);
 };
 
 $.fn.extend({

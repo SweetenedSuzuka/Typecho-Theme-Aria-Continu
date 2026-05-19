@@ -301,16 +301,15 @@ $.extend(Aria, {
       }
 
       var clipboard = new ClipboardJS(".copy-code");
-      var notifier = new Notyf({ delay: 3e3 });
       Aria.state.clipboard = clipboard;
 
       clipboard.on("success", function (event) {
-        notifier.confirm("代码成功拷贝到剪贴板！");
+        Aria.notify.success("代码成功拷贝到剪贴板！");
         event.clearSelection();
       });
 
       clipboard.on("error", function () {
-        notifier.alertL("代码拷贝失败！");
+        Aria.notify.error("代码拷贝失败！");
       });
     },
   },
