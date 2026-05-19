@@ -162,6 +162,85 @@ function observeLazyTargets(targets) {
   });
 }
 
+function getCopyTargetElement(trigger) {
+  var selector;
+
+  if (!trigger || typeof trigger.getAttribute !== "function") {
+    return null;
+  }
+
+  selector = trigger.getAttribute("data-clipboard-target");
+  if (!selector) {
+    return null;
+  }
+
+  try {
+    return document.querySelector(selector);
+  } catch (error) {
+    return null;
+  }
+}
+
+function copyTextWithExecCommand(text) {
+  return new Promise(function (resolve, reject) {
+    var textarea = document.createElement("textarea");
+    var successful = false;
+
+    textarea.value = text;
+    textarea.setAttribute("readonly", "readonly");
+    textarea.setAttribute("aria-hidden", "true");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-9999px";
+    textarea.style.left = "-9999px";
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+
+    try {
+      successful = document.execCommand("copy");
+    } catch (error) {
+      successful = false;
+    }
+
+    document.body.removeChild(textarea);
+
+    if (successful) {
+      resolve();
+      return;
+    }
+
+    reject(new Error("Copy command failed"));
+  });
+}
+
+function copyTextToClipboard(text) {
+  if (
+    typeof navigator !== "undefined" &&
+    navigator.clipboard &&
+    typeof navigator.clipboard.writeText === "function"
+  ) {
+    return navigator.clipboard.writeText(text).catch(function () {
+      return copyTextWithExecCommand(text);
+    });
+  }
+
+  return copyTextWithExecCommand(text);
+}
+
+function copyCodeFromTrigger(trigger) {
+  var target = getCopyTargetElement(trigger);
+  var text;
+
+  if (!target) {
+    return Promise.reject(new Error("Copy target not found"));
+  }
+
+  text = target.innerText || target.textContent || "";
+  return copyTextToClipboard(text);
+}
+
 function logVersion() {
   if (Aria.state.versionLogged) {
     return;
@@ -296,21 +375,22 @@ $.extend(Aria, {
     },
 
     clipboard: function () {
-      if (Aria.state.clipboard) {
-        Aria.state.clipboard.destroy();
-      }
+      $(document)
+        .off("click.aria-copy-code", ".copy-code")
+        .on("click.aria-copy-code", ".copy-code", function (event) {
+          event.preventDefault();
 
-      var clipboard = new ClipboardJS(".copy-code");
-      Aria.state.clipboard = clipboard;
-
-      clipboard.on("success", function (event) {
-        Aria.notify.success("代码成功拷贝到剪贴板！");
-        event.clearSelection();
-      });
-
-      clipboard.on("error", function () {
-        Aria.notify.error("代码拷贝失败！");
-      });
+          copyCodeFromTrigger(this)
+            .then(function () {
+              Aria.notify.success("代码成功拷贝到剪贴板！");
+              if (typeof window.getSelection === "function") {
+                window.getSelection().removeAllRanges();
+              }
+            })
+            .catch(function () {
+              Aria.notify.error("代码拷贝失败！");
+            });
+        });
     },
   },
 
