@@ -1,7 +1,9 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <div id="<?php $this->respondId(); ?>" class="respond<?php if ($commentsViewData['form']['className'] !== ''): ?> <?php echo htmlspecialchars($commentsViewData['form']['className'], ENT_QUOTES, 'UTF-8'); ?><?php endif; ?>"<?php if ($commentsViewData['form']['style'] !== ''): ?> style="<?php echo htmlspecialchars($commentsViewData['form']['style'], ENT_QUOTES, 'UTF-8'); ?>"<?php endif; ?>>
     <div class="cancel-comment-reply">
-        <?php $comments->cancelReply('<i class="iconfont icon-aria-cancel"></i>'); ?>
+        <a id="cancel-comment-reply-link" href="#comment-form" data-aria-action="cancel-comment-reply" style="display:none">
+            <i class="iconfont icon-aria-cancel"></i>
+        </a>
     </div>
 
     <span id="new-response">

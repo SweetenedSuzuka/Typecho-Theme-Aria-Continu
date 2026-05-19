@@ -90,7 +90,7 @@ Aria，即咏叹调。
   * 评论提交由 `serializeArray() + $.ajax + $.parseHTML()` 切换为 `FormData/URLSearchParams + fetch + DOMParser`  
   * 评论回复状态跟踪、表单提交绑定与局部 DOM 插入改为基于原生事件与原生 DOM 的实现  
   * 保留原有不刷新提交、局部插入、回复/取消、Notyf 提示与评论区 `MathJax` 增量补排版体验  
-* 调整：以现代浏览器能力替换旧 `jquery-lazyload`：  
+* 调整：以新方法替换旧 `jquery-lazyload`：  
   * 图片懒加载改为 `IntersectionObserver + 原生属性` 实现  
   * 保留主题原有的 `loading.svg` 占位体验，图片进入视口后再切换真实资源  
   * 文章卡片缩略图改为统一使用自定义数据标记驱动背景图懒加载  
@@ -98,13 +98,12 @@ Aria，即咏叹调。
 * 继续收口主题内部职责边界：  
   * `ThemeViewData` 继续承接页脚完整视图数据，以及搜索占位文本、首页副标题等显示层读取逻辑  
   * 新增 `ThemeSiteLookup`，统一承接管理员头像与页面信息查询  
-  * `Utils` 继续收缩为公开兼容门面，删除一批已迁移后的旧私有残留方法  
+  * 继续收束 `Utils`，删除一批已迁移后的旧私有残留方法  
   * 导航渲染、运行时配置、脚本资源、`MathJax` 兼容层等能力的归属进一步明确，主题结构更接近“入口装配 + helper 组织”的可维护形态  
 * 兼容性与稳定性调整：  
   * 修复页脚备案图标可能拖慢 `window.load`、进而影响旧前端链路初始化时机的问题  
   * 图片型备案图标新增 `loading="lazy"`、`decoding="async"`、`fetchpriority="low"`、`referrerpolicy="no-referrer"`  
   * 兼容将备案图标写成图标类名字符串的旧配置方式，避免误当外部图片请求  
-  * `ThemeMathJax` 不再保留对 `#pjax-container` 的历史依赖，主线路径进一步去除已退场能力残留  
 
 ### 2026-05-17 1.13.1  
 
@@ -402,8 +401,8 @@ Andante · 2019 → 2026
 </p>
 
 <p align="center">
-连奏 · 致谢所有的协奏者
-Legato · Then and Now<br>
+连奏 · 致谢所有的协奏者<br>
+Legato · Then and Now
 </p>
 
 <p align="center">
@@ -435,11 +434,15 @@ Legato · Then and Now<br>
 
 #### Aria Continuo
 
+---
+
 <p align="center">
 ──────────── ✦ ────────────
 </p>
+
 回声 · Echo<br>
 念念不忘，必有回响 · Echoes and Continuations
+
 <p align="center">
 ──────────── ✦ ────────────
 </p>

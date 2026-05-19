@@ -18,8 +18,6 @@
 <div id="comments"<?php echo $commentsViewData['ignoreMathJax'] ? ' class="aria-mathjax-ignore"' : ''; ?>>
 	<?php if($this->allow('comment')): ?>
 
-	<?php Comments::commentReply($this); ?>
-
 	<?php $this->comments()->to($comments); ?>
 	<span id="response">
 		<p>

@@ -1,4 +1,138 @@
 var Aria = (window.Aria = window.Aria || {});
+var ariaCommentState = Aria.commentState || {
+  currentReplyId: "",
+};
+Aria.commentState = ariaCommentState;
+
+function getCommentRespondBox() {
+  return document.querySelector(".respond");
+}
+
+function getCommentFormElement() {
+  return document.getElementById("comment-form");
+}
+
+function getCommentTextarea() {
+  return document.getElementById("textarea");
+}
+
+function getCancelReplyLink() {
+  return document.getElementById("cancel-comment-reply-link");
+}
+
+function ensureReplyPlaceholder(respondBox) {
+  var placeholder = document.getElementById("comment-form-place-holder");
+
+  if (placeholder || !respondBox || !respondBox.parentNode) {
+    return placeholder;
+  }
+
+  placeholder = document.createElement("div");
+  placeholder.id = "comment-form-place-holder";
+  respondBox.parentNode.insertBefore(placeholder, respondBox);
+  return placeholder;
+}
+
+function ensureReplyParentInput(form) {
+  var input = document.getElementById("comment-parent");
+
+  if (input || !form) {
+    return input;
+  }
+
+  input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "parent";
+  input.id = "comment-parent";
+  form.appendChild(input);
+  return input;
+}
+
+function setCancelReplyVisible(visible) {
+  var cancelReplyLink = getCancelReplyLink();
+
+  if (!cancelReplyLink) {
+    return;
+  }
+
+  cancelReplyLink.style.display = visible ? "" : "none";
+}
+
+function moveCommentFormToReply(targetComment, parentId, replyRootId) {
+  var respondBox = getCommentRespondBox();
+  var form = getCommentFormElement();
+  var textarea = getCommentTextarea();
+  var parentInput;
+
+  if (!respondBox || !form || !targetComment || !parentId) {
+    return;
+  }
+
+  ensureReplyPlaceholder(respondBox);
+  parentInput = ensureReplyParentInput(form);
+  parentInput.value = String(parentId);
+  targetComment.appendChild(respondBox);
+  ariaCommentState.currentReplyId = replyRootId || "";
+  setCancelReplyVisible(!0);
+
+  if (textarea) {
+    textarea.focus();
+  }
+}
+
+function cancelCommentReply() {
+  var respondBox = getCommentRespondBox();
+  var placeholder = document.getElementById("comment-form-place-holder");
+  var parentInput = document.getElementById("comment-parent");
+
+  if (parentInput && parentInput.parentNode) {
+    parentInput.parentNode.removeChild(parentInput);
+  }
+
+  ariaCommentState.currentReplyId = "";
+  setCancelReplyVisible(!1);
+
+  if (!respondBox || !placeholder || !placeholder.parentNode) {
+    return false;
+  }
+
+  placeholder.parentNode.insertBefore(respondBox, placeholder);
+  return false;
+}
+
+function bindReplyStateTracking() {
+  if (document.body.getAttribute("data-aria-reply-bound") === "true") {
+    return;
+  }
+
+  document.body.setAttribute("data-aria-reply-bound", "true");
+  document.addEventListener("click", function (event) {
+    var replyLink = event.target.closest("[data-aria-action='comment-reply']");
+    var cancelLink = event.target.closest("[data-aria-action='cancel-comment-reply']");
+    var replyItem;
+    var replyTarget;
+    var parentId;
+
+    if (replyLink) {
+      event.preventDefault();
+      replyItem = replyLink.closest("[id^='li-comment-']");
+      replyTarget = replyItem ? replyItem.querySelector("div[id^='comment-']") : null;
+      parentId = replyLink.getAttribute("data-parent-id");
+
+      if (!replyTarget || !parentId) {
+        return;
+      }
+
+      moveCommentFormToReply(replyTarget, parentId, replyItem ? replyItem.id : "");
+      return;
+    }
+
+    if (cancelLink) {
+      event.preventDefault();
+      cancelCommentReply();
+    }
+  });
+}
 
 function bindEmotion() {
   var container = document.querySelector(".OwO");
@@ -75,8 +209,7 @@ function bindAjaxComment() {
   var doc = document;
   var form = doc.getElementById("comment-form");
   var submitButton = form ? form.querySelector(".submit") : null;
-  var textarea = doc.getElementById("textarea");
-  var currentReplyId = "";
+  var textarea = getCommentTextarea();
   var notifier = new Notyf({ delay: 3e3 });
 
   function parseResponseDocument(responseText) {
@@ -114,7 +247,7 @@ function bindAjaxComment() {
 
     if (success && textarea) {
       textarea.value = "";
-      currentReplyId = "";
+      ariaCommentState.currentReplyId = "";
     }
   }
 
@@ -195,34 +328,10 @@ function bindAjaxComment() {
     list.prepend(commentNode);
   }
 
-  function bindReplyStateTracking() {
-    if (doc.body.getAttribute("data-aria-reply-bound") === "true") {
-      return;
-    }
-
-    doc.body.setAttribute("data-aria-reply-bound", "true");
-    doc.addEventListener("click", function (event) {
-      var replyLink = event.target.closest(".comment-reply a");
-      var cancelLink = event.target.closest(".cancel-comment-reply a");
-      var replyRoot;
-
-      if (replyLink) {
-        replyRoot = replyLink.closest("[id^='li-comment-']");
-        currentReplyId = replyRoot ? replyRoot.id : "";
-        return;
-      }
-
-      if (cancelLink) {
-        currentReplyId = "";
-      }
-    });
-  }
-
   if (!form || !submitButton || form.getAttribute("data-aria-ajax-comment-bound") === "true") {
     return;
   }
 
-  bindReplyStateTracking();
   form.setAttribute("data-aria-ajax-comment-bound", "true");
 
   form.addEventListener("submit", async function (event) {
@@ -275,14 +384,14 @@ function bindAjaxComment() {
 
       importedComment = document.importNode(latestComment, !0);
 
-      if (currentReplyId === "") {
+      if (ariaCommentState.currentReplyId === "") {
         commentList = ensureCommentList();
         if (commentList && !doc.querySelector(".prev")) {
           prependAnimatedComment(commentList, importedComment);
         }
         scrollToResponse();
       } else {
-        parentComment = doc.getElementById(currentReplyId);
+        parentComment = doc.getElementById(ariaCommentState.currentReplyId);
         if (!parentComment) {
           finishSubmit(!1);
           notifier.alert("回复目标不存在，页面将刷新后重试。");
@@ -300,9 +409,7 @@ function bindAjaxComment() {
         }
 
         prependAnimatedComment(childrenRoot, importedComment);
-        if (window.TypechoComment && typeof window.TypechoComment.cancelReply === "function") {
-          window.TypechoComment.cancelReply();
-        }
+        cancelCommentReply();
       }
 
       updateCommentsCount();
@@ -317,6 +424,7 @@ function bindAjaxComment() {
 
 Aria.commentPlus = Aria.commentPlus || {};
 Aria.commentPlus.init = function () {
+  bindReplyStateTracking();
   bindEmotion();
   bindAjaxAvatar();
 

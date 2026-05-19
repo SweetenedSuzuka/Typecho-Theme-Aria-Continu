@@ -14,7 +14,7 @@ echo $commentClass;
             <?php $comments->gravatar('120', ''); ?>
         </a>
         <div class="comment-content">
-            <div class="comment-text"><span class="comment-reply" style="float:right"><?php $comments->reply('<i class="iconfont icon-aria-reply"></i>'); ?></span>
+            <div class="comment-text"><span class="comment-reply" style="float:right"><a href="#comment-form" data-aria-action="comment-reply" data-parent-id="<?php echo (int) $comments->coid; ?>"><i class="iconfont icon-aria-reply"></i></a></span>
             <?php
             if ('waiting' == $comments->status) {
                 $waitingText = isset($commentsViewData['waitingText']) ? (string) $commentsViewData['waitingText'] : '';
