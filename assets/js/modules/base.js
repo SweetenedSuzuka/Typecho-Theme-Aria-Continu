@@ -7,6 +7,9 @@ Aria.compat = Aria.compat || {};
 Aria.state = Aria.state || {};
 Aria.notify = Aria.notify || {};
 
+var ARIA_NOTIFY_DELAY = 3000;
+var ARIA_NOTIFY_DISAPPEAR_DURATION = 600;
+
 Aria.helpers.toggleNav = function () {
   $("#nav-vertical").toggleClass("nav-open");
   $("#wrapper").toggle();
@@ -75,16 +78,93 @@ Aria.compat.installLegacyGlobals = function () {
         };
 };
 
+Aria.notify.getContainer = function () {
+  var container;
+
+  if (Aria.state.notifyContainer && document.body.contains(Aria.state.notifyContainer)) {
+    return Aria.state.notifyContainer;
+  }
+
+  if (!document.body) {
+    return null;
+  }
+
+  container = document.createElement("div");
+  container.className = "notyf-container";
+  document.body.appendChild(container);
+  Aria.state.notifyContainer = container;
+  return container;
+};
+
+Aria.notify.scheduleRemoval = function (element) {
+  if (!element || element.getAttribute("data-aria-notify-closing") === "true") {
+    return;
+  }
+
+  element.setAttribute("data-aria-notify-closing", "true");
+  element.classList.add("disappear");
+  window.setTimeout(function () {
+    if (element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
+  }, ARIA_NOTIFY_DISAPPEAR_DURATION);
+};
+
+Aria.notify.createElement = function (message, type) {
+  var element = document.createElement("div");
+  var wrapper = document.createElement("div");
+  var iconCell = document.createElement("div");
+  var icon = document.createElement("i");
+  var text = document.createElement("div");
+  var iconClass = type === "confirm" ? "notyf-confirm-icon" : "notyf-alert-icon";
+
+  element.className = "notyf " + (type === "confirm" ? "confirm" : "alert");
+  wrapper.className = "notyf-wrapper";
+  iconCell.className = "notyf-icon";
+  text.className = "notyf-message";
+
+  icon.className = iconClass;
+  text.textContent = String(message);
+
+  iconCell.appendChild(icon);
+  wrapper.appendChild(iconCell);
+  wrapper.appendChild(text);
+  element.appendChild(wrapper);
+
+  return element;
+};
+
+Aria.notify.push = function (message, type) {
+  var container = Aria.notify.getContainer();
+  var element;
+
+  if (!container) {
+    return false;
+  }
+
+  element = Aria.notify.createElement(message, type);
+  container.appendChild(element);
+  window.setTimeout(function () {
+    Aria.notify.scheduleRemoval(element);
+  }, ARIA_NOTIFY_DELAY);
+
+  return true;
+};
+
 Aria.notify.getInstance = function () {
   if (Aria.state.notifier) {
     return Aria.state.notifier;
   }
 
-  if (typeof window.Notyf !== "function") {
-    return null;
-  }
+  Aria.state.notifier = {
+    confirm: function (message) {
+      return Aria.notify.push(message, "confirm");
+    },
+    alert: function (message) {
+      return Aria.notify.push(message, "alert");
+    },
+  };
 
-  Aria.state.notifier = new window.Notyf({ delay: 3e3 });
   return Aria.state.notifier;
 };
 
