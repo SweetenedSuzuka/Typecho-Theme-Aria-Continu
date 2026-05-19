@@ -214,11 +214,6 @@ JS;
 
     installObserver();
 
-    if (window.jQuery) {
-        window.jQuery(document).on('pjax:complete', function () {
-            window.setTimeout(installObserver, 0);
-        });
-    }
 })();
 JS;
     }

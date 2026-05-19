@@ -2,7 +2,6 @@
 </div><!-- end .row -->
 </div><!-- end .container -->
 </div><!-- end #body -->
-</div><!-- end #pjax-container -->
 <?php
 $footerViewData = Utils::getFooterViewData();
 $mathJaxViewData = Utils::getMathJaxViewData();

@@ -1,125 +1,5 @@
 var Aria = (window.Aria = window.Aria || {});
 
-function bindPjax() {
-  if (!THEME_CONFIG.ENABLE_PJAX || Aria.state.pjaxBound) {
-    return;
-  }
-
-  Aria.state.pjaxBound = !0;
-  $(document)
-    .pjax(
-      'a[href^="' +
-        THEME_CONFIG.SITE_URL +
-        '"]:not(a[target="_blank"], [no-pjax],a[rel~="nofollow"])',
-      {
-        container: "#pjax-container",
-        fragment: "#pjax-container",
-        timeout: 8e3,
-      },
-    )
-    .off("pjax:send.aria pjax:complete.aria")
-    .on("pjax:send.aria", function () {
-      NProgress.start();
-      doPjaxStartAction();
-    })
-    .on("pjax:complete.aria", function () {
-      NProgress.done();
-      doPjaxCompleteAction();
-      if (typeof Aria.reloadAction === "function") {
-        Aria.reloadAction();
-      }
-    });
-}
-
-function doPjaxStartAction() {
-  $("#header").toggleClass("slideOutUp");
-  $("#body").toggleClass("fadeOut");
-  $("#wrapper").hide();
-}
-
-function doPjaxCompleteAction() {
-  $("#header").removeClass("slideOutUp").addClass("slideInDown");
-  $("#body").removeClass("fadeOut").addClass("fadeIn");
-  Aria.refresh();
-  trackPageView();
-  typesetMath();
-  initMeting();
-  initDPlayer();
-  Aria.action.closeNav();
-}
-
-function trackPageView() {
-  if (typeof _hmt !== "undefined") {
-    _hmt.push(["_trackPageview", location.pathname + location.search]);
-  }
-  if (window._gaq) {
-    _gaq.push(["_trackPageview"]);
-  }
-  if (window.ga) {
-    ga("send", "pageview", {
-      page: location.pathname,
-      title: document.title,
-    });
-  }
-}
-
-function typesetMath() {
-  if (!THEME_CONFIG.ENABLE_MATHJAX || typeof MathJax === "undefined") {
-    return;
-  }
-
-  if (typeof window.ariaEnsureMathJaxCompat === "function") {
-    window.ariaEnsureMathJaxCompat();
-  }
-
-  var pjaxContainer = document.getElementById("pjax-container");
-
-  if (typeof window.ariaTypesetMathJax === "function") {
-    window.ariaTypesetMathJax(pjaxContainer || undefined);
-    return;
-  }
-
-  if (typeof MathJax.typesetPromise === "function") {
-    MathJax.typesetPromise(pjaxContainer ? [pjaxContainer] : undefined);
-    return;
-  }
-
-  if (MathJax.Hub && typeof MathJax.Hub.Queue === "function") {
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-  }
-}
-
-function initMeting() {
-  if (typeof loadMeting === "function") {
-    loadMeting();
-  }
-}
-
-function initDPlayer() {
-  if (document.getElementsByClassName("dplayer").length) {
-    for (var total = dPlayerOptions.length, players = [], i = 0; i < total; i++) {
-      players.push(
-        new DPlayer({
-          container: document.getElementById("player" + dPlayerOptions[i].id),
-          autoplay: dPlayerOptions[i].autoplay,
-          theme: dPlayerOptions[i].theme,
-          loop: dPlayerOptions[i].loop,
-          lang: dPlayerOptions[i].lang,
-          screenshot: dPlayerOptions[i].screenshot,
-          hotkey: dPlayerOptions[i].hotkey,
-          preload: dPlayerOptions[i].preload,
-          logo: dPlayerOptions[i].logo,
-          volume: dPlayerOptions[i].volume,
-          mutex: dPlayerOptions[i].mutex,
-          video: dPlayerOptions[i].video,
-          subtitle: dPlayerOptions[i].subtitle,
-          danmaku: dPlayerOptions[i].danmaku,
-        }),
-      );
-    }
-  }
-}
-
 function logVersion() {
   if (Aria.state.versionLogged) {
     return;
@@ -145,7 +25,6 @@ $.extend(Aria, {
 
     this.state.initialized = !0;
     this.action.init();
-    bindPjax();
     this.refresh();
     logVersion();
   },
@@ -178,7 +57,6 @@ $.extend(Aria, {
         var anchor = document.createElement("a");
         anchor.href = this.src;
         anchor.setAttribute("data-caption", this.title || "");
-        anchor.setAttribute("no-pjax", "");
         anchor.className = "fancybox";
         anchor.setAttribute("data-fancybox", "gallery");
         anchor.style.outline = "0";
@@ -192,7 +70,6 @@ $.extend(Aria, {
         var anchor = document.createElement("a");
         anchor.href = this.src;
         anchor.setAttribute("data-caption", this.title || "");
-        anchor.setAttribute("no-pjax", "");
         anchor.className = "fancybox";
         anchor.style.outline = "0";
         return anchor;

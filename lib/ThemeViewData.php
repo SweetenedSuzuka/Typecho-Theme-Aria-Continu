@@ -286,7 +286,7 @@ class ThemeViewData
             $content = '';
 
             if ($icon !== '') {
-                $content .= '<img src="' . self::escapeAttr($icon) . '" alt="" aria-hidden="true" style="width:1em; height:auto; vertical-align:middle; margin-right:0.3em">';
+                $content .= self::renderFooterRecordIcon($icon);
             }
             $content .= self::escapeHtml($text);
 
@@ -300,6 +300,31 @@ class ThemeViewData
         }
 
         return $html;
+    }
+
+    /**
+     * 渲染页脚备案图标
+     *
+     * @param string $icon
+     *
+     * @return string
+     */
+    private static function renderFooterRecordIcon($icon)
+    {
+        $icon = trim((string) $icon);
+        if ($icon === '') {
+            return '';
+        }
+
+        if (preg_match('/^(https?:)?\/\//i', $icon) || strpos($icon, '/') !== false || strpos($icon, '.') !== false) {
+            return '<img src="'
+                . self::escapeAttr($icon)
+                . '" alt="" aria-hidden="true" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" style="width:1em; height:auto; vertical-align:middle; margin-right:0.3em">';
+        }
+
+        return '<i class="'
+            . self::escapeAttr($icon)
+            . '" aria-hidden="true" style="margin-right:0.3em"></i>';
     }
 
     /**

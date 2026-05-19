@@ -28,8 +28,6 @@ class ThemeRuntimeConfig
             'SHOW_HITOKOTO' => ThemeOptions::isFeatureEnabled('showHitokoto', 'AriaConfig'),
             'SHOW_QRCODE' => ThemeOptions::isEnabled('showQRCode', 'AriaConfig'),
             'SHOW_REWARD' => count(ThemeOptions::getRewardConfigMap()) > 0,
-            // PJAX 已进入退场阶段，前端默认主路径固定回到普通页面跳转。
-            'ENABLE_PJAX' => false,
             'ENABLE_AJAX_COMMENT' => ThemeOptions::isEnabled('enableAjaxComment', 'AriaConfig'),
             'ENABLE_FANCYBOX' => ThemeOptions::isEnabled('enableFancybox', 'AriaConfig'),
             'ENABLE_LAZYLOAD' => ThemeOptions::isEnabled('enableLazyload', 'AriaConfig'),

@@ -15,7 +15,7 @@
             <a href="<?php $this->options->profileUrl(); ?>">
                 <?php $this->user->screenName(); ?>
             </a>.
-            <a href="<?php $this->options->logoutUrl(); ?>" title="Logout" no-pjax>
+            <a href="<?php $this->options->logoutUrl(); ?>" title="Logout">
                 <?php _e('退出'); ?>&raquo;</a>
         </p>
         <?php else: ?>

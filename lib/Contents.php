@@ -322,7 +322,7 @@ class Contents
         $showQRCode = Utils::isEnabled('showQRCode', 'AriaConfig');
 
         if ($rewardConfig) {
-            $html .= '<div class="post-reward"><a href="javascript:void(0);" data-aria-action="toggle-post-other" no-pjax ><i class="iconfont icon-aria-reward"></i></a>
+            $html .= '<div class="post-reward"><a href="javascript:void(0);" data-aria-action="toggle-post-other"><i class="iconfont icon-aria-reward"></i></a>
                 <ul>';
             foreach ($rewardConfig as $key => $data) {
                 $html .= '<li><img no-lazyload src="' . htmlspecialchars($data, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($key, ENT_QUOTES, 'UTF-8') . '</li>';
@@ -331,7 +331,7 @@ class Contents
         }
         if ($showQRCode) {
             $url = Helper::options()->themeUrl . '/lib/getQRCode.php?url=';
-            $html .= '<div class="post-qrcode"><a href="javascript:void(0);" data-aria-action="toggle-post-other" no-pjax ><i class="iconfont icon-aria-qrcode"></i></a><div><span>手机上阅读<img no-lazyload src="' . $url . $archive->permalink . '"></span></div></div>';
+            $html .= '<div class="post-qrcode"><a href="javascript:void(0);" data-aria-action="toggle-post-other"><i class="iconfont icon-aria-qrcode"></i></a><div><span>手机上阅读<img no-lazyload src="' . $url . $archive->permalink . '"></span></div></div>';
         }
         $html .= "</div>";
         echo $html;

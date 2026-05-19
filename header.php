@@ -45,7 +45,6 @@
 <?php Utils::AriaConfig(); ?>
 <?php include __DIR__ . '/components/header/navigation.php'; ?>
 <?php include __DIR__ . '/components/header/search-box.php'; ?>
-<div id="pjax-container">
 <?php include __DIR__ . '/components/header/hero.php'; ?>
 <div id="body" class="animated fadeIn">
     <div class="container">
