@@ -54,8 +54,12 @@ function togglePostOther(t) {
         console.log(
           "%cVer " +
             THEME_CONFIG.THEME_VERSION +
-            "%cAria By Siphils https://eriri.ink",
+            "%cAria Continuo By SweetenedSuzuka",
           "color: #fff; background: #435561; padding:6px;",
+          "color: #fff; background: #435561cf; padding:6px;",
+        ),
+        console.log(
+          "%cBased on Aria By Siphils",
           "color: #fff; background: #435561cf; padding:6px;",
         ));
     },
@@ -178,8 +182,17 @@ function togglePostOther(t) {
     hljs: {
       init: function () {
         ($("pre code").each(function (t, e) {
-          (hljs.highlightBlock(e), $(e).attr({ id: "hljs-" + t }));
-          var n =
+          if ("true" === $(e).attr("data-aria-hljs-bound")) return;
+          var n = !$(e).closest(".comment-text").length;
+          $(e).attr("data-aria-hljs-bound", "true"),
+            hljs.highlightBlock(e),
+            n &&
+              "function" == typeof hljs.lineNumbersBlock &&
+              "true" !== $(e).attr("data-aria-hljs-lines-bound") &&
+              ($(e).attr("data-aria-hljs-lines-bound", "true"),
+              hljs.lineNumbersBlock(e)),
+            $(e).attr({ id: "hljs-" + t });
+          var a =
             null ==
             $(this)
               .attr("class")
@@ -189,14 +202,13 @@ function togglePostOther(t) {
                   .attr("class")
                   .match(/lang-(\w+)/)[1]
                   .toUpperCase();
-          ($(this).attr("data-lang", n),
+          ($(this).attr("data-lang", a),
             $(this).after(
               '<a class="copy-code" href="javascript:" data-clipboard-target="#hljs-' +
                 t +
                 '" title="拷贝代码"><i class="iconfont icon-aria-copy"></i></a>',
             ));
         }),
-          hljs.initLineNumbersOnLoad(),
           this.clipboard());
       },
       clipboard: function () {

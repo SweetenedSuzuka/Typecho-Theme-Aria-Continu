@@ -129,10 +129,11 @@ function logVersion() {
   console.log(
     "%cVer " +
       THEME_CONFIG.THEME_VERSION +
-      "%cAria By Siphils https://eriri.ink",
+      "%cAria Continuo By SweetenedSuzuka",
     "color: #fff; background: #435561; padding:6px;",
     "color: #fff; background: #435561cf; padding:6px;",
   );
+  console.log("%cBased on Aria By Siphils", "color: #fff; background: #435561cf; padding:6px;");
 }
 
 $.extend(Aria, {
@@ -226,8 +227,18 @@ $.extend(Aria, {
           return;
         }
 
+        var shouldAddLineNumbers = !$(element).closest(".comment-text").length;
+
         $(element).attr("data-aria-hljs-bound", "true");
         hljs.highlightBlock(element);
+        if (
+          shouldAddLineNumbers &&
+          typeof hljs.lineNumbersBlock === "function" &&
+          $(element).attr("data-aria-hljs-lines-bound") !== "true"
+        ) {
+          $(element).attr("data-aria-hljs-lines-bound", "true");
+          hljs.lineNumbersBlock(element);
+        }
         $(element).attr({ id: "hljs-" + index });
 
         var match = $(this).attr("class").match(/lang-(\w+)/);
@@ -242,8 +253,6 @@ $.extend(Aria, {
           );
         }
       });
-
-      hljs.initLineNumbersOnLoad();
       this.clipboard();
     },
 

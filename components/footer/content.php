@@ -9,7 +9,7 @@
         <p id="hitokoto" class="footer-line"></p>
     <?php endif; ?>
     <p id="footer-info" class="footer-line">
-        <span>&copy; <span><?php echo Utils::getCopyrightYears(); ?></span></span>
+        <span>&copy; <span><?php echo htmlspecialchars($footerViewData['copyrightYears'], ENT_QUOTES, 'UTF-8'); ?></span></span>
         <?php echo $footerViewData['widgetHtml']; ?>
     </p>
     <?php if (!empty($footerViewData['recordsHtml'])): ?>

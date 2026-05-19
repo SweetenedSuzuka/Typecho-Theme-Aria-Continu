@@ -13,6 +13,78 @@
 class ThemeViewData
 {
     /**
+     * HTML 文本转义
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private static function escapeHtml($value)
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * HTML 属性值转义
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private static function escapeAttr($value)
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * 获取页头视图数据
+     *
+     * @param Widget_Archive $archive
+     * @param bool $is404Page
+     *
+     * @return array
+     */
+    public static function getHeaderViewData($archive, $is404Page = false)
+    {
+        $isContentHeroPage = $archive->is('post')
+            || $archive->is('page')
+            || $archive->is('single')
+            || $archive->is('archive');
+        $options = Helper::options();
+        $headerBackgroundUrl = self::getHeaderBackgroundUrl($archive, $is404Page);
+
+        return array(
+            'head' => array(
+                'styles' => self::getHeaderStyleUrls(),
+                'scripts' => self::getHeaderScriptUrls(),
+                'legacyScripts' => self::getHeaderLegacyScriptUrls(),
+                'customHtml' => self::getCustomHeaderHtml(),
+            ),
+            'body' => array(
+                'className' => self::getBodyClassName(),
+                'style' => self::getBodyStyle(),
+            ),
+            'navigation' => array(
+                'slugs' => ThemeSiteLookup::getPagesInfo(),
+                'adminAvatarUrl' => ThemeSiteLookup::getAdminAvatarUrl(50),
+                'adminAvatarLargeUrl' => ThemeSiteLookup::getAdminAvatarUrl(150),
+                'siteUrl' => rtrim((string) $options->siteUrl, '/') . '/',
+                'siteTitle' => trim((string) $options->title),
+            ),
+            'search' => array(
+                'placeholder' => self::getSearchPlaceholder(),
+                'buttonBackgroundUrl' => ThemeAssetHelper::getThemeAssetUrl('assets/img/search.png'),
+            ),
+            'hero' => array(
+                'className' => implode(' ', self::getHeaderClassNames($isContentHeroPage, $is404Page)),
+                'backgroundCss' => self::getHeaderBackgroundCss($headerBackgroundUrl),
+                'siteTitle' => trim((string) $options->title),
+                'subtitle' => self::getHeroSubtitle(),
+            ),
+        );
+    }
+
+    /**
      * 获取评论展示视图数据
      *
      * @return array
@@ -64,6 +136,40 @@ class ThemeViewData
                 'submitText' => '投送',
             ),
         );
+    }
+
+    /**
+     * 获取页脚展示视图数据
+     *
+     * @return array
+     */
+    public static function getFooterContentViewData()
+    {
+        $recordsEnabled = ThemeOptions::isOptionEnabled('footerRecordsEnabled', true);
+
+        return array(
+            'showHitokoto' => ThemeOptions::isFeatureEnabled('showHitokoto', 'AriaConfig'),
+            'widgetHtml' => self::getFooterWidgetHtml(),
+            'recordsHtml' => $recordsEnabled ? self::getFooterRecordsHtml() : '',
+            'customFooterHtml' => self::getCustomFooterHtml(),
+            'goTopImageUrl' => ThemeAssetHelper::getThemeAssetUrl('assets/img/goTop.png'),
+            'copyrightYears' => self::getCopyrightYears(),
+        );
+    }
+
+    /**
+     * 获取页脚完整视图数据
+     *
+     * @return array
+     */
+    public static function getFooterViewData()
+    {
+        return array_merge(self::getFooterContentViewData(), array(
+            'scripts' => ThemeScriptAssets::getFooterScriptUrls(),
+            'customScriptHtml' => ThemeScriptAssets::getCustomScriptHtml(),
+            'mainScriptUrl' => ThemeScriptAssets::getMainScriptUrl(),
+            'statisticsHtml' => ThemeScriptAssets::getStatisticsHtml(),
+        ));
     }
 
     /**
@@ -126,6 +232,258 @@ class ThemeViewData
     }
 
     /**
+     * 获取归一化后的页脚链接配置
+     *
+     * @return array
+     */
+    public static function getFooterLinkItems()
+    {
+        return array_merge(self::getFooterBaseLinkItems(), ThemeOptions::getFooterWidgetItems());
+    }
+
+    /**
+     * 获取页脚链接 HTML
+     *
+     * @return string
+     */
+    public static function getFooterWidgetHtml()
+    {
+        $html = '';
+        foreach (self::getFooterLinkItems() as $item) {
+            $html .= self::renderFooterLinkItem($item);
+        }
+
+        return $html;
+    }
+
+    /**
+     * 获取页脚备案信息 HTML
+     *
+     * @return string
+     */
+    public static function getFooterRecordsHtml()
+    {
+        $records = ThemeOptions::getFooterRecords();
+        if (empty($records)) {
+            return '';
+        }
+
+        $html = '';
+        $separator = '';
+        foreach ($records as $record) {
+            if (!is_array($record)) {
+                continue;
+            }
+
+            $text = array_key_exists('text', $record) ? trim((string) $record['text']) : '';
+            if ($text === '') {
+                continue;
+            }
+
+            $url = array_key_exists('url', $record) ? trim((string) $record['url']) : '';
+            $icon = array_key_exists('icon', $record) ? trim((string) $record['icon']) : '';
+            $title = array_key_exists('title', $record) ? trim((string) $record['title']) : $text;
+            $content = '';
+
+            if ($icon !== '') {
+                $content .= '<img src="' . self::escapeAttr($icon) . '" alt="" aria-hidden="true" style="width:1em; height:auto; vertical-align:middle; margin-right:0.3em">';
+            }
+            $content .= self::escapeHtml($text);
+
+            if ($url !== '') {
+                $html .= $separator . '<a href="' . self::escapeAttr($url) . '" title="' . self::escapeAttr($title) . '" target="_blank">' . $content . '</a>';
+            } else {
+                $html .= $separator . '<span title="' . self::escapeAttr($title) . '">' . $content . '</span>';
+            }
+
+            $separator = '<span> | </span>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * 获取页脚版权年份文本
+     *
+     * @return string
+     */
+    public static function getCopyrightYears()
+    {
+        $options = Helper::options();
+        $value = trim((string) $options->cpr);
+
+        if ($value === '') {
+            $value = '2022-{Y}';
+        }
+
+        return strtr($value, array(
+            '{Y}' => date('Y'),
+            '{y}' => date('y'),
+            '{year}' => date('Y'),
+        ));
+    }
+
+    /**
+     * 获取页头背景图 URL
+     *
+     * @param Widget_Archive $archive
+     * @param bool $is404Page
+     *
+     * @return string
+     */
+    private static function getHeaderBackgroundUrl($archive, $is404Page)
+    {
+        if ($archive->is('post') || $archive->is('page') || $archive->is('single')) {
+            return $archive->fields->thumbnail ? $archive->fields->thumbnail : ThemeAssetHelper::getThumbnail();
+        }
+
+        if ($is404Page) {
+            return ThemeAssetHelper::get404BackgroundUrl();
+        }
+
+        return ThemeAssetHelper::getBackgroundUrl();
+    }
+
+    /**
+     * 获取页头 class 列表
+     *
+     * @param bool $isContentHeroPage
+     * @param bool $is404Page
+     *
+     * @return array
+     */
+    private static function getHeaderClassNames($isContentHeroPage, $is404Page)
+    {
+        $classNames = array('clearfix', 'animated', 'fadeInDown');
+
+        if ($isContentHeroPage || $is404Page) {
+            $classNames[] = 'header--compact';
+            $classNames[] = 'header--hide-meta';
+        }
+
+        if ($isContentHeroPage) {
+            $classNames[] = 'header--compact-mobile';
+        }
+
+        return $classNames;
+    }
+
+    /**
+     * 将背景图 URL 转为页头 style 变量
+     *
+     * @param string $backgroundUrl
+     *
+     * @return string
+     */
+    private static function getHeaderBackgroundCss($backgroundUrl)
+    {
+        return sprintf(
+            "--aria-header-bg: url('%s');",
+            str_replace(
+                array('\\', "'"),
+                array('\\\\', "\\'"),
+                (string) $backgroundUrl
+            )
+        );
+    }
+
+    /**
+     * 获取网页背景自定义 body class
+     *
+     * @return string
+     */
+    private static function getBodyClassName()
+    {
+        return ThemeOptions::isOptionEnabled('customPageBackgroundEnabled', false)
+            ? 'body--custom-background'
+            : '';
+    }
+
+    /**
+     * 获取网页背景自定义 body style
+     *
+     * @return string
+     */
+    private static function getBodyStyle()
+    {
+        if (!ThemeOptions::isOptionEnabled('customPageBackgroundEnabled', false)) {
+            return '';
+        }
+
+        return sprintf(
+            "--aria-page-bg: url('%s');",
+            str_replace(
+                array('\\', "'"),
+                array('\\\\', "\\'"),
+                ThemeAssetHelper::getCustomPageBackgroundUrl()
+            )
+        );
+    }
+
+    /**
+     * 获取页头样式资源列表
+     *
+     * @return array
+     */
+    private static function getHeaderStyleUrls()
+    {
+        $styles = array(
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+        );
+
+        if (ThemeOptions::isEnabled('enableFancybox', 'AriaConfig')) {
+            $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/css/jquery.fancybox.min.css');
+        }
+
+        return array_merge($styles, array(
+            ThemeAssetHelper::getThemeAssetUrl('assets/OwO/OwO.min.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/animate.min.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/iconfont.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/base.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/layout.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/post.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/comments.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/extras.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/pages.css'),
+        ));
+    }
+
+    /**
+     * 获取页头脚本资源列表
+     *
+     * @return array
+     */
+    private static function getHeaderScriptUrls()
+    {
+        return array(
+            ThemeAssetHelper::getThemeAssetUrl('assets/js/jquery.min.js'),
+        );
+    }
+
+    /**
+     * 获取低版本 IE 兼容脚本资源列表
+     *
+     * @return array
+     */
+    private static function getHeaderLegacyScriptUrls()
+    {
+        return array(
+            'https://cdn.staticfile.org/html5shiv/r29/html5.min.js',
+            'https://cdn.staticfile.org/respond.js/1.3.0/respond.min.js',
+        );
+    }
+
+    /**
+     * 获取头部自定义注入内容
+     *
+     * @return string
+     */
+    private static function getCustomHeaderHtml()
+    {
+        return ThemeOptions::hasOption('customHeader') ? (string) Helper::options()->customHeader : '';
+    }
+
+    /**
      * 获取评论表单样式
      *
      * @return string
@@ -164,5 +522,149 @@ class ThemeViewData
         }
 
         return trim(ob_get_clean());
+    }
+
+    /**
+     * 获取搜索框占位文本
+     *
+     * @return string
+     */
+    public static function getSearchPlaceholder()
+    {
+        if (!ThemeOptions::hasOption('searchPlaceholder')) {
+            return '要想搜索请输入关键词';
+        }
+
+        return ThemeOptions::getOptionStringValue('searchPlaceholder', '', false);
+    }
+
+    /**
+     * 获取页头副标题
+     *
+     * @return string
+     */
+    public static function getHeroSubtitle()
+    {
+        if (!ThemeOptions::hasOption('heroSubtitle')) {
+            return '越过喧嚣找到你';
+        }
+
+        $heroSubtitle = ThemeOptions::getOptionStringValue('heroSubtitle', '', false);
+        if ($heroSubtitle !== '') {
+            return $heroSubtitle;
+        }
+
+        return ThemeOptions::getOptionStringValue('description', '', false);
+    }
+
+    /**
+     * 渲染页脚链接项
+     *
+     * @param array $item
+     *
+     * @return string
+     */
+    private static function renderFooterLinkItem(array $item)
+    {
+        $text = array_key_exists('text', $item) ? trim((string) $item['text']) : '';
+        if ($text === '') {
+            return '';
+        }
+
+        $href = array_key_exists('href', $item) ? trim((string) $item['href']) : '';
+        $title = array_key_exists('title', $item) ? trim((string) $item['title']) : '';
+        $target = array_key_exists('target', $item) ? trim((string) $item['target']) : '';
+        $escapedText = self::escapeHtml($text);
+
+        if ($href === '') {
+            return '<span> • ' . $escapedText . '</span>';
+        }
+
+        $attributes = 'href="' . self::escapeAttr($href) . '"';
+        if ($title !== '') {
+            $attributes .= ' title="' . self::escapeAttr($title) . '"';
+        }
+        if ($target !== '') {
+            $attributes .= ' target="' . self::escapeAttr($target) . '"';
+        }
+
+        return '<span><a ' . $attributes . '> • ' . $escapedText . '</a></span>';
+    }
+
+    /**
+     * 获取页脚基础链接配置
+     *
+     * @return array
+     */
+    private static function getFooterBaseLinkItems()
+    {
+        $items = array(
+            array(
+                'text' => ThemeOptions::getOptionStringValue('footerSiteName', '网站名称'),
+                'href' => ThemeOptions::getOptionStringValue('footerSiteUrl', 'https://example.com/'),
+            ),
+            array(
+                'text' => 'Typecho',
+                'href' => 'https://www.typecho.org',
+                'title' => '念念不忘，必有回响。',
+                'target' => '_blank',
+            ),
+        );
+
+        $creditsMode = ThemeOptions::getOptionStringValue('footerCreditsMode', 'Continuo');
+        if ($creditsMode === 'original') {
+            $items[] = array(
+                'text' => 'Aria',
+                'href' => 'https://eriri.ink/archives/Typecho-Theme-Aria.html',
+                'title' => 'Typecho-Theme-Aria Ver ' . ARIA_VERSION . ' by Siphils',
+                'target' => '_blank',
+            );
+            $items[] = array(
+                'text' => 'Theme by Siphils',
+                'href' => 'https://eriri.ink/archives/Typecho-Theme-Aria.html',
+                'title' => 'Typecho-Theme-Aria Ver ' . ARIA_VERSION . ' by Siphils',
+                'target' => '_blank',
+            );
+        } elseif ($creditsMode === 'Continuo') {
+            $items[] = array(
+                'text' => 'Aria Continuo',
+                'href' => 'https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continuo',
+                'title' => 'Aria Continuo V' . ARIA_VERSION,
+                'target' => '_blank',
+            );
+            $items[] = array(
+                'text' => 'Modified by 永見涼花',
+                'href' => 'https://suzuka.cc',
+                'title' => '永見涼花',
+                'target' => '_blank',
+            );
+        } elseif ($creditsMode === 'custom') {
+            $creditsText = ThemeOptions::getOptionStringValue('footerCreditsText', '用户自定义内容');
+            $creditsLink = ThemeOptions::getOptionStringValue('footerCreditsLink', '', false);
+
+            $items[] = array(
+                'text' => 'Aria Continuo',
+                'href' => 'https://github.com/SweetenedSuzuka/Typecho-Theme-Aria-Continuo',
+                'title' => 'Aria Continuo V' . ARIA_VERSION,
+                'target' => '_blank',
+            );
+            $items[] = array(
+                'text' => $creditsText,
+                'href' => $creditsLink,
+                'target' => $creditsLink !== '' ? '_blank' : '',
+            );
+        }
+
+        return $items;
+    }
+
+    /**
+     * 获取底部自定义内容
+     *
+     * @return string
+     */
+    private static function getCustomFooterHtml()
+    {
+        return ThemeOptions::hasOption('customFooter') ? (string) Helper::options()->customFooter : '';
     }
 }
