@@ -1,5 +1,167 @@
 var Aria = (window.Aria = window.Aria || {});
 
+function getLazyloadPlaceholderUrl() {
+  return THEME_CONFIG.THEME_URL + "/assets/img/loading.svg";
+}
+
+function escapeCssUrl(url) {
+  return String(url).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+function loadLazyImage(image) {
+  var source = image.getAttribute("data-aria-lazy-src");
+  var placeholderUrl = getLazyloadPlaceholderUrl();
+
+  if (!source || image.getAttribute("data-aria-lazy-loaded") === "true") {
+    return;
+  }
+
+  image.setAttribute("data-aria-lazy-loaded", "true");
+  image.addEventListener(
+    "load",
+    function () {
+      image.classList.remove("aria-lazy-pending");
+      image.classList.add("aria-lazy-loaded");
+    },
+    { once: true },
+  );
+  image.addEventListener(
+    "error",
+    function () {
+      image.classList.remove("aria-lazy-loaded");
+      image.classList.remove("aria-lazy-pending");
+      image.classList.add("aria-lazy-error");
+      image.src = placeholderUrl;
+    },
+    { once: true },
+  );
+  image.src = source;
+}
+
+function loadLazyBackground(element) {
+  var backgroundUrl = element.getAttribute("data-aria-lazy-background");
+  var preloader;
+
+  if (!backgroundUrl || element.getAttribute("data-aria-lazy-loaded") === "true") {
+    return;
+  }
+
+  element.setAttribute("data-aria-lazy-loaded", "true");
+  preloader = new Image();
+  preloader.decoding = "async";
+  preloader.onload = function () {
+    element.style.backgroundImage = 'url("' + escapeCssUrl(backgroundUrl) + '")';
+    element.classList.remove("aria-lazy-pending");
+    element.classList.add("aria-lazy-loaded");
+  };
+  preloader.onerror = function () {
+    element.classList.remove("aria-lazy-loaded");
+    element.classList.remove("aria-lazy-pending");
+    element.classList.add("aria-lazy-error");
+  };
+  preloader.src = backgroundUrl;
+}
+
+function prepareLazyImages() {
+  var placeholderUrl = getLazyloadPlaceholderUrl();
+  var images = document.querySelectorAll("img:not([no-lazyload])");
+  var pending = [];
+
+  Array.prototype.forEach.call(images, function (image) {
+    var source = image.getAttribute("data-aria-lazy-src") || image.getAttribute("src");
+
+    if (
+      image.getAttribute("data-aria-lazy-bound") === "true" ||
+      !source ||
+      source === placeholderUrl
+    ) {
+      return;
+    }
+
+    image.setAttribute("data-aria-lazy-bound", "true");
+    image.setAttribute("data-aria-lazy-src", source);
+    image.setAttribute("loading", "lazy");
+    image.setAttribute("decoding", "async");
+    image.setAttribute("fetchpriority", "low");
+    image.classList.add("aria-lazy-image", "aria-lazy-pending");
+    image.src = placeholderUrl;
+    pending.push(image);
+  });
+
+  return pending;
+}
+
+function prepareLazyBackgrounds() {
+  var elements = document.querySelectorAll("[data-aria-lazy-background]");
+  var pending = [];
+
+  Array.prototype.forEach.call(elements, function (element) {
+    if (
+      element.getAttribute("data-aria-lazy-bound") === "true" ||
+      !element.getAttribute("data-aria-lazy-background")
+    ) {
+      return;
+    }
+
+    element.setAttribute("data-aria-lazy-bound", "true");
+    element.classList.add("aria-lazy-background", "aria-lazy-pending");
+    pending.push(element);
+  });
+
+  return pending;
+}
+
+function observeLazyTargets(targets) {
+  var observer;
+
+  if (!targets.length) {
+    return;
+  }
+
+  if (typeof window.IntersectionObserver !== "function") {
+    Array.prototype.forEach.call(targets, function (target) {
+      if (target.hasAttribute("data-aria-lazy-src")) {
+        loadLazyImage(target);
+        return;
+      }
+
+      if (target.hasAttribute("data-aria-lazy-background")) {
+        loadLazyBackground(target);
+      }
+    });
+    return;
+  }
+
+  if (!Aria.state.lazyObserver) {
+    Aria.state.lazyObserver = new window.IntersectionObserver(
+      function (entries, currentObserver) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          if (entry.target.hasAttribute("data-aria-lazy-src")) {
+            loadLazyImage(entry.target);
+          } else if (entry.target.hasAttribute("data-aria-lazy-background")) {
+            loadLazyBackground(entry.target);
+          }
+
+          currentObserver.unobserve(entry.target);
+        });
+      },
+      {
+        rootMargin: "120px 0px",
+        threshold: 0.01,
+      },
+    );
+  }
+
+  observer = Aria.state.lazyObserver;
+  Array.prototype.forEach.call(targets, function (target) {
+    observer.observe(target);
+  });
+}
+
 function logVersion() {
   if (Aria.state.versionLogged) {
     return;
@@ -154,17 +316,6 @@ $.extend(Aria, {
   },
 
   lazyload: function () {
-    $("img:not([no-lazyload])").each(function () {
-      if ($(this).attr("data-aria-lazyload-bound") === "true") {
-        return;
-      }
-
-      $(this).attr("data-aria-lazyload-bound", "true");
-      $(this).attr("data-original", $(this).attr("src"));
-      $(this).attr("src", THEME_CONFIG.THEME_URL + "/assets/img/loading.svg");
-    });
-
-    $(".lazyload").lazyload({ effect: "fadeIn" });
-    $("img:not([no-lazyload])").lazyload({ effect: "fadeIn" });
+    observeLazyTargets(prepareLazyImages().concat(prepareLazyBackgrounds()));
   },
 });

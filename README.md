@@ -363,17 +363,31 @@ Andante · 2019 → 2026
 - [headroom.js](http://wicky.nillia.ms/headroom.js/)
 - [NProgress](https://github.com/rstacruz/nprogress)
 - [animate.css](https://daneden.github.io/animate.css/)
-- [jquery-lazyload](https://appelsiini.net/projects/lazyload/)
 - [smooth-scroll](https://github.com/cferdinandi/smooth-scroll)
 - [highlightjs-line-numbers](https://wcoder.github.io/highlightjs-line-numbers.js/)
 - [clipboard.js](https://zenorocha.github.io/clipboard.js)
 
+<p align="center">
+──────────── ✦ ────────────
+</p>
+
+<p align="center">
+连奏 · 致谢所有的协奏者
+Legato · Then and Now<br>
+</p>
+
+<p align="center">
+──────────── ✦ ────────────
+</p>
+
 # 曾经使用过的开源项目
 
 - [jquery-pjax](https://github.com/defunkt/jquery-pjax)
+- [jquery-lazyload](https://appelsiini.net/projects/lazyload/)
 
 > 尽管这些项目、库的内容或实现方法已经移除，但我们永远感谢前人做出的伟大贡献，没有这些项目，无论是Aria还是Aria Continuo都无法顺利问世。
-
+连奏 · 致谢所有的协奏者
+Legato · 致谢所有的协奏者
 ---
 
 # 推荐插件（非必需）

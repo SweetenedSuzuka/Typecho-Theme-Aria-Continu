@@ -295,7 +295,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
         array(
             'enableAjaxComment' => '开启AJAX评论',
             'enableFancybox' => '文章/评论图片使用<a href="https://fancyapps.com/" target="_blank">fancybox</a>',
-            'enableLazyload' => '开启图片懒加载<a href="https://appelsiini.net/projects/lazyload" target="_blank">lazyload</a>',
+            'enableLazyload' => '开启图片懒加载',
             'enableCommentToMail' => '是否接收评论邮件回复按钮，需要配合<a href="https://9sb.org/58">CommentToMail</a>（文章中最后一个插件)使用',
             'showQRCode' => '文章底部显示本文链接二维码',
             'showCommentUA' => '评论显示UserAgent（显示操作系统和浏览器信息）',

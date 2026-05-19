@@ -27,10 +27,6 @@ class ThemeScriptAssets
 
         $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/highlight.min.js');
 
-        if (ThemeOptions::isEnabled('enableLazyload', 'AriaConfig')) {
-            $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/jquery.lazyload.min.js');
-        }
-
         $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/OwO/OwO.min.js');
 
         return array_merge($scripts, array(

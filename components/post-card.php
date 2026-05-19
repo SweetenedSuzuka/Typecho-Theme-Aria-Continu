@@ -29,7 +29,7 @@ $ariaCardLoadingImageUrl = isset($postCardViewData['loadingImageUrl'])
     </div>
     <?php if ($ariaCardUseLazyload): ?>
         <a href="<?php $this->permalink(); ?>">
-            <div class="card-thumbnail lazyload" data-original="<?php echo htmlspecialchars($ariaCardThumbnail, ENT_QUOTES, 'UTF-8'); ?>" style="background:url(<?php echo htmlspecialchars($ariaCardLoadingImageUrl, ENT_QUOTES, 'UTF-8'); ?>) center center no-repeat;background-size: 100% auto;">
+            <div class="card-thumbnail" data-aria-lazy-background="<?php echo htmlspecialchars($ariaCardThumbnail, ENT_QUOTES, 'UTF-8'); ?>" style="background:url(<?php echo htmlspecialchars($ariaCardLoadingImageUrl, ENT_QUOTES, 'UTF-8'); ?>) center center no-repeat;background-size: 100% auto;">
             </div>
         </a>
     <?php else: ?>
