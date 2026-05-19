@@ -438,7 +438,7 @@ Legato · Then and Now<br>
 <p align="center">
 ──────────── ✦ ────────────
 </p>
-回声 · Echo
+回声 · Echo<br>
 念念不忘，必有回响 · Echoes and Continuations
 <p align="center">
 ──────────── ✦ ────────────
