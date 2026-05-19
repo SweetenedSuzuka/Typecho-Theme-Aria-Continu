@@ -72,8 +72,7 @@ window.ariaEnsureMathJaxCompat = window.ariaEnsureMathJaxCompat || function () {
             return;
         }
         if (typeof window.MathJax.typesetPromise === 'function') {
-            var container = document.getElementById('pjax-container');
-            return window.MathJax.typesetPromise(container ? [container] : undefined);
+            return window.MathJax.typesetPromise();
         }
     };
 };
