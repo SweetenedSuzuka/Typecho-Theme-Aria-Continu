@@ -21,10 +21,6 @@ class ThemeScriptAssets
     {
         $scripts = array();
 
-        if (ThemeOptions::isEnabled('enablePjax', 'AriaConfig')) {
-            $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/jquery.pjax.min.js');
-        }
-
         if (ThemeOptions::isEnabled('enableFancybox', 'AriaConfig')) {
             $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/jquery.fancybox.min.js');
         }

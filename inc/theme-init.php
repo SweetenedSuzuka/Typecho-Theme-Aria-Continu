@@ -100,10 +100,6 @@ function themeInit($archive)
     $options->commentsOrder = 'DESC';
     themeNormalizeCommentMarkdownOptions();
 
-    if (Utils::isEnabled('enablePjax', 'AriaConfig')) {
-        $options->commentsAntiSpam = false;
-    }
-
     // AJAX 获取评论头像，仅在明确请求该动作时响应。
     if (
         $_SERVER['REQUEST_METHOD'] === 'GET'

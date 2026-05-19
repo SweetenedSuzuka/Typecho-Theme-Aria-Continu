@@ -278,7 +278,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
     $form->addInput($notFoundDescription);
 
     // Advanced injection and analytics.
-    $statistics = new Typecho_Widget_Helper_Form_Element_Textarea('statistics', null, null, _t('统计代码'), _t('在此填入统计的代码(目前统计代码支持谷歌统计和百度统计的重载，若使用其他统计请关闭PJAX否则得到的统计数据不准确)'));
+    $statistics = new Typecho_Widget_Helper_Form_Element_Textarea('statistics', null, null, _t('统计代码'), _t('在此填入统计代码（当前主题默认不再走 PJAX 切页；若仍自行保留旧 PJAX 行为，除谷歌统计和百度统计外，其他统计代码可能无法准确重载）'));
     $form->addInput($statistics);
 
     $customHeader = new Typecho_Widget_Helper_Form_Element_Textarea('customHeader', null, null, _t('顶部自定义内容'), _t('会加载在<strong>head</strong>结束标签之前'));
@@ -293,7 +293,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
     // Generic frontend switches.
     $AriaConfig = new Typecho_Widget_Helper_Form_Element_Checkbox('AriaConfig',
         array(
-            'enablePjax' => '开启PJAX（启用后会强制关闭评论反垃圾保护）',
+            'enablePjax' => 'PJAX（不推荐启用，正在逐步移除）',
             'enableAjaxComment' => '开启AJAX评论',
             'enableFancybox' => '文章/评论图片使用<a href="https://fancyapps.com/" target="_blank">fancybox</a>',
             'enableLazyload' => '开启图片懒加载<a href="https://appelsiini.net/projects/lazyload" target="_blank">lazyload</a>',
