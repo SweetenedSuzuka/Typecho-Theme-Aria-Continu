@@ -17,6 +17,9 @@
 > 当前项目仍以旧版 Aria 的功能优化与 BUG 修复为主，尚未进入完整风格重构阶段。  
 > 由于原版中存在较多编译后的前端资源，恢复可维护源码仍需要一定时间。
 
+> [!NOTE]
+> 已恢复可维护源码，进入重构。
+
 ---
 
 ## 关于项目
@@ -75,6 +78,33 @@ Aria，即咏叹调。
 ---
 
 # 更新日志
+
+### 2026-05-20 1.14.0  
+
+* 调整：移除 `PJAX`：  
+  * 后台不再保留 `PJAX` 开关，前台主路径已完全回归普通服务端页面跳转  
+  * 删除前端运行时中的 `PJAX` 配置、模板中的 `#pjax-container` 相关残留，以及评论退出链接、打赏/二维码按钮上的 `no-pjax` 标记  
+  * 停止加载并移除 `assets/js/jquery.pjax.min.js`，同时清理 `MathJax` 与前端初始化流程中对 `pjax:complete` 的历史依赖  
+* 调整：更换评论 `AJAX` 实现方式：  
+  * 评论头像异步获取由 `jQuery.ajax` 切换为 `fetch`  
+  * 评论提交由 `serializeArray() + $.ajax + $.parseHTML()` 切换为 `FormData/URLSearchParams + fetch + DOMParser`  
+  * 评论回复状态跟踪、表单提交绑定与局部 DOM 插入改为基于原生事件与原生 DOM 的实现  
+  * 保留原有不刷新提交、局部插入、回复/取消、Notyf 提示与评论区 `MathJax` 增量补排版体验  
+* 调整：以现代浏览器能力替换旧 `jquery-lazyload`：  
+  * 图片懒加载改为 `IntersectionObserver + 原生属性` 实现  
+  * 保留主题原有的 `loading.svg` 占位体验，图片进入视口后再切换真实资源  
+  * 文章卡片缩略图改为统一使用自定义数据标记驱动背景图懒加载  
+  * 停止加载并移除 `assets/js/jquery.lazyload.min.js`  
+* 继续收口主题内部职责边界：  
+  * `ThemeViewData` 继续承接页脚完整视图数据，以及搜索占位文本、首页副标题等显示层读取逻辑  
+  * 新增 `ThemeSiteLookup`，统一承接管理员头像与页面信息查询  
+  * `Utils` 继续收缩为公开兼容门面，删除一批已迁移后的旧私有残留方法  
+  * 导航渲染、运行时配置、脚本资源、`MathJax` 兼容层等能力的归属进一步明确，主题结构更接近“入口装配 + helper 组织”的可维护形态  
+* 兼容性与稳定性调整：  
+  * 修复页脚备案图标可能拖慢 `window.load`、进而影响旧前端链路初始化时机的问题  
+  * 图片型备案图标新增 `loading="lazy"`、`decoding="async"`、`fetchpriority="low"`、`referrerpolicy="no-referrer"`  
+  * 兼容将备案图标写成图标类名字符串的旧配置方式，避免误当外部图片请求  
+  * `ThemeMathJax` 不再保留对 `#pjax-container` 的历史依赖，主线路径进一步去除已退场能力残留  
 
 ### 2026-05-17 1.13.1  
 
@@ -386,8 +416,7 @@ Legato · Then and Now<br>
 - [jquery-lazyload](https://appelsiini.net/projects/lazyload/)
 
 > 尽管这些项目、库的内容或实现方法已经移除，但我们永远感谢前人做出的伟大贡献，没有这些项目，无论是Aria还是Aria Continuo都无法顺利问世。
-连奏 · 致谢所有的协奏者
-Legato · 致谢所有的协奏者
+
 ---
 
 # 推荐插件（非必需）
@@ -405,5 +434,14 @@ Legato · 致谢所有的协奏者
 书写自己的篇章，让期许不再落幕。
 
 #### Aria Continuo
+
+<p align="center">
+──────────── ✦ ────────────
+</p>
+回声 · Echo
+念念不忘，必有回响 · Echoes and Continuations
+<p align="center">
+──────────── ✦ ────────────
+</p>
 
 </div>
