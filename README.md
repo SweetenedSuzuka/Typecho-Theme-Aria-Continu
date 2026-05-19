@@ -105,6 +105,9 @@ Aria，即咏叹调。
   * 图片型备案图标新增 `loading="lazy"`、`decoding="async"`、`fetchpriority="low"`、`referrerpolicy="no-referrer"`  
   * 兼容将备案图标写成图标类名字符串的旧配置方式，避免误当外部图片请求  
 
+<details>
+<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
+
 ### 2026-05-17 1.13.1  
 
 * 修复评论 Markdown 结构输出：  
@@ -188,6 +191,8 @@ Aria，即咏叹调。
   * 前台对 MathJax / 一言的读取逻辑同步切换为兼容模式  
 * 修复与稳定性调整：  
   * 降低模板、配置与前端初始化之间的耦合
+
+</details>
 
 ### 2026-05-15 1.10.0  
 
