@@ -12,14 +12,14 @@ function bootstrapAria() {
   }
 
   Aria.state.bootstrapped = !0;
-  if (Aria.compat && typeof Aria.compat.installLegacyGlobals === "function") {
+  if (Aria.compat && typeof Aria.compat.installLegacyGlobals === 'function') {
     Aria.compat.installLegacyGlobals();
   }
   Aria.init();
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", bootstrapAria, { once: true });
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootstrapAria, { once: true });
 } else {
   bootstrapAria();
 }

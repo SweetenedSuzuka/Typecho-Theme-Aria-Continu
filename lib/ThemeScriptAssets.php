@@ -28,7 +28,12 @@ class ThemeScriptAssets
         $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/highlight.min.js');
 
         return array_merge($scripts, array(
-            ThemeAssetHelper::getThemeAssetUrl('assets/js/functions.min.js'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/headroom.min.js'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/smooth-scroll.min.js'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/wow.min.js'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/notyf.min.js'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/clipboard.min.js'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/highlightjs-line-numbers.min.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/base.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/core.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/comment.js'),

@@ -9,33 +9,32 @@
  *
  */
 function toggleNav() {
-  ($("#nav-vertical").toggleClass("nav-open"), $("#wrapper").toggle());
+  ($('#nav-vertical').toggleClass('nav-open'), $('#wrapper').toggle());
 }
 function goTop(t) {
   ($(t).animate({ opacity: 0 }),
-    $("body,html").animate({ scrollTop: 0 }, 1e3, function () {
+    $('body,html').animate({ scrollTop: 0 }, 1e3, function () {
       $(t).animate({ opacity: 1 });
     }));
 }
 function togglePostOther(t) {
   var e = $(t).next();
-  "none" !== e.css("display") ? e.fadeOut() : e.fadeIn().css("display", "flex");
+  'none' !== e.css('display') ? e.fadeOut() : e.fadeIn().css('display', 'flex');
 }
 ($.fn.extend({
   animateCss: function (t, e) {
     var n = (function (t) {
       var e = {
-        animation: "animationend",
-        OAnimation: "oAnimationEnd",
-        MozAnimation: "mozAnimationEnd",
-        WebkitAnimation: "webkitAnimationEnd",
+        animation: 'animationend',
+        OAnimation: 'oAnimationEnd',
+        MozAnimation: 'mozAnimationEnd',
+        WebkitAnimation: 'webkitAnimationEnd',
       };
       for (var n in e) if (void 0 !== t.style[n]) return e[n];
-    })(document.createElement("div"));
+    })(document.createElement('div'));
     return (
-      this.addClass("animated " + t).one(n, function () {
-        ($(this).removeClass("animated " + t),
-          "function" == typeof e && e($(this)));
+      this.addClass('animated ' + t).one(n, function () {
+        ($(this).removeClass('animated ' + t), 'function' == typeof e && e($(this)));
       }),
       this
     );
@@ -52,15 +51,13 @@ function togglePostOther(t) {
         THEME_CONFIG.ENABLE_LAZYLOAD && this.lazyload(),
         this.toc.init(),
         console.log(
-          "%cVer " +
-            THEME_CONFIG.THEME_VERSION +
-            "%cAria Continuo By SweetenedSuzuka",
-          "color: #fff; background: #435561; padding:6px;",
-          "color: #fff; background: #435561cf; padding:6px;",
+          '%cVer ' + THEME_CONFIG.THEME_VERSION + '%cAria Continuo By SweetenedSuzuka',
+          'color: #fff; background: #435561; padding:6px;',
+          'color: #fff; background: #435561cf; padding:6px;'
         ),
         console.log(
-          "%cBased on Aria By Siphils",
-          "color: #fff; background: #435561cf; padding:6px;",
+          '%cBased on Aria By Siphils',
+          'color: #fff; background: #435561cf; padding:6px;'
         ));
     },
     pjax: function () {
@@ -70,55 +67,53 @@ function togglePostOther(t) {
             THEME_CONFIG.SITE_URL +
             '"]:not(a[target="_blank"], [no-pjax],a[rel~="nofollow"])',
           {
-            container: "#pjax-container",
-            fragment: "#pjax-container",
+            container: '#pjax-container',
+            fragment: '#pjax-container',
             timeout: 8e3,
-          },
+          }
         )
-        .on("pjax:send", function () {
+        .on('pjax:send', function () {
           (NProgress.start(), Aria.doPjaxStartAction());
         })
-        .on("pjax:complete", function () {
+        .on('pjax:complete', function () {
           (NProgress.done(),
             Aria.doPjaxCompleteAction(),
-            "function" == typeof Aria.reloadAction && Aria.reloadAction());
+            'function' == typeof Aria.reloadAction && Aria.reloadAction());
         });
     },
     doPjaxStartAction: function () {
-      ($("#header").toggleClass("slideOutUp"),
-        $("#body").toggleClass("fadeOut"),
-        $("#wrapper").hide());
+      ($('#header').toggleClass('slideOutUp'),
+        $('#body').toggleClass('fadeOut'),
+        $('#wrapper').hide());
     },
     doPjaxCompleteAction: function () {
       if (
-        ($("#header").removeClass("slideOutUp").addClass("slideInDown"),
-        $("#body").removeClass("fadeOut").addClass("fadeIn"),
+        ($('#header').removeClass('slideOutUp').addClass('slideInDown'),
+        $('#body').removeClass('fadeOut').addClass('fadeIn'),
         THEME_CONFIG.ENABLE_FANCYBOX && this.fancybox(),
         THEME_CONFIG.SHOW_HITOKOTO && this.hitokoto(),
         THEME_CONFIG.ENABLE_LAZYLOAD && this.lazyload(),
         this.hljs.init(),
         this.commentPlus.init(),
         this.toc.init(),
-        "undefined" != typeof _hmt &&
-          _hmt.push(["_trackPageview", location.pathname + location.search]),
-        window._gaq && _gaq.push(["_trackPageview"]),
+        'undefined' != typeof _hmt &&
+          _hmt.push(['_trackPageview', location.pathname + location.search]),
+        window._gaq && _gaq.push(['_trackPageview']),
         window.ga &&
-          ga("send", "pageview", {
+          ga('send', 'pageview', {
             page: location.pathname,
             title: document.title,
           }),
         THEME_CONFIG.ENABLE_MATHJAX &&
-          "undefined" != typeof MathJax &&
-          MathJax.Hub.Queue(["Typeset", MathJax.Hub]),
-        "function" == typeof loadMeting && loadMeting(),
-        document.getElementsByClassName("dplayer").length)
+          'undefined' != typeof MathJax &&
+          MathJax.Hub.Queue(['Typeset', MathJax.Hub]),
+        'function' == typeof loadMeting && loadMeting(),
+        document.getElementsByClassName('dplayer').length)
       )
         for (var t = dPlayerOptions.length, e = [], n = 0; n < t; n++)
           e.push(
             new DPlayer({
-              container: document.getElementById(
-                "player" + dPlayerOptions[n].id,
-              ),
+              container: document.getElementById('player' + dPlayerOptions[n].id),
               autoplay: dPlayerOptions[n].autoplay,
               theme: dPlayerOptions[n].theme,
               loop: dPlayerOptions[n].loop,
@@ -132,16 +127,13 @@ function togglePostOther(t) {
               video: dPlayerOptions[n].video,
               subtitle: dPlayerOptions[n].subtitle,
               danmaku: dPlayerOptions[n].danmaku,
-            }),
+            })
           );
       this.action.closeNav();
     },
     fancybox: function () {
-      ($(".post-content img").length || $(".comment-content img").length) &&
-        ($(
-          "img:not([class~='link-avatar'],[no-fancybox])",
-          ".post-content",
-        ).wrap(function () {
+      ($('.post-content img').length || $('.comment-content img').length) &&
+        ($("img:not([class~='link-avatar'],[no-fancybox])", '.post-content').wrap(function () {
           return (
             '<a href="' +
             this.src +
@@ -150,7 +142,7 @@ function togglePostOther(t) {
             '" no-pjax class="fancybox" data-fancybox="gallery" style="outline:0"></a>'
           );
         }),
-        $("img", ".comment-text").wrap(function () {
+        $('img', '.comment-text').wrap(function () {
           return (
             '<a href="' +
             this.src +
@@ -159,10 +151,10 @@ function togglePostOther(t) {
             '" no-pjax class="fancybox" style="outline:0"></a>'
           );
         }),
-        $("a.fancybox").fancybox({
-          animationEffect: "zoom-in-out",
+        $('a.fancybox').fancybox({
+          animationEffect: 'zoom-in-out',
           animationDuration: 500,
-          transitionEffect: "tube",
+          transitionEffect: 'tube',
           transitionDuration: 500,
           spinnerTpl:
             '<img style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);" src="' +
@@ -172,158 +164,151 @@ function togglePostOther(t) {
     },
     hitokoto: function () {
       $.ajax({
-        type: "GET",
+        type: 'GET',
         url: THEME_CONFIG.HITOKOTO_ORIGIN,
         success: function (t) {
-          $("#hitokoto").html(t);
+          $('#hitokoto').html(t);
         },
       });
     },
     hljs: {
       init: function () {
-        ($("pre code").each(function (t, e) {
-          if ("true" === $(e).attr("data-aria-hljs-bound")) return;
-          var n = !$(e).closest(".comment-text").length;
-          $(e).attr("data-aria-hljs-bound", "true"),
+        ($('pre code').each(function (t, e) {
+          if ('true' === $(e).attr('data-aria-hljs-bound')) return;
+          var n = !$(e).closest('.comment-text').length;
+          ($(e).attr('data-aria-hljs-bound', 'true'),
             hljs.highlightBlock(e),
             n &&
-              "function" == typeof hljs.lineNumbersBlock &&
-              "true" !== $(e).attr("data-aria-hljs-lines-bound") &&
-              ($(e).attr("data-aria-hljs-lines-bound", "true"),
-              hljs.lineNumbersBlock(e)),
-            $(e).attr({ id: "hljs-" + t });
+              'function' == typeof hljs.lineNumbersBlock &&
+              'true' !== $(e).attr('data-aria-hljs-lines-bound') &&
+              ($(e).attr('data-aria-hljs-lines-bound', 'true'), hljs.lineNumbersBlock(e)),
+            $(e).attr({ id: 'hljs-' + t }));
           var a =
             null ==
             $(this)
-              .attr("class")
+              .attr('class')
               .match(/lang-(\w+)/)
-              ? "CODE"
+              ? 'CODE'
               : $(this)
-                  .attr("class")
+                  .attr('class')
                   .match(/lang-(\w+)/)[1]
                   .toUpperCase();
-          ($(this).attr("data-lang", a),
+          ($(this).attr('data-lang', a),
             $(this).after(
               '<a class="copy-code" href="javascript:" data-clipboard-target="#hljs-' +
                 t +
-                '" title="拷贝代码"><i class="iconfont icon-aria-copy"></i></a>',
+                '" title="拷贝代码"><i class="iconfont icon-aria-copy"></i></a>'
             ));
         }),
           this.clipboard());
       },
       clipboard: function () {
-        var t = new ClipboardJS(".copy-code"),
+        var t = new ClipboardJS('.copy-code'),
           e = new Notyf({ delay: 3e3 });
-        (t.on("success", function (t) {
-          (e.confirm("代码成功拷贝到剪贴板！"), t.clearSelection());
+        (t.on('success', function (t) {
+          (e.confirm('代码成功拷贝到剪贴板！'), t.clearSelection());
         }),
-          t.on("error", function (t) {
-            e.alertL("代码拷贝失败！");
+          t.on('error', function (t) {
+            e.alertL('代码拷贝失败！');
           }));
       },
     },
     lazyload: function () {
-      ($("img:not([no-lazyload])").each(function () {
-        ($(this).attr("data-original", $(this).attr("src")),
-          $(this).attr(
-            "src",
-            THEME_CONFIG.THEME_URL + "/assets/img/loading.svg",
-          ));
+      ($('img:not([no-lazyload])').each(function () {
+        ($(this).attr('data-original', $(this).attr('src')),
+          $(this).attr('src', THEME_CONFIG.THEME_URL + '/assets/img/loading.svg'));
       }),
-        $(".lazyload").lazyload({ effect: "fadeIn" }),
-        $("img:not([no-lazyload])").lazyload({ effect: "fadeIn" }));
+        $('.lazyload').lazyload({ effect: 'fadeIn' }),
+        $('img:not([no-lazyload])').lazyload({ effect: 'fadeIn' }));
     },
   }),
   (Aria.commentPlus = {
     init: function () {
-      (this.emotion(),
-        this.ajaxAvatar(),
-        THEME_CONFIG.ENABLE_AJAX_COMMENT && this.ajaxComment());
+      (this.emotion(), this.ajaxAvatar(), THEME_CONFIG.ENABLE_AJAX_COMMENT && this.ajaxComment());
     },
     emotion: function () {
-      if ($(".OwO").length)
+      if ($('.OwO').length)
         new OwO({
           logo: '<i class="iconfont icon-aria-emotion"></i>表情',
-          container: document.getElementsByClassName("OwO")[0],
-          target: document.getElementsByClassName("textarea")[0],
+          container: document.getElementsByClassName('OwO')[0],
+          target: document.getElementsByClassName('textarea')[0],
           api: THEME_CONFIG.OWO_JSON,
-          position: "down",
-          width: "100%",
-          maxHeight: "250px",
+          position: 'down',
+          width: '100%',
+          maxHeight: '250px',
         });
     },
     ajaxAvatar: function () {
-      if ($("#comment-avatar").length) {
+      if ($('#comment-avatar').length) {
         function t(t) {
           var e = $(t).val();
-          "" != e &&
+          '' != e &&
             $.ajax({
-              type: "GET",
+              type: 'GET',
               data: {
-                action: "ajax_avatar_get",
+                action: 'ajax_avatar_get',
                 form: THEME_CONFIG.SITE_URL,
                 email: e,
               },
               success: function (t) {
-                $("#comment-avatar").attr("src", t);
+                $('#comment-avatar').attr('src', t);
               },
             });
         }
-        ("" != $("input#mail").val() && t("input#mail"),
-          $("input#mail").blur(t("input#mail")));
+        ('' != $('input#mail').val() && t('input#mail'), $('input#mail').blur(t('input#mail')));
       }
     },
     ajaxComment: function () {
-      var c = "",
+      var c = '',
         n = function () {
-          ($(".comment-reply a").click(function () {
-            c = $(this).parent().parent().parent().parent().attr("id");
+          ($('.comment-reply a').click(function () {
+            c = $(this).parent().parent().parent().parent().attr('id');
           }),
-            $(".cancel-comment-reply a").click(function () {
-              c = "";
+            $('.cancel-comment-reply a').click(function () {
+              c = '';
             }));
         };
       (n(),
-        $("#comment-form").submit(function () {
-          var e = $(".submit").eq(0),
-            o = $("#comment-form"),
-            i = "",
+        $('#comment-form').submit(function () {
+          var e = $('.submit').eq(0),
+            o = $('#comment-form'),
+            i = '',
             s = new Notyf({ delay: 3e3 }),
             t = $(this).serializeArray();
           function r(t) {
-            (e.attr("disabled", !1).css("cursor", "pointer"),
-              o.css({ opacity: "1" }),
-              $("textarea", o).css({ background: "initial" }),
-              $("input,textarea", o).attr("disabled", !1),
-              t && ($("#textarea").val(""), (c = "")),
+            (e.attr('disabled', !1).css('cursor', 'pointer'),
+              o.css({ opacity: '1' }),
+              $('textarea', o).css({ background: 'initial' }),
+              $('input,textarea', o).attr('disabled', !1),
+              t && ($('#textarea').val(''), (c = '')),
               n());
           }
           return (
-            e.attr("disabled", !0).css("cursor", "not-allowed"),
-            o.css({ opacity: ".5" }),
-            $("textarea", o).css({
+            e.attr('disabled', !0).css('cursor', 'not-allowed'),
+            o.css({ opacity: '.5' }),
+            $('textarea', o).css({
               background:
                 'url("' +
                 THEME_CONFIG.THEME_URL +
                 '/assets/img/loading.svg") center center no-repeat',
             }),
-            $("input,textarea", o).attr("disabled", !0),
+            $('input,textarea', o).attr('disabled', !0),
             $.ajax({
-              type: $(this).attr("method"),
-              url: $(this).attr("action"),
+              type: $(this).attr('method'),
+              url: $(this).attr('action'),
               data: t,
               success: function (t) {
-                if (!$("#comments", t).length) {
+                if (!$('#comments', t).length) {
                   var e =
-                    "error" === $("title").eq(0).text().trim().toLowerCase()
-                      ? $(".container", t).eq(0).text()
-                      : "评论提交失败！";
+                    'error' === $('title').eq(0).text().trim().toLowerCase()
+                      ? $('.container', t).eq(0).text()
+                      : '评论提交失败！';
                   return (s.alert(e), r(!1), !1);
                 }
                 var n, a;
-                ($("input,textarea", o).attr("disabled", !1),
-                  $("#textarea").val(""),
-                  (i = $(".comment-list", t)
+                ($('input,textarea', o).attr('disabled', !1),
+                  $('#textarea').val(''),
+                  (i = $('.comment-list', t)
                     .html()
                     .match(/id=\"?comment-\d+/g)
                     .join()
@@ -332,44 +317,37 @@ function togglePostOther(t) {
                       return t - e;
                     })
                     .pop()),
-                  "" === c
-                    ? ($(".comment-list").length
-                        ? $(".prev").length ||
-                          ((n = $("#li-comment-" + i, t)),
-                          $(".comment-list")
-                            .first()
-                            .prepend(n.addClass("animated fadeInUp")))
-                        : ((n = $("#li-comment-" + i, t)),
-                          $("#response").after(
-                            '<div class="comment-data"><ol class="comment-list"></ol></div>',
+                  '' === c
+                    ? ($('.comment-list').length
+                        ? $('.prev').length ||
+                          ((n = $('#li-comment-' + i, t)),
+                          $('.comment-list').first().prepend(n.addClass('animated fadeInUp')))
+                        : ((n = $('#li-comment-' + i, t)),
+                          $('#response').after(
+                            '<div class="comment-data"><ol class="comment-list"></ol></div>'
                           ),
-                          $(".comment-list")
-                            .first()
-                            .prepend(n.addClass("animated fadeInUp"))),
-                      $("html,body").animate(
-                        { scrollTop: $("#response").offset().top - 100 },
-                        1e3,
-                      ))
-                    : ((n = $("#li-comment-" + i, t)),
-                      $("#" + c).find(".comment-children").length ||
-                        $("#" + c).append(
-                          '<div class="comment-children"><ol class="comment-list"></ol></div>',
+                          $('.comment-list').first().prepend(n.addClass('animated fadeInUp'))),
+                      $('html,body').animate({ scrollTop: $('#response').offset().top - 100 }, 1e3))
+                    : ((n = $('#li-comment-' + i, t)),
+                      $('#' + c).find('.comment-children').length ||
+                        $('#' + c).append(
+                          '<div class="comment-children"><ol class="comment-list"></ol></div>'
                         ),
-                      $("#" + c + " .comment-children .comment-list")
+                      $('#' + c + ' .comment-children .comment-list')
                         .first()
-                        .prepend(n.addClass("animated fadeInUp")),
+                        .prepend(n.addClass('animated fadeInUp')),
                       TypechoComment.cancelReply()),
-                  (a = parseInt($("#response").text())),
-                  $("#response").html(
-                    $("#response")
+                  (a = parseInt($('#response').text())),
+                  $('#response').html(
+                    $('#response')
                       .html()
-                      .replace(/\d+/, a + 1),
+                      .replace(/\d+/, a + 1)
                   ),
                   r(!0),
-                  s.confirm("评论提交成功！"));
+                  s.confirm('评论提交成功！'));
               },
               error: function (t) {
-                (console.log("Ajax Comment Error"), window.location.reload());
+                (console.log('Ajax Comment Error'), window.location.reload());
               },
             }),
             !1
@@ -379,95 +357,88 @@ function togglePostOther(t) {
   }),
   (Aria.action = {
     init: function () {
-      (this.headroom(),
-        this.gotop(),
-        this.closeNav(),
-        this.nav(),
-        this.search(),
-        new WOW().init());
+      (this.headroom(), this.gotop(), this.closeNav(), this.nav(), this.search(), new WOW().init());
     },
     headroom: function () {
-      var t = document.querySelector("#nav-menu");
+      var t = document.querySelector('#nav-menu');
       new Headroom(t).init();
     },
     gotop: function () {
       $(window).scroll(function () {
         if (
           (100 < $(window).scrollTop()
-            ? ($("#go-top").fadeIn(500),
-              $("#site-avatar").css({
-                height: "25px",
-                width: "25px",
-                margin: "19.5px 5px 0 0",
+            ? ($('#go-top').fadeIn(500),
+              $('#site-avatar').css({
+                height: '25px',
+                width: '25px',
+                margin: '19.5px 5px 0 0',
               }))
-            : ($("#go-top").fadeOut(500, function () {
-                $("#go-top").css("display", "none");
+            : ($('#go-top').fadeOut(500, function () {
+                $('#go-top').css('display', 'none');
               }),
-              $("#site-avatar").css({
-                height: "35px",
-                width: "35px",
-                margin: "14.5px 5px 0 0",
+              $('#site-avatar').css({
+                height: '35px',
+                width: '35px',
+                margin: '14.5px 5px 0 0',
               })),
-          $("#toc").length)
+          $('#toc').length)
         ) {
           var t = $(this).scrollTop(),
             e = Aria.toc.titleId,
             n = null;
           for (var a in e) {
-            var o = "#" + e[a];
+            var o = '#' + e[a];
             $(o).offset().top > t + 100 ||
               (n ? $(o).offset().top >= $(n).offset().top && (n = o) : (n = o));
           }
           if (n)
-            ($("#toc a").removeClass("toc-active"),
-              $('#toc a[href="' + n + '"]').addClass("toc-active"));
+            ($('#toc a').removeClass('toc-active'),
+              $('#toc a[href="' + n + '"]').addClass('toc-active'));
         }
       });
     },
     nav: function () {
-      $(".nav-right-item").hover(
+      $('.nav-right-item').hover(
         function () {
-          ($(".nav-sub", this).addClass("fast"),
-            $(".nav-sub", this).show(),
-            $(".nav-sub", this).animateCss("show-sub"));
+          ($('.nav-sub', this).addClass('fast'),
+            $('.nav-sub', this).show(),
+            $('.nav-sub', this).animateCss('show-sub'));
         },
         function () {
-          $(".nav-sub", this).hide();
-        },
+          $('.nav-sub', this).hide();
+        }
       );
     },
     closeNav: function () {
       return (
-        $("#nav-vertical").hasClass("nav-open") &&
-          ($("#nav-vertical").removeClass("nav-open"),
-          $("#wrapper").removeClass("wrapper-open")),
+        $('#nav-vertical').hasClass('nav-open') &&
+          ($('#nav-vertical').removeClass('nav-open'), $('#wrapper').removeClass('wrapper-open')),
         !1
       );
     },
     search: function () {
-      ("flex" == $("#search-box").css("display") &&
-        $("#search-box").css("display", "none"),
-        $("#nav-search-btn").on("click", function () {
-          ($("#search-box").css("display", "flex"),
-            $("#search-box").animateCss("zoomIn", function (t) {}));
+      ('flex' == $('#search-box').css('display') && $('#search-box').css('display', 'none'),
+        $('#nav-search-btn').on('click', function () {
+          ($('#search-box').css('display', 'flex'),
+            $('#search-box').animateCss('zoomIn', function (t) {}));
         }),
-        $("#search-box>.close").on("click", function () {
-          $("#search-box").hide();
+        $('#search-box>.close').on('click', function () {
+          $('#search-box').hide();
         }));
     },
   }),
   (Aria.toc = {}),
   (Aria.toc.init = function () {
-    if ($("#toc").length) {
+    if ($('#toc').length) {
       this.createDirectory(
-        document.getElementsByClassName("post-content")[0],
-        document.getElementById("toc"),
-        !0,
+        document.getElementsByClassName('post-content')[0],
+        document.getElementById('toc'),
+        !0
       );
       new SmoothScroll('#toc a[href*="#"]', { offset: 80 });
-      ($("#toc-container").height($(".post-body").eq(0).height()),
-        $(".post-body").resize(function () {
-          $("#toc-container").height($(".post-body").eq(0).height());
+      ($('#toc-container').height($('.post-body').eq(0).height()),
+        $('.post-body').resize(function () {
+          $('#toc-container').height($('.post-body').eq(0).height());
         }));
     }
   }),
@@ -476,15 +447,11 @@ function togglePostOther(t) {
       a,
       o,
       i = [],
-      s = "object" == typeof e,
-      r = "string" == typeof e;
+      s = 'object' == typeof e,
+      r = 'string' == typeof e;
     for (a = 0, o = t.length; a < o; a++)
       (1 !== (n = t[a]).nodeType && 9 !== n.nodeType) ||
-        !(
-          !e ||
-          (s && e.test(n.tagName.toLowerCase())) ||
-          (r && n.tagName.toLowerCase() === e)
-        ) ||
+        !(!e || (s && e.test(n.tagName.toLowerCase())) || (r && n.tagName.toLowerCase() === e)) ||
         i.push(n);
     return i;
   }),
@@ -509,7 +476,7 @@ function togglePostOther(t) {
           r = 1,
           c = 1,
           l = 0;
-        for ((Math.random() + "").replace(/\D/, ""); i.length; )
+        for ((Math.random() + '').replace(/\D/, ''); i.length; )
           ((o = i.shift()),
             e.push(o.innerHTML),
             r < (a = +o.tagName.match(/\d/)[0])
@@ -519,15 +486,15 @@ function togglePostOther(t) {
                 : a < c && (s.push(a - c), (c = a)),
             (l += s[s.length - 1]),
             (r = a),
-            (o.id = o.id || "toc-" + o.innerText),
+            (o.id = o.id || 'toc-' + o.innerText),
             (o.id = o.id.replace(
               /[\s|\~|`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\_|\+|\=|\||\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?]/g,
-              "",
+              ''
             )),
             n.push(o.id));
         return (0 !== l && 1 === s[0] && (s[0] = 0), s);
       })(t, m, p),
-        s = o = document.createElement("ul"),
+        s = o = document.createElement('ul'),
         dirNum = [0],
         d = 0,
         h = a.length;
@@ -535,17 +502,16 @@ function togglePostOther(t) {
       d++
     ) {
       if (1 === (i = a[d]))
-        ((r = document.createElement("ul")),
-          s.lastElementChild || s.appendChild(document.createElement("li")),
+        ((r = document.createElement('ul')),
+          s.lastElementChild || s.appendChild(document.createElement('li')),
           s.lastElementChild.appendChild(r),
           (s = r),
           dirNum.push(0));
-      else if (i < 0)
-        for (i *= 2; i++; ) (i % 2 && dirNum.pop(), (s = s.parentNode));
+      else if (i < 0) for (i *= 2; i++; ) (i % 2 && dirNum.pop(), (s = s.parentNode));
       (dirNum[dirNum.length - 1]++,
-        (c = document.createElement("li")),
-        ((l = document.createElement("a")).href = "#" + p[d]),
-        l.setAttribute("class", "toc-a"),
+        (c = document.createElement('li')),
+        ((l = document.createElement('a')).href = '#' + p[d]),
+        l.setAttribute('class', 'toc-a'),
         (l.innerHTML = m[d]),
         c.appendChild(l),
         s.appendChild(c));
@@ -556,11 +522,11 @@ function togglePostOther(t) {
     var n,
       a = s([]),
       o = (s.resize = s.extend(s.resize, {})),
-      r = "setTimeout",
-      i = "resize",
-      c = i + "-special-event",
-      l = "delay",
-      d = "throttleWindow";
+      r = 'setTimeout',
+      i = 'resize',
+      c = i + '-special-event',
+      l = 'delay',
+      d = 'throttleWindow';
     ((o[l] = 250),
       (o[d] = !0),
       (s.event.special[i] = {
@@ -577,8 +543,7 @@ function togglePostOther(t) {
                       e = t.width(),
                       n = t.height(),
                       a = s.data(this, c);
-                    (e === a.w && n === a.h) ||
-                      t.trigger(i, [(a.w = e), (a.h = n)]);
+                    (e === a.w && n === a.h) || t.trigger(i, [(a.w = e), (a.h = n)]);
                   }),
                     t());
                 }, o[l]);
