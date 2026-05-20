@@ -394,7 +394,6 @@ Andante · 2019 → 2026
 - [Fancybox3](https://fancyapps.com/fancybox/3/)
 - [jQuery](https://jquery.com/)
 - [DIYgod/OwO](https://github.com/DIYgod/OwO)
-- [headroom.js](http://wicky.nillia.ms/headroom.js/)
 - [NProgress](https://github.com/rstacruz/nprogress)
 - [animate.css](https://daneden.github.io/animate.css/)
 
@@ -418,6 +417,7 @@ Legato · Then and Now
 - [highlightjs-line-numbers](https://wcoder.github.io/highlightjs-line-numbers.js/)
 - [clipboard.js](https://zenorocha.github.io/clipboard.js)
 - [smooth-scroll](https://github.com/cferdinandi/smooth-scroll)
+- [headroom.js](http://wicky.nillia.ms/headroom.js/)
 
 > 尽管这些项目、库的内容或实现方法已经移除，但我们永远感谢前人做出的伟大贡献，没有这些项目，无论是Aria还是Aria Continuo都无法顺利问世。
 

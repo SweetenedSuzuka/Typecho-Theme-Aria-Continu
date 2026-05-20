@@ -1,5 +1,55 @@
 var Aria = (window.Aria = window.Aria || {});
 
+function applyHeadroomState(navigation, currentScrollY, lastScrollY) {
+  var scrollTop = currentScrollY > 0 ? currentScrollY : 0;
+  var viewportBottom = scrollTop + window.innerHeight;
+  var documentHeight = Math.max(
+    document.body ? document.body.scrollHeight : 0,
+    document.documentElement ? document.documentElement.scrollHeight : 0,
+  );
+  var isTop = scrollTop <= 0;
+  var isBottom = viewportBottom >= documentHeight - 1;
+  var isScrollingDown = scrollTop > lastScrollY;
+  var isScrollingUp = scrollTop < lastScrollY;
+
+  navigation.classList.add("headroom");
+  navigation.classList.toggle("headroom--top", isTop);
+  navigation.classList.toggle("headroom--not-top", !isTop);
+  navigation.classList.toggle("headroom--bottom", isBottom);
+  navigation.classList.toggle("headroom--not-bottom", !isBottom);
+
+  if (isTop || isScrollingUp) {
+    navigation.classList.add("headroom--pinned");
+    navigation.classList.remove("headroom--unpinned");
+    return;
+  }
+
+  if (isScrollingDown) {
+    navigation.classList.add("headroom--unpinned");
+    navigation.classList.remove("headroom--pinned");
+  }
+}
+
+function createHeadroomController(navigation) {
+  var lastScrollY = window.pageYOffset || 0;
+
+  function handleScroll() {
+    var currentScrollY = window.pageYOffset || 0;
+
+    applyHeadroomState(navigation, currentScrollY, lastScrollY);
+    lastScrollY = currentScrollY > 0 ? currentScrollY : 0;
+  }
+
+  $(window).off("scroll.ariaHeadroom").on("scroll.ariaHeadroom", handleScroll);
+  handleScroll();
+
+  return {
+    destroy: function () {
+      $(window).off("scroll.ariaHeadroom", handleScroll);
+    },
+  };
+}
+
 function headroom() {
   var navigation = document.querySelector("#nav-menu");
 
@@ -26,8 +76,7 @@ function headroom() {
     return;
   }
 
-  Aria.state.headroom = new Headroom(navigation);
-  Aria.state.headroom.init();
+  Aria.state.headroom = createHeadroomController(navigation);
 }
 
 function gotop() {
