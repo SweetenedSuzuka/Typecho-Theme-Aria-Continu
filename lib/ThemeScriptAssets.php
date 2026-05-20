@@ -28,7 +28,6 @@ class ThemeScriptAssets
         $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/highlight.min.js');
 
         return array_merge($scripts, array(
-            ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/wow.min.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/base.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/core.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/comment.js'),

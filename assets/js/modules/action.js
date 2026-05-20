@@ -173,6 +173,118 @@ function search() {
     });
 }
 
+function setWowAnimationStyles(element) {
+  var duration = element.getAttribute("data-wow-duration");
+  var delay = element.getAttribute("data-wow-delay");
+  var iteration = element.getAttribute("data-wow-iteration");
+
+  if (duration) {
+    element.style.animationDuration = duration;
+    element.style.webkitAnimationDuration = duration;
+  }
+
+  if (delay) {
+    element.style.animationDelay = delay;
+    element.style.webkitAnimationDelay = delay;
+  }
+
+  if (iteration) {
+    element.style.animationIterationCount = iteration;
+    element.style.webkitAnimationIterationCount = iteration;
+  }
+}
+
+function revealWowElement(element) {
+  if (!element || element.getAttribute("data-aria-wow-revealed") === "true") {
+    return;
+  }
+
+  element.setAttribute("data-aria-wow-revealed", "true");
+  element.style.visibility = "visible";
+
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    element.classList.remove("animated");
+    return;
+  }
+
+  element.classList.add("animated");
+}
+
+function isWowVisible(element) {
+  var offset = parseInt(element.getAttribute("data-wow-offset") || "0", 10);
+  var rect = element.getBoundingClientRect();
+  var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+
+  if (isNaN(offset)) {
+    offset = 0;
+  }
+
+  return rect.top <= viewportHeight - offset && rect.bottom >= 0;
+}
+
+function createWowController() {
+  function handleIntersect(entries, observer) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting && !isWowVisible(entry.target)) {
+        return;
+      }
+
+      revealWowElement(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }
+
+  if (typeof window.IntersectionObserver === "function") {
+    Aria.state.wowObserver = new window.IntersectionObserver(handleIntersect, {
+      threshold: 0,
+    });
+  } else {
+    Aria.state.wowObserver = null;
+  }
+
+  return {
+    observe: function (element) {
+      if (Aria.state.wowObserver) {
+        Aria.state.wowObserver.observe(element);
+        return;
+      }
+
+      revealWowElement(element);
+    },
+    destroy: function () {
+      if (Aria.state.wowObserver) {
+        Aria.state.wowObserver.disconnect();
+        Aria.state.wowObserver = null;
+      }
+    },
+  };
+}
+
+function initWowAnimations() {
+  var elements = document.querySelectorAll(".wow");
+
+  if (Aria.state.wowController && typeof Aria.state.wowController.destroy === "function") {
+    Aria.state.wowController.destroy();
+    Aria.state.wowController = null;
+  }
+
+  if (!elements.length) {
+    return;
+  }
+
+  Aria.state.wowController = createWowController();
+  Array.prototype.forEach.call(elements, function (element) {
+    setWowAnimationStyles(element);
+    element.style.visibility = "hidden";
+    element.classList.remove("animated");
+    element.setAttribute("data-aria-wow-revealed", "false");
+    Aria.state.wowController.observe(element);
+  });
+}
+
 function bindActions() {
   $(document)
     .off("click.ariaToggleNav", "[data-aria-action='toggle-nav']")
@@ -223,7 +335,7 @@ Aria.action.init = function () {
   nav();
   search();
   bindActions();
-  new WOW().init();
+  initWowAnimations();
 };
 Aria.action.closeNav = function () {
   return closeNav();
