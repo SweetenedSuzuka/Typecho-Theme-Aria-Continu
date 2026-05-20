@@ -107,20 +107,21 @@ Aria.helpers.toggleNav = function () {
 
 Aria.helpers.goTop = function (target) {
   var button = target && target.nodeType === 1 ? target : document.getElementById("go-top");
+  var buttonImage = button ? button.querySelector("img") : null;
   var scrollingElement =
     document.scrollingElement || document.documentElement || document.body;
 
-  if (button) {
-    button.style.transition = "opacity 150ms ease";
-    button.style.opacity = "0.4";
+  if (buttonImage) {
+    buttonImage.style.transition = "opacity 150ms ease";
+    buttonImage.style.opacity = "0.4";
   }
 
   function restoreButtonOpacity() {
-    if (!button) {
+    if (!buttonImage) {
       return;
     }
 
-    button.style.opacity = "1";
+    buttonImage.style.opacity = "1";
   }
 
   if (typeof window.scrollTo === "function") {

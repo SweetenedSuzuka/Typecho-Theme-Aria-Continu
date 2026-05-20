@@ -479,14 +479,27 @@
 	z-index: 110;
 	width: 50px;
 	height: 50px;
-	display: none;
+	display: block;
 	position: fixed;
 	right: 30px;
 	bottom: 100px;
 	cursor: pointer;
 	-moz-user-select: none;
 	-webkit-user-select: none;
-	user-select: none
+	user-select: none;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transform: translateY(10px);
+	transition: opacity .35s ease, transform .35s ease, visibility 0s linear .35s
+}
+
+#go-top.go-top-visible {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transform: translateY(0);
+	transition: opacity .35s ease, transform .35s ease, visibility 0s linear 0s
 }
 
 #go-top>img {

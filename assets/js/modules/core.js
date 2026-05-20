@@ -377,7 +377,7 @@ function logVersion() {
   console.log("%cBased on Aria By Siphils", "color: #fff; background: #435561cf; padding:6px;");
 }
 
-$.extend(Aria, {
+Object.assign(Aria, {
   init: function () {
     if (this.state.initialized) {
       this.refresh();
@@ -450,69 +450,105 @@ $.extend(Aria, {
   },
 
   hitokoto: function () {
-    $.ajax({
-      type: "GET",
-      url: THEME_CONFIG.HITOKOTO_ORIGIN,
-      success: function (text) {
-        $("#hitokoto").text(text);
-      },
-    });
+    var hitokoto = document.getElementById("hitokoto");
+
+    if (!hitokoto) {
+      return;
+    }
+
+    fetch(THEME_CONFIG.HITOKOTO_ORIGIN, {
+      method: "GET",
+      credentials: "same-origin",
+    })
+      .then(function (response) {
+        return response.text();
+      })
+      .then(function (text) {
+        hitokoto.textContent = text;
+      })
+      .catch(function () {});
   },
 
   hljs: {
     init: function () {
-      $("pre code").each(function (index, element) {
-        if ($(element).attr("data-aria-hljs-bound") === "true") {
-          return;
-        }
+      Array.prototype.forEach.call(
+        document.querySelectorAll("pre code"),
+        function (element, index) {
+          var shouldAddLineNumbers;
+          var rawCodeText;
+          var match;
+          var language;
+          var nextElement;
+          var copyButton;
 
-        var shouldAddLineNumbers = !$(element).closest(".comment-text").length;
-        var rawCodeText = element.textContent || "";
+          if (element.getAttribute("data-aria-hljs-bound") === "true") {
+            return;
+          }
 
-        $(element).attr("data-aria-hljs-bound", "true");
-        $(element).attr("data-aria-copy-text", rawCodeText);
-        hljs.highlightBlock(element);
-        if (
-          shouldAddLineNumbers &&
-          $(element).attr("data-aria-hljs-lines-bound") !== "true"
-        ) {
-          $(element).attr("data-aria-hljs-lines-bound", "true");
-          buildHighlightedCodeLineTable(element);
-        }
-        $(element).attr({ id: "hljs-" + index });
+          shouldAddLineNumbers = !element.closest(".comment-text");
+          rawCodeText = element.textContent || "";
 
-        var match = $(this).attr("class").match(/lang-(\w+)/);
-        var language = match == null ? "CODE" : match[1].toUpperCase();
+          element.setAttribute("data-aria-hljs-bound", "true");
+          element.setAttribute("data-aria-copy-text", rawCodeText);
+          hljs.highlightBlock(element);
+          if (
+            shouldAddLineNumbers &&
+            element.getAttribute("data-aria-hljs-lines-bound") !== "true"
+          ) {
+            element.setAttribute("data-aria-hljs-lines-bound", "true");
+            buildHighlightedCodeLineTable(element);
+          }
+          element.id = "hljs-" + index;
 
-        $(this).attr("data-lang", language);
-        if (!$(this).next(".copy-code").length) {
-          $(this).after(
-            '<a class="copy-code" href="javascript:" data-clipboard-target="#hljs-' +
-              index +
-              '" title="拷贝代码"><i class="iconfont icon-aria-copy"></i></a>',
-          );
-        }
-      });
+          match = (element.getAttribute("class") || "").match(/lang-(\w+)/);
+          language = match == null ? "CODE" : match[1].toUpperCase();
+
+          element.setAttribute("data-lang", language);
+          nextElement = element.nextElementSibling;
+          if (nextElement && nextElement.classList.contains("copy-code")) {
+            return;
+          }
+
+          copyButton = document.createElement("a");
+          copyButton.className = "copy-code";
+          copyButton.href = "javascript:";
+          copyButton.title = "拷贝代码";
+          copyButton.setAttribute("data-clipboard-target", "#" + element.id);
+          copyButton.innerHTML = '<i class="iconfont icon-aria-copy"></i>';
+          element.insertAdjacentElement("afterend", copyButton);
+        },
+      );
+
       this.clipboard();
     },
 
     clipboard: function () {
-      $(document)
-        .off("click.aria-copy-code", ".copy-code")
-        .on("click.aria-copy-code", ".copy-code", function (event) {
-          event.preventDefault();
+      if (Aria.state.copyCodeClickHandler) {
+        document.removeEventListener("click", Aria.state.copyCodeClickHandler);
+      }
 
-          copyCodeFromTrigger(this)
-            .then(function () {
-              Aria.notify.success("代码成功拷贝到剪贴板！");
-              if (typeof window.getSelection === "function") {
-                window.getSelection().removeAllRanges();
-              }
-            })
-            .catch(function () {
-              Aria.notify.error("代码拷贝失败！");
-            });
-        });
+      Aria.state.copyCodeClickHandler = function (event) {
+        var trigger = event.target.closest(".copy-code");
+
+        if (!trigger) {
+          return;
+        }
+
+        event.preventDefault();
+
+        copyCodeFromTrigger(trigger)
+          .then(function () {
+            Aria.notify.success("代码成功拷贝到剪贴板！");
+            if (typeof window.getSelection === "function") {
+              window.getSelection().removeAllRanges();
+            }
+          })
+          .catch(function () {
+            Aria.notify.error("代码拷贝失败！");
+          });
+      };
+
+      document.addEventListener("click", Aria.state.copyCodeClickHandler);
     },
   },
 
