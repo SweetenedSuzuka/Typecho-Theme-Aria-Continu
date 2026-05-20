@@ -398,8 +398,6 @@ Andante · 2019 → 2026
 - [NProgress](https://github.com/rstacruz/nprogress)
 - [animate.css](https://daneden.github.io/animate.css/)
 - [smooth-scroll](https://github.com/cferdinandi/smooth-scroll)
-- [highlightjs-line-numbers](https://wcoder.github.io/highlightjs-line-numbers.js/)
-- [clipboard.js](https://zenorocha.github.io/clipboard.js)
 
 <p align="center">
 ──────────── ✦ ────────────
@@ -418,6 +416,8 @@ Legato · Then and Now
 
 - [jquery-pjax](https://github.com/defunkt/jquery-pjax)
 - [jquery-lazyload](https://appelsiini.net/projects/lazyload/)
+- [highlightjs-line-numbers](https://wcoder.github.io/highlightjs-line-numbers.js/)
+- [clipboard.js](https://zenorocha.github.io/clipboard.js)
 
 > 尽管这些项目、库的内容或实现方法已经移除，但我们永远感谢前人做出的伟大贡献，没有这些项目，无论是Aria还是Aria Continuo都无法顺利问世。
 

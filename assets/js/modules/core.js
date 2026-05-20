@@ -237,8 +237,128 @@ function copyCodeFromTrigger(trigger) {
     return Promise.reject(new Error("Copy target not found"));
   }
 
+  if (target.hasAttribute("data-aria-copy-text")) {
+    return copyTextToClipboard(target.getAttribute("data-aria-copy-text") || "");
+  }
+
   text = target.innerText || target.textContent || "";
   return copyTextToClipboard(text);
+}
+
+function createHighlightedLineState(openElements) {
+  var state = {
+    fragment: document.createDocumentFragment(),
+    containers: [],
+  };
+
+  openElements.forEach(function (element) {
+    var clone = element.cloneNode(false);
+    var parent = state.containers[state.containers.length - 1] || state.fragment;
+
+    parent.appendChild(clone);
+    state.containers.push(clone);
+  });
+
+  return state;
+}
+
+function appendNodeToHighlightedLine(state, node) {
+  var parent = state.containers[state.containers.length - 1] || state.fragment;
+  parent.appendChild(node);
+}
+
+function getHighlightedLineDataList(codeElement) {
+  var openElements = [];
+  var lineStates = [];
+  var currentState = createHighlightedLineState(openElements);
+
+  function startNewLine() {
+    currentState = createHighlightedLineState(openElements);
+    lineStates.push(currentState);
+  }
+
+  function walk(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      var parts = node.textContent.split("\n");
+
+      parts.forEach(function (part, index) {
+        if (part) {
+          appendNodeToHighlightedLine(currentState, document.createTextNode(part));
+        }
+
+        if (index < parts.length - 1) {
+          startNewLine();
+        }
+      });
+      return;
+    }
+
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      return;
+    }
+
+    var clone = node.cloneNode(false);
+    appendNodeToHighlightedLine(currentState, clone);
+    openElements.push(node);
+    currentState.containers.push(clone);
+
+    Array.prototype.forEach.call(node.childNodes, walk);
+
+    currentState.containers.pop();
+    openElements.pop();
+  }
+
+  lineStates.push(currentState);
+  Array.prototype.forEach.call(codeElement.childNodes, walk);
+
+  if (
+    /\n$/.test(codeElement.textContent || "") &&
+    lineStates.length > 1 &&
+    lineStates[lineStates.length - 1].fragment.textContent === ""
+  ) {
+    lineStates.pop();
+  }
+
+  return lineStates.map(function (state) {
+    var wrapper = document.createElement("div");
+    wrapper.appendChild(state.fragment);
+
+    return {
+      html: wrapper.innerHTML,
+      text: wrapper.textContent || "",
+    };
+  });
+}
+
+function buildHighlightedCodeLineTable(codeElement) {
+  var lines = getHighlightedLineDataList(codeElement);
+  var table = document.createElement("table");
+  var tbody = document.createElement("tbody");
+
+  table.className = "hljs-ln";
+
+  lines.forEach(function (line, index) {
+    var row = document.createElement("tr");
+    var numberCell = document.createElement("td");
+    var numberText = document.createElement("div");
+    var codeCell = document.createElement("td");
+
+    row.className = "hljs-ln-line";
+    numberCell.className = "hljs-ln-numbers";
+    codeCell.className = "hljs-ln-code";
+    numberText.className = "hljs-ln-n";
+    numberText.textContent = String(index + 1);
+
+    numberCell.appendChild(numberText);
+    codeCell.innerHTML = line.text === "" ? " " : line.html;
+    row.appendChild(numberCell);
+    row.appendChild(codeCell);
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(tbody);
+  codeElement.innerHTML = "";
+  codeElement.appendChild(table);
 }
 
 function logVersion() {
@@ -346,16 +466,17 @@ $.extend(Aria, {
         }
 
         var shouldAddLineNumbers = !$(element).closest(".comment-text").length;
+        var rawCodeText = element.textContent || "";
 
         $(element).attr("data-aria-hljs-bound", "true");
+        $(element).attr("data-aria-copy-text", rawCodeText);
         hljs.highlightBlock(element);
         if (
           shouldAddLineNumbers &&
-          typeof hljs.lineNumbersBlock === "function" &&
           $(element).attr("data-aria-hljs-lines-bound") !== "true"
         ) {
           $(element).attr("data-aria-hljs-lines-bound", "true");
-          hljs.lineNumbersBlock(element);
+          buildHighlightedCodeLineTable(element);
         }
         $(element).attr({ id: "hljs-" + index });
 
