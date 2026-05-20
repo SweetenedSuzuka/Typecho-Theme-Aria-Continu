@@ -12,7 +12,6 @@ function applyHeadroomState(navigation, currentScrollY, lastScrollY) {
   var isScrollingDown = scrollTop > lastScrollY;
   var isScrollingUp = scrollTop < lastScrollY;
 
-  navigation.classList.add("headroom");
   navigation.classList.toggle("headroom--top", isTop);
   navigation.classList.toggle("headroom--not-top", !isTop);
   navigation.classList.toggle("headroom--bottom", isBottom);
@@ -32,6 +31,8 @@ function applyHeadroomState(navigation, currentScrollY, lastScrollY) {
 
 function createHeadroomController(navigation) {
   var lastScrollY = window.pageYOffset || 0;
+
+  navigation.classList.add("headroom");
 
   function handleScroll() {
     var currentScrollY = window.pageYOffset || 0;
