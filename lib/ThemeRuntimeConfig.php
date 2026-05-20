@@ -32,6 +32,7 @@ class ThemeRuntimeConfig
             'ENABLE_FANCYBOX' => ThemeOptions::isEnabled('enableFancybox', 'AriaConfig'),
             'ENABLE_LAZYLOAD' => ThemeOptions::isEnabled('enableLazyload', 'AriaConfig'),
             'ENABLE_MATHJAX' => ThemeOptions::isFeatureEnabled('enableMathJax', 'AriaConfig'),
+            'ENABLE_NAV_HEADROOM' => ThemeOptions::isOptionEnabled('enableNavHeadroom', true),
             'OWO_JSON' => $options->OwOJson
                 ? (string) $options->OwOJson
                 : (string) $options->themeUrl . '/assets/OwO/OwO.json',

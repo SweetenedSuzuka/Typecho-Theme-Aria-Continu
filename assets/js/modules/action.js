@@ -2,11 +2,32 @@ var Aria = (window.Aria = window.Aria || {});
 
 function headroom() {
   var navigation = document.querySelector("#nav-menu");
+
   if (!navigation) {
     return;
   }
 
-  new Headroom(navigation).init();
+  if (Aria.state.headroom && typeof Aria.state.headroom.destroy === "function") {
+    Aria.state.headroom.destroy();
+    Aria.state.headroom = null;
+  }
+
+  navigation.classList.remove(
+    "headroom",
+    "headroom--pinned",
+    "headroom--unpinned",
+    "headroom--top",
+    "headroom--not-top",
+    "headroom--bottom",
+    "headroom--not-bottom",
+  );
+
+  if (!THEME_CONFIG.ENABLE_NAV_HEADROOM) {
+    return;
+  }
+
+  Aria.state.headroom = new Headroom(navigation);
+  Aria.state.headroom.init();
 }
 
 function gotop() {

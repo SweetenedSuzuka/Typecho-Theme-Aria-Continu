@@ -106,6 +106,15 @@ function themeConfig($form)
     );
     $form->addInput($navConfig);
 
+    $enableNavHeadroom = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'enableNavHeadroom',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(Utils::isOptionEnabled('enableNavHeadroom', true)),
+        _t('启用导航栏吸顶隐藏'),
+        _t('控制导航栏是否在向下滚动时自动收起、向上滚动时重新显示；关闭后导航栏将始终保持显示')
+    );
+    $form->addInput($enableNavHeadroom->multiMode());
+
     $homeExcludeCategoriesEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'homeExcludeCategoriesEnabled',
         array('1' => _t('开启')),
