@@ -65,6 +65,7 @@
         </p>
         <div id="comment-footer">
             <div class="OwO">
+                <div class="aria-owo-placeholder" data-aria-action="owo-placeholder" data-aria-owo-placeholder="true"><i class="iconfont icon-aria-emotion"></i>表情</div>
             </div><!--end .OwO-->
             <?php if (!empty($commentsViewData['form']['supportsImageInsertion'])): ?>
             <div class="comment-image" data-aria-action="insert-comment-image">

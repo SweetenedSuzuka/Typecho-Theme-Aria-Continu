@@ -294,6 +294,27 @@
 	font-size: 13px !important
 }
 
+.aria-owo-placeholder {
+	position: relative;
+	display: inline-block;
+	color: #888;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 13px;
+	padding: 2px 5px;
+	cursor: pointer;
+	height: 22px;
+	box-sizing: border-box;
+	z-index: 2;
+	line-height: 13px
+}
+
+.aria-owo-placeholder[aria-busy=true],
+.aria-owo-placeholder[data-aria-owo-state=failed] {
+	opacity: .8
+}
+
 .ui.checkbox {
 	position: absolute;
 	display: inline-block;
@@ -582,4 +603,3 @@
 	width: 25px !important;
 	height: 25px !important
 }
-

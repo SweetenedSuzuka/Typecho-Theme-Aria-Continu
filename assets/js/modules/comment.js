@@ -189,34 +189,215 @@ function loadOwOStyle() {
   return Aria.state.owoStylePromise;
 }
 
-function bindEmotion() {
-  var container = document.querySelector(".OwO");
+function preloadOwOAssets() {
+  return Promise.all([loadOwOStyle(), loadOwOScript()]);
+}
+
+function getOwOContainer() {
+  return document.querySelector(".OwO");
+}
+
+function getOwOPlaceholder(container) {
+  return container ? container.querySelector('[data-aria-owo-placeholder="true"]') : null;
+}
+
+function ensureOwOPlaceholder() {
+  var container = getOwOContainer();
+  var placeholder;
+
+  if (!container || container.getAttribute("data-aria-owo-bound") === "true") {
+    return;
+  }
+
+  placeholder = getOwOPlaceholder(container);
+  if (placeholder) {
+    return;
+  }
+
+  placeholder = document.createElement("div");
+  placeholder.className = "aria-owo-placeholder";
+  placeholder.setAttribute("data-aria-action", "owo-placeholder");
+  placeholder.setAttribute("data-aria-owo-placeholder", "true");
+  placeholder.innerHTML = '<i class="iconfont icon-aria-emotion"></i>表情';
+  container.appendChild(placeholder);
+}
+
+function setOwOPlaceholderState(state) {
+  var container = getOwOContainer();
+  var placeholder = getOwOPlaceholder(container);
+
+  if (!placeholder) {
+    return;
+  }
+
+  if (state === "loading") {
+    placeholder.setAttribute("aria-busy", "true");
+    placeholder.removeAttribute("data-aria-owo-state");
+    return;
+  }
+
+  placeholder.setAttribute("aria-busy", "false");
+  if (state === "failed") {
+    placeholder.setAttribute("data-aria-owo-state", "failed");
+    return;
+  }
+
+  placeholder.removeAttribute("data-aria-owo-state");
+}
+
+function removeOwOPlaceholder() {
+  var container = getOwOContainer();
+  var placeholder = getOwOPlaceholder(container);
+
+  if (!placeholder || !placeholder.parentNode) {
+    return;
+  }
+
+  placeholder.parentNode.removeChild(placeholder);
+}
+
+function bindOwOPlaceholderClick() {
+  if (document.body.getAttribute("data-aria-owo-placeholder-bound") === "true") {
+    return;
+  }
+
+  document.body.setAttribute("data-aria-owo-placeholder-bound", "true");
+  document.addEventListener("click", function (event) {
+    var trigger = event.target.closest("[data-aria-action='owo-placeholder']");
+    var state;
+    var message;
+
+    if (!trigger) {
+      return;
+    }
+
+    event.preventDefault();
+    state = Aria.state.owoLoadState || "";
+    message = state === "failed" ? "表情面板加载失败" : "表情面板正在加载…";
+    if (state === "failed") {
+      Aria.notify.error(message);
+    } else {
+      Aria.notify.success(message);
+    }
+    initOwO();
+  });
+}
+
+function initOwO() {
+  var container = getOwOContainer();
   var target = document.querySelector(".textarea");
 
   if (!container || !target || container.getAttribute("data-aria-owo-bound") === "true") {
     return;
   }
 
-  Promise.all([loadOwOStyle(), loadOwOScript()])
+  bindOwOPlaceholderClick();
+  ensureOwOPlaceholder();
+  if (Aria.state.owoLoadState === "loading" || Aria.state.owoLoadState === "ready") {
+    return;
+  }
+
+  Aria.state.owoLoadState = "loading";
+  setOwOPlaceholderState("loading");
+  preloadOwOAssets()
     .then(function () {
       if (typeof window.OwO !== "function") {
+        Aria.state.owoLoadState = "failed";
+        ensureOwOPlaceholder();
+        setOwOPlaceholderState("failed");
         return;
       }
 
       container.setAttribute("data-aria-owo-bound", "true");
-      new window.OwO({
-        logo: '<i class="iconfont icon-aria-emotion"></i>表情',
-        container: container,
-        target: target,
-        api: THEME_CONFIG.OWO_JSON,
-        position: "down",
-        width: "100%",
-        maxHeight: "250px",
-      });
+      removeOwOPlaceholder();
+      try {
+        new window.OwO({
+          logo: '<i class="iconfont icon-aria-emotion"></i>表情',
+          container: container,
+          target: target,
+          api: THEME_CONFIG.OWO_JSON,
+          position: "down",
+          width: "100%",
+          maxHeight: "250px",
+        });
+        Aria.state.owoLoadState = "ready";
+      } catch (error) {
+        container.removeAttribute("data-aria-owo-bound");
+        Aria.state.owoLoadState = "failed";
+        ensureOwOPlaceholder();
+        setOwOPlaceholderState("failed");
+        console.warn("OwO init failed", error);
+      }
     })
     .catch(function (error) {
       console.warn("OwO load failed", error);
+      Aria.state.owoLoadState = "failed";
+      ensureOwOPlaceholder();
+      setOwOPlaceholderState("failed");
     });
+}
+
+function getCommentsRoot() {
+  return document.getElementById("comments");
+}
+
+function isCommentsNearViewport(element, offset) {
+  var rect;
+
+  if (!element) {
+    return false;
+  }
+
+  rect = element.getBoundingClientRect();
+  return rect.top <= window.innerHeight + offset;
+}
+
+function watchCommentsForOwO() {
+  var commentsRoot = getCommentsRoot();
+  var preloadOffset = 800;
+
+  if (!commentsRoot) {
+    return;
+  }
+
+  bindOwOPlaceholderClick();
+  ensureOwOPlaceholder();
+
+  if (commentsRoot.getAttribute("data-aria-owo-observing") === "true") {
+    return;
+  }
+
+  if (isCommentsNearViewport(commentsRoot, preloadOffset)) {
+    initOwO();
+    return;
+  }
+
+  if (typeof window.IntersectionObserver !== "function") {
+    initOwO();
+    return;
+  }
+
+  commentsRoot.setAttribute("data-aria-owo-observing", "true");
+  Aria.state.owoObserver = new window.IntersectionObserver(
+    function (entries, observer) {
+      Array.prototype.forEach.call(entries, function (entry) {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        commentsRoot.removeAttribute("data-aria-owo-observing");
+        observer.disconnect();
+        Aria.state.owoObserver = null;
+        initOwO();
+      });
+    },
+    {
+      root: null,
+      rootMargin: preloadOffset + "px 0px",
+      threshold: 0,
+    },
+  );
+  Aria.state.owoObserver.observe(commentsRoot);
 }
 
 function bindAjaxAvatar() {
@@ -489,7 +670,7 @@ function bindAjaxComment() {
 Aria.commentPlus = Aria.commentPlus || {};
 Aria.commentPlus.init = function () {
   bindReplyStateTracking();
-  bindEmotion();
+  watchCommentsForOwO();
   bindAjaxAvatar();
 
   if (THEME_CONFIG.ENABLE_AJAX_COMMENT) {
