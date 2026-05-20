@@ -5,7 +5,7 @@
 > 书写自己的篇章  
 > 让期许不再落幕
 
-[![Version](https://img.shields.io/badge/version-1.15.0-blue.svg)](#更新日志)
+[![Version](https://img.shields.io/badge/version-1.16.0-blue.svg)](#更新日志)
 [![Typecho](https://img.shields.io/badge/Typecho-Compatible-green.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%202.0-blue.svg)](#)
 
@@ -79,6 +79,29 @@ Aria，即咏叹调。
 
 # 更新日志
 
+### 2026-05-20 1.16.0  
+
+* 调整：`jQuery` 依赖大幅收缩  
+  * `base.js`、`action.js`、`toc.js`、`comment.js` 已全量原生化，不再依赖 `jQuery`  
+  * `core.js` 中仅保留 `Fancybox` 插件本体作为有意识保留的最后一个 `jQuery` 调用点  
+  * 删除不再需要的 `jquery-resize.js` 模块  
+* 新增：可选本地化图标包机制  
+  * 内置 `Remix Icon v4.9.1`、`Bootstrap Icons v1.13.1`、`Font Awesome Free v7.2.0`  
+  * 后台新增 `附加图标包` 多选开关，默认关闭，仅加载主题自带 `iconfont`  
+  * 启用后整站可用，包括导航配置、文章 HTML、自定义注入内容  
+  * `Font Awesome Free` 同时加载 `v4` 兼容层，旧 `fa` 类名写法直接兼容  
+* 调整：`OwO` 表情加载体验重构  
+  * `OwO` CSS/JS 改为在评论区接近视口时通过 `IntersectionObserver` 预加载并初始化  
+  * 评论模板直出外观一致的占位入口，加载成功后无缝切换为真实表情面板  
+  * 加载中或加载失败时点击占位按钮有明确提示，体验更一致  
+  * 首屏距离评论区较远的页面不再一开始就抢占表情资源  
+* 修正：`go-top` 返回顶部按钮在滚动过程中不再反复闪烁  
+* 调整：评论回复/取消回复从 `TypechoComment` 全局脚本迁到主题前端模块  
+* 调整：继续收口 `OwO` 为评论表单按需加载资源（CSS + JS 均不再全站固定装载）
+
+<details>
+<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
+
 ### 2026-05-20 1.15.0  
 
 * 调整：完成前端历史运行时依赖收口  
@@ -90,9 +113,6 @@ Aria，即咏叹调。
   * 新增“启用导航栏吸顶隐藏”后台开关，默认开启，关闭后导航栏不再因滚动自动收起  
   * 修复 Fancybox 关闭时的焦点回退导致页面瞬间跳动的问题  
   * 导航吸顶隐藏逻辑改为主题自有实现，并保留原有 `headroom*` 类名契约  
-
-<details>
-<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
 
 ### 2026-05-20 1.14.0  
 
