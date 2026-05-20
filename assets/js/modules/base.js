@@ -1,5 +1,5 @@
 /**
- * Aria front-end base globals and shared jQuery helpers.
+ * Aria front-end base globals and shared helper utilities.
  */
 var Aria = (window.Aria = window.Aria || {});
 Aria.helpers = Aria.helpers || {};
@@ -10,46 +10,184 @@ Aria.notify = Aria.notify || {};
 var ARIA_NOTIFY_DELAY = 3000;
 var ARIA_NOTIFY_DISAPPEAR_DURATION = 600;
 
+function getAnimationEndEventName() {
+  var animationEnd = Aria.state.animationEndEventName;
+  var element;
+  var animations;
+  var key;
+
+  if (animationEnd) {
+    return animationEnd;
+  }
+
+  element = document.createElement("div");
+  animations = {
+    animation: "animationend",
+    OAnimation: "oAnimationEnd",
+    MozAnimation: "mozAnimationEnd",
+    WebkitAnimation: "webkitAnimationEnd",
+  };
+
+  for (key in animations) {
+    if (typeof element.style[key] !== "undefined") {
+      Aria.state.animationEndEventName = animations[key];
+      return animations[key];
+    }
+  }
+
+  return null;
+}
+
+function isElementVisible(element) {
+  return !!element && window.getComputedStyle(element).display !== "none";
+}
+
+function stopElementAnimations(element) {
+  if (!element || typeof element.getAnimations !== "function") {
+    return;
+  }
+
+  element.getAnimations().forEach(function (animation) {
+    animation.cancel();
+  });
+}
+
+function fadeElement(element, shouldShow, displayValue, duration) {
+  var animation;
+
+  if (!element) {
+    return;
+  }
+
+  duration = typeof duration === "number" ? duration : 200;
+  stopElementAnimations(element);
+
+  if (shouldShow) {
+    element.style.display = displayValue || "block";
+  }
+
+  if (typeof element.animate === "function") {
+    animation = element.animate(
+      [{ opacity: shouldShow ? 0 : 1 }, { opacity: shouldShow ? 1 : 0 }],
+      { duration: duration, easing: "ease" },
+    );
+    animation.onfinish = function () {
+      element.style.opacity = "";
+      if (!shouldShow) {
+        element.style.display = "none";
+      }
+    };
+    return;
+  }
+
+  if (!shouldShow) {
+    element.style.display = "none";
+  }
+}
+
 Aria.helpers.toggleNav = function () {
-  $("#nav-vertical").toggleClass("nav-open");
-  $("#wrapper").toggle();
+  var navigation = document.getElementById("nav-vertical");
+  var wrapper = document.getElementById("wrapper");
+  var isOpen;
+
+  if (!navigation) {
+    return;
+  }
+
+  isOpen = !navigation.classList.contains("nav-open");
+  navigation.classList.toggle("nav-open", isOpen);
+
+  if (!wrapper) {
+    return;
+  }
+
+  wrapper.classList.toggle("wrapper-open", isOpen);
+  wrapper.style.display = isOpen ? "block" : "none";
 };
 
 Aria.helpers.goTop = function (target) {
-  var button = $(target);
+  var button = target && target.nodeType === 1 ? target : document.getElementById("go-top");
   var scrollingElement =
     document.scrollingElement || document.documentElement || document.body;
 
-  button.stop(!0, !0).animate({ opacity: 0.4 }, 150);
+  if (button) {
+    button.style.transition = "opacity 150ms ease";
+    button.style.opacity = "0.4";
+  }
+
+  function restoreButtonOpacity() {
+    if (!button) {
+      return;
+    }
+
+    button.style.opacity = "1";
+  }
 
   if (typeof window.scrollTo === "function") {
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
       window.setTimeout(function () {
-        button.animate({ opacity: 1 }, 150);
+        restoreButtonOpacity();
       }, 500);
       return;
     } catch (error) {
-      // Fall back to jQuery animation for older browsers.
+      try {
+        window.scrollTo(0, 0);
+        restoreButtonOpacity();
+        return;
+      } catch (fallbackError) {
+        // Fall back to directly mutating the scrolling container.
+      }
     }
   }
 
-  $(scrollingElement)
-    .stop(!0)
-    .animate({ scrollTop: 0 }, 600, function () {
-      button.animate({ opacity: 1 }, 150);
-    });
+  if (scrollingElement) {
+    scrollingElement.scrollTop = 0;
+  }
+
+  window.setTimeout(function () {
+    restoreButtonOpacity();
+  }, 150);
 };
 
 Aria.helpers.togglePostOther = function (target) {
-  var panel = $(target).next();
+  var panel = target ? target.nextElementSibling : null;
 
-  if (panel.css("display") !== "none") {
-    panel.fadeOut();
+  if (isElementVisible(panel)) {
+    fadeElement(panel, !1, "flex");
     return;
   }
 
-  panel.fadeIn().css("display", "flex");
+  fadeElement(panel, !0, "flex");
+};
+
+Aria.helpers.animateCss = function (element, animationName, callback) {
+  var animationEnd = getAnimationEndEventName();
+
+  if (!element) {
+    return;
+  }
+
+  if (!animationEnd) {
+    if (typeof callback === "function") {
+      callback(element);
+    }
+    return;
+  }
+
+  element.classList.remove("animated", animationName);
+  void element.offsetWidth;
+  element.classList.add("animated", animationName);
+  element.addEventListener(
+    animationEnd,
+    function handleAnimationEnd() {
+      element.classList.remove("animated", animationName);
+      if (typeof callback === "function") {
+        callback(element);
+      }
+    },
+    { once: true },
+  );
 };
 
 Aria.compat.installLegacyGlobals = function () {
@@ -194,32 +332,3 @@ Aria.notify.error = function (message) {
 
   console.error(message);
 };
-
-$.fn.extend({
-  animateCss: function (animationName, callback) {
-    var animationEnd = (function (element) {
-      var animations = {
-        animation: "animationend",
-        OAnimation: "oAnimationEnd",
-        MozAnimation: "mozAnimationEnd",
-        WebkitAnimation: "webkitAnimationEnd",
-      };
-
-      for (var key in animations) {
-        if (typeof element.style[key] !== "undefined") {
-          return animations[key];
-        }
-      }
-    })(document.createElement("div"));
-
-    return this.addClass("animated " + animationName).one(
-      animationEnd,
-      function () {
-        $(this).removeClass("animated " + animationName);
-        if (typeof callback === "function") {
-          callback($(this));
-        }
-      },
-    );
-  },
-});

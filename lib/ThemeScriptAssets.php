@@ -33,7 +33,6 @@ class ThemeScriptAssets
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/comment.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/action.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/toc.js'),
-            ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/jquery-resize.js'),
         ));
     }
 

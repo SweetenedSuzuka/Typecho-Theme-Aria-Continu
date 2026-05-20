@@ -170,46 +170,104 @@ function updateHashWithoutJump(hash) {
   window.location.hash = hash;
 }
 
-function bindTocScroll() {
-  $(document)
-    .off("click.aria-toc-scroll", '#toc a[href*="#"]')
-    .on("click.aria-toc-scroll", '#toc a[href*="#"]', function (event) {
-      var target = getTocTargetFromLink(this);
-      var href = this.getAttribute("href") || "";
-
-      if (!target) {
-        return;
-      }
-
-      event.preventDefault();
-      window.scrollTo({
-        top: getTocScrollTop(target),
-        behavior: getTocScrollBehavior(),
-      });
-      updateHashWithoutJump(href);
-    });
+function destroyTocScrollBinding() {
+  if (Aria.state.tocScrollHandler) {
+    document.removeEventListener("click", Aria.state.tocScrollHandler);
+    Aria.state.tocScrollHandler = null;
+  }
 }
 
-Aria.toc.init = function () {
-  var toc = $("#toc");
-  if (!toc.length) {
-    this.titleId = [];
+function bindTocScroll() {
+  destroyTocScrollBinding();
+
+  Aria.state.tocScrollHandler = function (event) {
+    var link = event.target.closest('#toc a[href*="#"]');
+    var target;
+    var href;
+
+    if (!link) {
+      return;
+    }
+
+    target = getTocTargetFromLink(link);
+    href = link.getAttribute("href") || "";
+
+    if (!target) {
+      return;
+    }
+
+    event.preventDefault();
+    window.scrollTo({
+      top: getTocScrollTop(target),
+      behavior: getTocScrollBehavior(),
+    });
+    updateHashWithoutJump(href);
+  };
+
+  document.addEventListener("click", Aria.state.tocScrollHandler);
+}
+
+function setTocContainerHeight() {
+  var tocContainer = document.getElementById("toc-container");
+  var postBody = document.querySelector(".post-body");
+
+  if (!tocContainer || !postBody) {
     return;
   }
 
-  toc.empty();
-  createDirectory(
-    document.getElementsByClassName("post-content")[0],
-    toc.get(0),
-    !0,
-  );
+  tocContainer.style.height = postBody.offsetHeight + "px";
+}
+
+function destroyTocHeightSync() {
+  if (Aria.state.tocResizeObserver) {
+    Aria.state.tocResizeObserver.disconnect();
+    Aria.state.tocResizeObserver = null;
+  }
+
+  if (Aria.state.tocResizeHandler) {
+    window.removeEventListener("resize", Aria.state.tocResizeHandler);
+    Aria.state.tocResizeHandler = null;
+  }
+}
+
+function bindTocHeightSync() {
+  var postBody = document.querySelector(".post-body");
+
+  destroyTocHeightSync();
+  setTocContainerHeight();
+
+  if (!postBody) {
+    return;
+  }
+
+  if (typeof window.ResizeObserver === "function") {
+    Aria.state.tocResizeObserver = new window.ResizeObserver(function () {
+      setTocContainerHeight();
+    });
+    Aria.state.tocResizeObserver.observe(postBody);
+    return;
+  }
+
+  Aria.state.tocResizeHandler = function () {
+    setTocContainerHeight();
+  };
+  window.addEventListener("resize", Aria.state.tocResizeHandler);
+}
+
+Aria.toc.init = function () {
+  var toc = document.getElementById("toc");
+  var postContent = document.querySelector(".post-content");
+
+  if (!toc || !postContent) {
+    this.titleId = [];
+    destroyTocScrollBinding();
+    destroyTocHeightSync();
+    return;
+  }
+
+  toc.innerHTML = "";
+  createDirectory(postContent, toc, !0);
 
   bindTocScroll();
-
-  $("#toc-container").height($(".post-body").eq(0).height());
-  $(".post-body")
-    .off("resize.ariaToc")
-    .on("resize.ariaToc", function () {
-      $("#toc-container").height($(".post-body").eq(0).height());
-    });
+  bindTocHeightSync();
 };

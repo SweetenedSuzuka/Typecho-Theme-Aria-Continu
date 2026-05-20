@@ -136,40 +136,73 @@ function nav() {
   $(".nav-right-item")
     .off("mouseenter.ariaNavSub mouseleave.ariaNavSub")
     .on("mouseenter.ariaNavSub", function () {
-      $(".nav-sub", this).addClass("fast");
-      $(".nav-sub", this).show();
-      $(".nav-sub", this).animateCss("show-sub");
+      var submenu = this.querySelector(".nav-sub");
+
+      if (!submenu) {
+        return;
+      }
+
+      submenu.classList.add("fast");
+      submenu.style.display = "block";
+      Aria.helpers.animateCss(submenu, "show-sub");
     })
     .on("mouseleave.ariaNavSub", function () {
-      $(".nav-sub", this).hide();
+      var submenu = this.querySelector(".nav-sub");
+
+      if (!submenu) {
+        return;
+      }
+
+      submenu.style.display = "none";
     });
 }
 
 function closeNav() {
-  if ($("#nav-vertical").hasClass("nav-open")) {
-    $("#nav-vertical").removeClass("nav-open");
-    $("#wrapper").removeClass("wrapper-open");
+  var navigation = document.getElementById("nav-vertical");
+  var wrapper = document.getElementById("wrapper");
+
+  if (navigation) {
+    navigation.classList.remove("nav-open");
+  }
+
+  if (wrapper) {
+    wrapper.classList.remove("wrapper-open");
+    wrapper.style.display = "none";
   }
 
   return !1;
 }
 
 function search() {
-  if ($("#search-box").css("display") === "flex") {
-    $("#search-box").css("display", "none");
+  var searchBox = document.getElementById("search-box");
+
+  if (searchBox && window.getComputedStyle(searchBox).display === "flex") {
+    searchBox.style.display = "none";
   }
 
   $("#nav-search-btn")
     .off("click.ariaSearch")
     .on("click.ariaSearch", function () {
-      $("#search-box").css("display", "flex");
-      $("#search-box").animateCss("zoomIn", function () {});
+      var currentSearchBox = document.getElementById("search-box");
+
+      if (!currentSearchBox) {
+        return;
+      }
+
+      currentSearchBox.style.display = "flex";
+      Aria.helpers.animateCss(currentSearchBox, "zoomIn");
     });
 
   $("#search-box>.close")
     .off("click.ariaSearch")
     .on("click.ariaSearch", function () {
-      $("#search-box").hide();
+      var currentSearchBox = document.getElementById("search-box");
+
+      if (!currentSearchBox) {
+        return;
+      }
+
+      currentSearchBox.style.display = "none";
     });
 }
 
