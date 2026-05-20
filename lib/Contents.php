@@ -8,7 +8,7 @@
  *
  * Based on original work by Siphils
  * @author     SweetenedSuzuka
- * @version    since 1.14.0
+ * @version    since 1.15.0
  */
 
 class Contents

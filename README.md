@@ -5,7 +5,7 @@
 > 书写自己的篇章  
 > 让期许不再落幕
 
-[![Version](https://img.shields.io/badge/version-1.14.0-blue.svg)](#更新日志)
+[![Version](https://img.shields.io/badge/version-1.15.0-blue.svg)](#更新日志)
 [![Typecho](https://img.shields.io/badge/Typecho-Compatible-green.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%202.0-blue.svg)](#)
 
@@ -79,13 +79,28 @@ Aria，即咏叹调。
 
 # 更新日志
 
+### 2026-05-20 1.15.0  
+
+* 调整：完成前端历史运行时依赖收口  
+  * 代码复制从 `ClipboardJS` 切换为原生 Clipboard API，并保留旧环境回退  
+  * 通知提示从 `Notyf` 切换为主题自有轻量实现，继续复用原有视觉样式  
+  * 代码块行号从 `highlightjs-line-numbers` 切换为主题自有实现，并避免行号结构污染复制内容  
+  * 目录平滑滚动、导航吸顶隐藏、滚动入场动画分别从 `SmoothScroll`、`Headroom`、`WOW` 切换为浏览器原生或主题自有实现  
+* 调整：继续完善交互与可配置性  
+  * 新增“启用导航栏吸顶隐藏”后台开关，默认开启，关闭后导航栏不再因滚动自动收起  
+  * 修复 Fancybox 关闭时的焦点回退导致页面瞬间跳动的问题  
+  * 导航吸顶隐藏逻辑改为主题自有实现，并保留原有 `headroom*` 类名契约  
+
+<details>
+<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
+
 ### 2026-05-20 1.14.0  
 
 * 调整：移除 `PJAX`：  
   * 后台不再保留 `PJAX` 开关，前台主路径已完全回归普通服务端页面跳转  
   * 删除前端运行时中的 `PJAX` 配置、模板中的 `#pjax-container` 相关残留，以及评论退出链接、打赏/二维码按钮上的 `no-pjax` 标记  
   * 停止加载并移除 `assets/js/jquery.pjax.min.js`，同时清理 `MathJax` 与前端初始化流程中对 `pjax:complete` 的历史依赖  
-* 调整：更换评论 `AJAX` 实现方式：  
+* 调整：更换评论 `AJAX` 实现方式  
   * 评论头像异步获取由 `jQuery.ajax` 切换为 `fetch`  
   * 评论提交由 `serializeArray() + $.ajax + $.parseHTML()` 切换为 `FormData/URLSearchParams + fetch + DOMParser`  
   * 评论回复状态跟踪、表单提交绑定与局部 DOM 插入改为基于原生事件与原生 DOM 的实现  
@@ -105,8 +120,6 @@ Aria，即咏叹调。
   * 图片型备案图标新增 `loading="lazy"`、`decoding="async"`、`fetchpriority="low"`、`referrerpolicy="no-referrer"`  
   * 兼容将备案图标写成图标类名字符串的旧配置方式，避免误当外部图片请求  
 
-<details>
-<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
 
 ### 2026-05-17 1.13.1  
 
