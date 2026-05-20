@@ -66,6 +66,32 @@
 	white-space: nowrap
 }
 
+.aria-lazy-image,
+.aria-lazy-background {
+	-webkit-transition: opacity .35s ease, -webkit-filter .35s ease, -webkit-transform .35s ease;
+	transition: opacity .35s ease, filter .35s ease, transform .35s ease;
+	will-change: opacity, filter, transform
+}
+
+.aria-lazy-pending {
+	opacity: .78;
+	-webkit-filter: blur(4px) saturate(.92);
+	filter: blur(4px) saturate(.92);
+	-webkit-transform: translateZ(0) scale(1.01);
+	transform: translateZ(0) scale(1.01)
+}
+
+.aria-lazy-image.aria-lazy-loaded,
+.aria-lazy-background.aria-lazy-loaded,
+.aria-lazy-image.aria-lazy-error,
+.aria-lazy-background.aria-lazy-error {
+	opacity: 1;
+	-webkit-filter: none;
+	filter: none;
+	-webkit-transform: none;
+	transform: none
+}
+
 @media (min-width:450px) and (max-width:768px) {
 	.link-box a {
 		width: calc((100% - 80px)/ 3);

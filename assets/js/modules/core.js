@@ -8,6 +8,17 @@ function escapeCssUrl(url) {
   return String(url).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
+function runAfterNextPaint(callback) {
+  if (typeof window.requestAnimationFrame === "function") {
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(callback);
+    });
+    return;
+  }
+
+  window.setTimeout(callback, 0);
+}
+
 function loadLazyImage(image) {
   var source = image.getAttribute("data-aria-lazy-src");
   var placeholderUrl = getLazyloadPlaceholderUrl();
@@ -20,8 +31,10 @@ function loadLazyImage(image) {
   image.addEventListener(
     "load",
     function () {
-      image.classList.remove("aria-lazy-pending");
-      image.classList.add("aria-lazy-loaded");
+      runAfterNextPaint(function () {
+        image.classList.remove("aria-lazy-pending");
+        image.classList.add("aria-lazy-loaded");
+      });
     },
     { once: true },
   );
@@ -51,8 +64,10 @@ function loadLazyBackground(element) {
   preloader.decoding = "async";
   preloader.onload = function () {
     element.style.backgroundImage = 'url("' + escapeCssUrl(backgroundUrl) + '")';
-    element.classList.remove("aria-lazy-pending");
-    element.classList.add("aria-lazy-loaded");
+    runAfterNextPaint(function () {
+      element.classList.remove("aria-lazy-pending");
+      element.classList.add("aria-lazy-loaded");
+    });
   };
   preloader.onerror = function () {
     element.classList.remove("aria-lazy-loaded");
