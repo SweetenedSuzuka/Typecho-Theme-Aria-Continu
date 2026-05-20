@@ -441,6 +441,7 @@ $.extend(Aria, {
       animationDuration: 500,
       transitionEffect: "tube",
       transitionDuration: 500,
+      backFocus: false,
       spinnerTpl:
         '<img style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);" src="' +
         THEME_CONFIG.THEME_URL +
