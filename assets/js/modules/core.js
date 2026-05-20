@@ -377,6 +377,56 @@ function logVersion() {
   console.log("%cBased on Aria By Siphils", "color: #fff; background: #435561cf; padding:6px;");
 }
 
+function createFancyboxAnchor(image, useGallery) {
+  var anchor = document.createElement("a");
+
+  anchor.href = image.src;
+  anchor.setAttribute("data-caption", image.title || "");
+  anchor.className = "fancybox";
+  anchor.style.outline = "0";
+
+  if (useGallery) {
+    anchor.setAttribute("data-fancybox", "gallery");
+  }
+
+  return anchor;
+}
+
+function wrapImageWithFancybox(image, useGallery) {
+  var anchor;
+  var parent;
+
+  if (!image || image.getAttribute("data-aria-fancybox-bound") === "true") {
+    return;
+  }
+
+  parent = image.parentNode;
+  if (!parent) {
+    return;
+  }
+
+  anchor = createFancyboxAnchor(image, useGallery);
+  image.setAttribute("data-aria-fancybox-bound", "true");
+  parent.insertBefore(anchor, image);
+  anchor.appendChild(image);
+}
+
+function prepareFancyboxImages() {
+  Array.prototype.forEach.call(
+    document.querySelectorAll(".post-content img:not(.link-avatar):not([no-fancybox])"),
+    function (image) {
+      wrapImageWithFancybox(image, !0);
+    },
+  );
+
+  Array.prototype.forEach.call(
+    document.querySelectorAll(".comment-text img"),
+    function (image) {
+      wrapImageWithFancybox(image, !1);
+    },
+  );
+}
+
 Object.assign(Aria, {
   init: function () {
     if (this.state.initialized) {
@@ -407,34 +457,18 @@ Object.assign(Aria, {
   },
 
   fancybox: function () {
-    if (!$(".post-content img").length && !$(".comment-content img").length) {
+    if (
+      !document.querySelector(".post-content img") &&
+      !document.querySelector(".comment-content img")
+    ) {
       return;
     }
 
-    $("img:not([class~='link-avatar'],[no-fancybox])", ".post-content")
-      .not("[data-aria-fancybox-bound]")
-      .attr("data-aria-fancybox-bound", "true")
-      .wrap(function () {
-        var anchor = document.createElement("a");
-        anchor.href = this.src;
-        anchor.setAttribute("data-caption", this.title || "");
-        anchor.className = "fancybox";
-        anchor.setAttribute("data-fancybox", "gallery");
-        anchor.style.outline = "0";
-        return anchor;
-      });
+    prepareFancyboxImages();
 
-    $("img", ".comment-text")
-      .not("[data-aria-fancybox-bound]")
-      .attr("data-aria-fancybox-bound", "true")
-      .wrap(function () {
-        var anchor = document.createElement("a");
-        anchor.href = this.src;
-        anchor.setAttribute("data-caption", this.title || "");
-        anchor.className = "fancybox";
-        anchor.style.outline = "0";
-        return anchor;
-      });
+    if (!document.querySelector("a.fancybox")) {
+      return;
+    }
 
     $("a.fancybox").fancybox({
       animationEffect: "zoom-in-out",
