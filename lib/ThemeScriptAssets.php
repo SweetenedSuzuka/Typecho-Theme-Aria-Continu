@@ -29,7 +29,6 @@ class ThemeScriptAssets
 
         return array_merge($scripts, array(
             ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/headroom.min.js'),
-            ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/smooth-scroll.min.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/vendor/wow.min.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/base.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/core.js'),

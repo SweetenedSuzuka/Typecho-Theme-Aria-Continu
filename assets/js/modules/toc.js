@@ -120,6 +120,76 @@ function createDirectory(container, mountPoint) {
 Aria.toc = Aria.toc || {};
 Aria.toc.titleId = Aria.toc.titleId || [];
 
+function getTocTargetFromLink(link) {
+  var href;
+
+  if (!link || typeof link.getAttribute !== "function") {
+    return null;
+  }
+
+  href = link.getAttribute("href") || "";
+  if (!href || href.charAt(0) !== "#") {
+    return null;
+  }
+
+  try {
+    return document.querySelector(href);
+  } catch (error) {
+    return null;
+  }
+}
+
+function getTocScrollTop(target) {
+  var offset = 80;
+  var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+
+  return top > 0 ? top : 0;
+}
+
+function getTocScrollBehavior() {
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return "auto";
+  }
+
+  return "smooth";
+}
+
+function updateHashWithoutJump(hash) {
+  if (!hash) {
+    return;
+  }
+
+  if (window.history && typeof window.history.pushState === "function") {
+    window.history.pushState(null, document.title, hash);
+    return;
+  }
+
+  window.location.hash = hash;
+}
+
+function bindTocScroll() {
+  $(document)
+    .off("click.aria-toc-scroll", '#toc a[href*="#"]')
+    .on("click.aria-toc-scroll", '#toc a[href*="#"]', function (event) {
+      var target = getTocTargetFromLink(this);
+      var href = this.getAttribute("href") || "";
+
+      if (!target) {
+        return;
+      }
+
+      event.preventDefault();
+      window.scrollTo({
+        top: getTocScrollTop(target),
+        behavior: getTocScrollBehavior(),
+      });
+      updateHashWithoutJump(href);
+    });
+}
+
 Aria.toc.init = function () {
   var toc = $("#toc");
   if (!toc.length) {
@@ -134,9 +204,7 @@ Aria.toc.init = function () {
     !0,
   );
 
-  if (!Aria.state.tocScroll) {
-    Aria.state.tocScroll = new SmoothScroll('#toc a[href*="#"]', { offset: 80 });
-  }
+  bindTocScroll();
 
   $("#toc-container").height($(".post-body").eq(0).height());
   $(".post-body")
