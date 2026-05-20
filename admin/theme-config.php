@@ -111,10 +111,11 @@ function themeConfig($form)
         array(
             'remixicon' => _t('Remix Icon（v4.9.1）'),
             'bootstrap-icons' => _t('Bootstrap Icons（v1.13.1）'),
+            'font-awesome' => _t('Font Awesome Free（v7.2.0；可兼容旧版 fa 写法）'),
         ),
         ThemeOptions::getOptionArrayValues('iconPacks'),
         _t('附加图标包'),
-        _t('默认仅加载主题自带 `iconfont`。按需勾选需要额外启用的图标包；未勾选的图标包不会进入前台装载链。当前内置并本地化提供 `Remix Icon` 与 `Bootstrap Icons`。你可以在导航栏配置等需要填写icon链接的地方用它们代替，也可以在任意可以自定义HTML的地方使用。')
+        _t('默认仅加载主题自带 `iconfont`。按需勾选需要额外启用的图标包；未勾选的图标包不会进入前台装载链。当前内置并本地化提供 `Remix Icon`、`Bootstrap Icons` 与 `Font Awesome Free`。你可以在导航栏配置等需要填写 icon class 的地方使用，也可以在任意可自定义 HTML 的位置使用。')
     );
     $form->addInput($iconPacks->multiMode());
 

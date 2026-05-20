@@ -411,6 +411,7 @@ Andante · 2019 → 2026
 - [animate.css](https://daneden.github.io/animate.css/)
 - [Remix Icon](https://remixicon.com/)
 - [Bootstrap Icons](https://icons.getbootstrap.com/)
+- [Font Awesome Free](https://fontawesome.com/)
 
 <p align="center">
 ──────────── ✦ ────────────

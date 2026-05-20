@@ -489,6 +489,12 @@ class ThemeViewData
             $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/vendor/icons/bootstrap-icons/bootstrap-icons.min.css');
         }
 
+        if (in_array('font-awesome', $enabledPacks, true)) {
+            $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/vendor/icons/font-awesome/css/all.min.css');
+            $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/vendor/icons/font-awesome/css/v4-font-face.min.css');
+            $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/vendor/icons/font-awesome/css/v4-shims.min.css');
+        }
+
         return $styles;
     }
 
