@@ -18,7 +18,10 @@ $ariaCardThumbnail = isset($postCardViewData['thumbnailUrl'])
     : ThemeAssetHelper::getThumbnail();
 $ariaCardLoadingImageUrl = isset($postCardViewData['loadingImageUrl'])
     ? trim((string) $postCardViewData['loadingImageUrl'])
-    : ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg');
+    : '';
+$ariaCardLazyBackgroundStyle = $ariaCardLoadingImageUrl !== ''
+    ? 'background:url(' . htmlspecialchars($ariaCardLoadingImageUrl, ENT_QUOTES, 'UTF-8') . ') center center no-repeat;background-size: 100% auto;'
+    : '';
 ?>
 <article itemscope itemtype="http://schema.org/BlogPosting" class="card animated wow fadeIn" data-wow-duration="1s" data-wow-offset="10">
     <div class="card-title">
@@ -29,7 +32,7 @@ $ariaCardLoadingImageUrl = isset($postCardViewData['loadingImageUrl'])
     </div>
     <?php if ($ariaCardUseLazyload): ?>
         <a href="<?php $this->permalink(); ?>">
-            <div class="card-thumbnail" data-aria-lazy-background="<?php echo htmlspecialchars($ariaCardThumbnail, ENT_QUOTES, 'UTF-8'); ?>" style="background:url(<?php echo htmlspecialchars($ariaCardLoadingImageUrl, ENT_QUOTES, 'UTF-8'); ?>) center center no-repeat;background-size: 100% auto;">
+            <div class="card-thumbnail" data-aria-lazy-background="<?php echo htmlspecialchars($ariaCardThumbnail, ENT_QUOTES, 'UTF-8'); ?>"<?php if ($ariaCardLazyBackgroundStyle !== ''): ?> style="<?php echo $ariaCardLazyBackgroundStyle; ?>"<?php endif; ?>>
             </div>
         </a>
     <?php else: ?>

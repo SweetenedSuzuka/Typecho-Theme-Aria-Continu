@@ -75,6 +75,7 @@
 
 .aria-lazy-pending {
 	opacity: .78;
+	background-color: rgba(255, 255, 255, .72);
 	-webkit-filter: blur(4px) saturate(.92);
 	filter: blur(4px) saturate(.92);
 	-webkit-transform: translateZ(0) scale(1.01);

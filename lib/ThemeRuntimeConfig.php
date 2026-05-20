@@ -30,7 +30,8 @@ class ThemeRuntimeConfig
             'SHOW_REWARD' => count(ThemeOptions::getRewardConfigMap()) > 0,
             'ENABLE_AJAX_COMMENT' => ThemeOptions::isEnabled('enableAjaxComment', 'AriaConfig'),
             'ENABLE_FANCYBOX' => ThemeOptions::isEnabled('enableFancybox', 'AriaConfig'),
-            'ENABLE_LAZYLOAD' => ThemeOptions::isEnabled('enableLazyload', 'AriaConfig'),
+            'ENABLE_LAZYLOAD' => ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig'),
+            'ENABLE_LAZYLOAD_PLACEHOLDER' => ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false),
             'ENABLE_MATHJAX' => ThemeOptions::isFeatureEnabled('enableMathJax', 'AriaConfig'),
             'ENABLE_NAV_HEADROOM' => ThemeOptions::isOptionEnabled('enableNavHeadroom', true),
             'OWO_JSON' => $options->OwOJson

@@ -671,9 +671,11 @@ input[type=password] {
 }
 
 .card-thumbnail {
-	/* 新增两行 */
 	border-radius: 0 0 10px 10px;
 	box-shadow: inset 0 -115px 50px -105px #000;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 100% auto;
 	display: block;
 	height: 320px;
 	width: 100%;

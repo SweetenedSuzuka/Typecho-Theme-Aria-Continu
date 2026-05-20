@@ -151,6 +151,25 @@ function themeConfig($form)
         , _t('打赏功能配置'), _t('按照格式填写,留空关闭打赏功能'));
     $form->addInput($rewardConfig);
 
+    // Lazyload settings.
+    $enableLazyload = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'enableLazyload',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig')),
+        _t('开启图片懒加载'),
+        _t('控制主题图片是否使用懒加载')
+    );
+    $form->addInput($enableLazyload->multiMode());
+
+    $lazyloadPlaceholderEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'lazyloadPlaceholderEnabled',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false)),
+        _t('懒加载完成前显示占位图'),
+        _t('开启后，在懒加载完成前会显示占位用的加载图，这个样式来自Aria原版，不开启时默认是空白填充；无论开启与否，如果加载失败都会显示占位图')
+    );
+    $form->addInput($lazyloadPlaceholderEnabled->multiMode());
+
     // MathJax settings.
     $enableMathJax = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableMathJax',
@@ -317,7 +336,6 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
         array(
             'enableAjaxComment' => '开启AJAX评论',
             'enableFancybox' => '文章/评论图片使用<a href="https://fancyapps.com/" target="_blank">fancybox</a>',
-            'enableLazyload' => '开启图片懒加载',
             'enableCommentToMail' => '是否接收评论邮件回复按钮，需要配合<a href="https://9sb.org/58">CommentToMail</a>（文章中最后一个插件)使用',
             'showQRCode' => '文章底部显示本文链接二维码',
             'showCommentUA' => '评论显示UserAgent（显示操作系统和浏览器信息）',

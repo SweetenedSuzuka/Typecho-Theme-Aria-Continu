@@ -1,7 +1,15 @@
 var Aria = (window.Aria = window.Aria || {});
 
-function getLazyloadPlaceholderUrl() {
+function getLazyloadErrorPlaceholderUrl() {
   return THEME_CONFIG.THEME_URL + "/assets/img/loading.svg";
+}
+
+function getLazyloadPendingPlaceholderUrl() {
+  if (THEME_CONFIG.ENABLE_LAZYLOAD_PLACEHOLDER) {
+    return getLazyloadErrorPlaceholderUrl();
+  }
+
+  return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E';
 }
 
 function escapeCssUrl(url) {
@@ -21,7 +29,7 @@ function runAfterNextPaint(callback) {
 
 function loadLazyImage(image) {
   var source = image.getAttribute("data-aria-lazy-src");
-  var placeholderUrl = getLazyloadPlaceholderUrl();
+  var errorPlaceholderUrl = getLazyloadErrorPlaceholderUrl();
 
   if (!source || image.getAttribute("data-aria-lazy-loaded") === "true") {
     return;
@@ -44,7 +52,7 @@ function loadLazyImage(image) {
       image.classList.remove("aria-lazy-loaded");
       image.classList.remove("aria-lazy-pending");
       image.classList.add("aria-lazy-error");
-      image.src = placeholderUrl;
+      image.src = errorPlaceholderUrl;
     },
     { once: true },
   );
@@ -53,6 +61,7 @@ function loadLazyImage(image) {
 
 function loadLazyBackground(element) {
   var backgroundUrl = element.getAttribute("data-aria-lazy-background");
+  var errorPlaceholderUrl = getLazyloadErrorPlaceholderUrl();
   var preloader;
 
   if (!backgroundUrl || element.getAttribute("data-aria-lazy-loaded") === "true") {
@@ -70,6 +79,7 @@ function loadLazyBackground(element) {
     });
   };
   preloader.onerror = function () {
+    element.style.backgroundImage = 'url("' + escapeCssUrl(errorPlaceholderUrl) + '")';
     element.classList.remove("aria-lazy-loaded");
     element.classList.remove("aria-lazy-pending");
     element.classList.add("aria-lazy-error");
@@ -78,7 +88,8 @@ function loadLazyBackground(element) {
 }
 
 function prepareLazyImages() {
-  var placeholderUrl = getLazyloadPlaceholderUrl();
+  var errorPlaceholderUrl = getLazyloadErrorPlaceholderUrl();
+  var pendingPlaceholderUrl = getLazyloadPendingPlaceholderUrl();
   var images = document.querySelectorAll("img:not([no-lazyload])");
   var pending = [];
 
@@ -88,7 +99,8 @@ function prepareLazyImages() {
     if (
       image.getAttribute("data-aria-lazy-bound") === "true" ||
       !source ||
-      source === placeholderUrl
+      source === errorPlaceholderUrl ||
+      source === pendingPlaceholderUrl
     ) {
       return;
     }
@@ -99,7 +111,7 @@ function prepareLazyImages() {
     image.setAttribute("decoding", "async");
     image.setAttribute("fetchpriority", "low");
     image.classList.add("aria-lazy-image", "aria-lazy-pending");
-    image.src = placeholderUrl;
+    image.src = pendingPlaceholderUrl;
     pending.push(image);
   });
 

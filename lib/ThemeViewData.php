@@ -210,9 +210,11 @@ class ThemeViewData
 
         return array(
             'thumbnailUrl' => self::getPostCardThumbnailUrl($archive),
-            'loadingImageUrl' => ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg'),
+            'loadingImageUrl' => ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false)
+                ? ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg')
+                : '',
             'categorySeparator' => $isArchiveContext ? ' ' : ' • ',
-            'useLazyload' => !$isArchiveContext && ThemeOptions::isEnabled('enableLazyload', 'AriaConfig'),
+            'useLazyload' => !$isArchiveContext && ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig'),
             'showLine' => !$isArchiveContext,
             'moreTitle' => $isArchiveContext ? '' : 'Read More',
         );
