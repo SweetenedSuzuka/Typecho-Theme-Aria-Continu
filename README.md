@@ -406,8 +406,11 @@ Andante · 2019 → 2026
 - [Bento Grid System](https://github.com/fenbox/bento)
 - [Fancybox3](https://fancyapps.com/fancybox/3/)
 - [jQuery](https://jquery.com/)
+- [MathJax](https://www.mathjax.org/)
 - [DIYgod/OwO](https://github.com/DIYgod/OwO)
 - [animate.css](https://daneden.github.io/animate.css/)
+- [Remix Icon](https://remixicon.com/)
+- [Bootstrap Icons](https://icons.getbootstrap.com/)
 
 <p align="center">
 ──────────── ✦ ────────────

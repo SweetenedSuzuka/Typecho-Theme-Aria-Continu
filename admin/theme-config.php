@@ -102,9 +102,21 @@ function themeConfig($form)
             "icon":"iconfont icon-aria-about"
         }',
         _t('导航栏配置'),
-        _t('输入导航栏的配置信息；如需在 text 中换行，请使用 `[[br]]` 作为换行标记。该标记仅在导航栏文本中生效，不支持任意 HTML。')
+        _t('输入导航栏的配置信息；如需在 text 中换行，请使用 `[[br]]` 作为换行标记。该标记仅在导航栏文本中生效，不支持任意 HTML。默认使用主题自带 `iconfont icon-aria-*`；如果已启用附加图标包，也可以直接填写 `ri-*` 或 `bi bi-*` 类名。')
     );
     $form->addInput($navConfig);
+
+    $iconPacks = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'iconPacks',
+        array(
+            'remixicon' => _t('Remix Icon（v4.9.1）'),
+            'bootstrap-icons' => _t('Bootstrap Icons（v1.13.1）'),
+        ),
+        ThemeOptions::getOptionArrayValues('iconPacks'),
+        _t('附加图标包'),
+        _t('默认仅加载主题自带 `iconfont`。按需勾选需要额外启用的图标包；未勾选的图标包不会进入前台装载链。当前内置并本地化提供 `Remix Icon` 与 `Bootstrap Icons`。你可以在导航栏配置等需要填写icon链接的地方用它们代替，也可以在任意可以自定义HTML的地方使用。')
+    );
+    $form->addInput($iconPacks->multiMode());
 
     $enableNavHeadroom = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableNavHeadroom',

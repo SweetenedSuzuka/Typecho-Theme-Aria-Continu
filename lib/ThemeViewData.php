@@ -452,9 +452,7 @@ class ThemeViewData
      */
     private static function getHeaderStyleUrls()
     {
-        $styles = array(
-            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
-        );
+        $styles = array();
 
         if (ThemeOptions::isEnabled('enableFancybox', 'AriaConfig')) {
             $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/css/jquery.fancybox.min.css');
@@ -470,7 +468,28 @@ class ThemeViewData
             ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/comments.css'),
             ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/extras.css'),
             ThemeAssetHelper::getThemeAssetUrl('assets/css/pages.css'),
-        ));
+        ), self::getOptionalIconPackStyleUrls());
+    }
+
+    /**
+     * 获取按需启用的附加图标包样式
+     *
+     * @return array
+     */
+    private static function getOptionalIconPackStyleUrls()
+    {
+        $enabledPacks = ThemeOptions::getOptionArrayValues('iconPacks');
+        $styles = array();
+
+        if (in_array('remixicon', $enabledPacks, true)) {
+            $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/vendor/icons/remixicon/remixicon.css');
+        }
+
+        if (in_array('bootstrap-icons', $enabledPacks, true)) {
+            $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/vendor/icons/bootstrap-icons/bootstrap-icons.min.css');
+        }
+
+        return $styles;
     }
 
     /**

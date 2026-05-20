@@ -124,6 +124,40 @@ class ThemeOptions
     }
 
     /**
+     * 获取多选配置项的字符串数组
+     *
+     * @param string $name
+     *
+     * @return array
+     */
+    public static function getOptionArrayValues($name)
+    {
+        if (!self::hasOption($name)) {
+            return array();
+        }
+
+        $value = Helper::options()->$name;
+        if (is_array($value)) {
+            $items = array();
+            foreach ($value as $item) {
+                $item = trim((string) $item);
+                if ($item !== '') {
+                    $items[] = $item;
+                }
+            }
+
+            return array_values(array_unique($items));
+        }
+
+        $value = trim((string) $value);
+        if ($value === '') {
+            return array();
+        }
+
+        return self::splitOptionList($value);
+    }
+
+    /**
      * 返回主题设置中某项开关的开启/关闭状态
      *
      * @param string $item 项目名
