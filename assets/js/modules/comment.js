@@ -160,6 +160,35 @@ function loadOwOScript() {
   return Aria.state.owoScriptPromise;
 }
 
+function loadOwOStyle() {
+  var existingStyle = document.querySelector('link[data-aria-owo-style="true"]');
+
+  if (existingStyle) {
+    return Promise.resolve(existingStyle);
+  }
+
+  if (Aria.state.owoStylePromise) {
+    return Aria.state.owoStylePromise;
+  }
+
+  Aria.state.owoStylePromise = new Promise(function (resolve, reject) {
+    var link = document.createElement("link");
+
+    link.rel = "stylesheet";
+    link.href = THEME_CONFIG.OWO_STYLE;
+    link.setAttribute("data-aria-owo-style", "true");
+    link.onload = function () {
+      resolve(link);
+    };
+    link.onerror = function () {
+      reject(new Error("Failed to load OwO style"));
+    };
+    document.head.appendChild(link);
+  });
+
+  return Aria.state.owoStylePromise;
+}
+
 function bindEmotion() {
   var container = document.querySelector(".OwO");
   var target = document.querySelector(".textarea");
@@ -168,7 +197,7 @@ function bindEmotion() {
     return;
   }
 
-  loadOwOScript()
+  Promise.all([loadOwOStyle(), loadOwOScript()])
     .then(function () {
       if (typeof window.OwO !== "function") {
         return;

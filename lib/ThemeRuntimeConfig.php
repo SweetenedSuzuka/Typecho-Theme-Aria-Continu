@@ -36,6 +36,7 @@ class ThemeRuntimeConfig
             'OWO_JSON' => $options->OwOJson
                 ? (string) $options->OwOJson
                 : (string) $options->themeUrl . '/assets/OwO/OwO.json',
+            'OWO_STYLE' => (string) $options->themeUrl . '/assets/OwO/OwO.min.css',
             'OWO_SCRIPT' => (string) $options->themeUrl . '/assets/OwO/OwO.min.js',
             'HITOKOTO_ORIGIN' => $options->hitokotoOrigin
                 ? (string) $options->hitokotoOrigin

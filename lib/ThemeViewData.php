@@ -459,7 +459,6 @@ class ThemeViewData
         }
 
         return array_merge($styles, array(
-            ThemeAssetHelper::getThemeAssetUrl('assets/OwO/OwO.min.css'),
             ThemeAssetHelper::getThemeAssetUrl('assets/css/animate.min.css'),
             ThemeAssetHelper::getThemeAssetUrl('assets/css/iconfont.css'),
             ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/base.css'),
