@@ -13,7 +13,7 @@
 
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 
-<?php $commentsViewData = Utils::getCommentsViewData(); ?>
+<?php $commentsViewData = ThemeViewData::getCommentsViewData(); ?>
 
 <div id="comments"<?php echo $commentsViewData['ignoreMathJax'] ? ' class="aria-mathjax-ignore"' : ''; ?>>
 	<?php if($this->allow('comment')): ?>

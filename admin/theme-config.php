@@ -23,7 +23,7 @@ function themeConfig($form)
     $customPageBackgroundEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'customPageBackgroundEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(Utils::isOptionEnabled('customPageBackgroundEnabled', false)),
+        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('customPageBackgroundEnabled', false)),
         _t('启用网页背景自定义'),
         _t('设置整个网页的背景图，关闭后将会使用Aria默认的纯色样式')
     );
@@ -41,7 +41,7 @@ function themeConfig($form)
     $customCommentBoxBackgroundEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'customCommentBoxBackgroundEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(Utils::isOptionEnabled('customCommentBoxBackgroundEnabled', false)),
+        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('customCommentBoxBackgroundEnabled', false)),
         _t('启用评论框背景自定义'),
         _t('控制是否为评论输入框右下角显示自定义背景图；关闭时保持原版样式')
     );
@@ -122,7 +122,7 @@ function themeConfig($form)
     $enableNavHeadroom = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableNavHeadroom',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(Utils::isOptionEnabled('enableNavHeadroom', true)),
+        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('enableNavHeadroom', true)),
         _t('启用导航栏吸顶隐藏'),
         _t('控制导航栏是否在向下滚动时自动收起、向上滚动时重新显示；关闭后导航栏将始终保持显示')
     );
@@ -131,7 +131,7 @@ function themeConfig($form)
     $homeExcludeCategoriesEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'homeExcludeCategoriesEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(Utils::isOptionEnabled('homeExcludeCategoriesEnabled', true)),
+        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('homeExcludeCategoriesEnabled', true)),
         _t('启用首页分类排除'),
         _t('控制“首页排除分类（slug）”是否生效；关闭时仍会保留配置内容但不会执行过滤')
     );
@@ -155,7 +155,7 @@ function themeConfig($form)
     $enableMathJax = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableMathJax',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(Utils::isFeatureEnabled('enableMathJax', 'AriaConfig')),
+        ariaThemeToggleValue(ThemeOptions::isFeatureEnabled('enableMathJax', 'AriaConfig')),
         _t('启用 MathJax'),
         _t('控制是否加载 MathJax；关闭后将同时隐藏评论区解析开关和 MathJax 配置')
     );
@@ -164,7 +164,7 @@ function themeConfig($form)
     $enableMathJaxInComments = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableMathJaxInComments',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(Utils::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig')),
+        ariaThemeToggleValue(ThemeOptions::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig')),
         _t('评论区启用 MathJax 解析'),
         _t('仅在启用 MathJax 时生效；关闭后评论区会跳过公式解析')
     );
@@ -181,7 +181,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
     $showHitokoto = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'showHitokoto',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(Utils::isFeatureEnabled('showHitokoto', 'AriaConfig')),
+        ariaThemeToggleValue(ThemeOptions::isFeatureEnabled('showHitokoto', 'AriaConfig')),
         _t('显示一言'),
         _t('控制页脚是否显示一言；开启后才会显示自定义接口地址设置')
     );
@@ -248,7 +248,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
     $footerRecordsEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'footerRecordsEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(Utils::isOptionEnabled('footerRecordsEnabled', true)),
+        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('footerRecordsEnabled', true)),
         _t('显示页脚备案信息'),
         _t('控制页脚备案信息是否显示；关闭时仅保存不显示')
     );

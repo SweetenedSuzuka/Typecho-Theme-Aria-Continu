@@ -3,8 +3,8 @@
 </div><!-- end .container -->
 </div><!-- end #body -->
 <?php
-$footerViewData = Utils::getFooterViewData();
-$mathJaxViewData = Utils::getMathJaxViewData();
+$footerViewData = ThemeViewData::getFooterViewData();
+$mathJaxViewData = ThemeMathJax::getViewData();
 include __DIR__ . '/components/footer/content.php';
 ?>
 <?php foreach ($footerViewData['scripts'] as $scriptUrl): ?>

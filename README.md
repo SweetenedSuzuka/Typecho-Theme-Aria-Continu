@@ -89,7 +89,7 @@ Aria，即咏叹调。
   * 内置 `Remix Icon v4.9.1`、`Bootstrap Icons v1.13.1`、`Font Awesome Free v7.2.0`  
   * 后台新增 `附加图标包` 多选开关，默认关闭，仅加载主题自带 `iconfont`  
   * 启用后整站可用，包括导航配置、文章 HTML、自定义注入内容  
-  * `Font Awesome Free` 同时加载 `v4` 兼容层，旧 `fa` 类名写法直接兼容  
+  * `Font Awesome Free` 兼容 `v4` 写法  
 * 调整：`OwO` 表情加载体验重构  
   * `OwO` CSS/JS 改为在评论区接近视口时通过 `IntersectionObserver` 预加载并初始化  
   * 评论模板直出外观一致的占位入口，加载成功后无缝切换为真实表情面板  

@@ -15,10 +15,10 @@ $ariaCardMoreTitle = isset($postCardViewData['moreTitle'])
     : (isset($ariaCardMoreTitle) ? (string) $ariaCardMoreTitle : '');
 $ariaCardThumbnail = isset($postCardViewData['thumbnailUrl'])
     ? trim((string) $postCardViewData['thumbnailUrl'])
-    : Utils::getThumbnail();
+    : ThemeAssetHelper::getThumbnail();
 $ariaCardLoadingImageUrl = isset($postCardViewData['loadingImageUrl'])
     ? trim((string) $postCardViewData['loadingImageUrl'])
-    : Utils::getThemeAssetUrl('assets/img/loading.svg');
+    : ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg');
 ?>
 <article itemscope itemtype="http://schema.org/BlogPosting" class="card animated wow fadeIn" data-wow-duration="1s" data-wow-offset="10">
     <div class="card-title">

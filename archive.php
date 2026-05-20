@@ -16,7 +16,7 @@
     </div>
     <?php while($this->next()): ?>
         <?php
-        $postCardViewData = Utils::getPostCardViewData($this, 'archive');
+        $postCardViewData = ThemeViewData::getPostCardViewData($this, 'archive');
         ?>
         <?php include __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'post-card.php'; ?>
     <?php endwhile; ?>

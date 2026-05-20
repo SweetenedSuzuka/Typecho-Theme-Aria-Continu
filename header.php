@@ -23,7 +23,7 @@
             'author'    =>  _t('%s 发布的文章')
         ), '', ' - '); ?><?php $this->options->title(); ?> - <?php $this->options->description(); ?></title>
 
-<?php $headerViewData = Utils::getHeaderViewData($this, !empty($GLOBALS['ARIA_IS_404_PAGE'])); ?>
+<?php $headerViewData = ThemeViewData::getHeaderViewData($this, !empty($GLOBALS['ARIA_IS_404_PAGE'])); ?>
 
 	<!-- 使用url函数转换相关路径 -->
 
@@ -42,7 +42,7 @@
     <![endif]-->
 </head>
 <body<?php if ($headerViewData['body']['className'] !== ''): ?> class="<?php echo htmlspecialchars($headerViewData['body']['className'], ENT_QUOTES, 'UTF-8'); ?>"<?php endif; ?><?php if ($headerViewData['body']['style'] !== ''): ?> style="<?php echo htmlspecialchars($headerViewData['body']['style'], ENT_QUOTES, 'UTF-8'); ?>"<?php endif; ?>>
-<?php Utils::AriaConfig(); ?>
+<?php echo ThemeRuntimeConfig::getThemeConfigScriptHtml(); ?>
 <?php include __DIR__ . '/components/header/navigation.php'; ?>
 <?php include __DIR__ . '/components/header/search-box.php'; ?>
 <?php include __DIR__ . '/components/header/hero.php'; ?>

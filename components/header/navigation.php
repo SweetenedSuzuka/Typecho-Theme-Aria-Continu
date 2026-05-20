@@ -3,7 +3,7 @@
     <a class="close" href="javascript:void(0);" data-aria-action="toggle-nav"><i class="iconfont icon-aria-close"></i></a>
     <div id="nav-avatar"><img no-lazyload src="<?php echo htmlspecialchars($headerViewData['navigation']['adminAvatarLargeUrl'], ENT_QUOTES, 'UTF-8'); ?>"></div>
     <ul class="nav-vertical-list">
-        <?php Utils::showNav(0, $headerViewData['navigation']['slugs']); ?>
+        <?php ThemeNavRenderer::showNav(0, $headerViewData['navigation']['slugs']); ?>
     </ul>
 </div>
 		<!--[if lt IE 8]>
@@ -16,7 +16,7 @@
     </div>
     <div id="nav-right">
         <ul class="nav-right-list">
-            <?php Utils::showNav(1, $headerViewData['navigation']['slugs']); ?>
+            <?php ThemeNavRenderer::showNav(1, $headerViewData['navigation']['slugs']); ?>
         </ul>
     <div id="nav-btns">
         <i class="iconfont icon-aria-menu" id="nav-menu-btn" data-aria-action="toggle-nav"></i>

@@ -117,7 +117,7 @@ class Contents
             $title = $widget->title;
 
             $thumbnail = self::getFieldStringValue($db, (int) $content['cid'], 'thumbnail');
-            $img = $thumbnail !== '' ? $thumbnail : Utils::getThumbnail();
+            $img = $thumbnail !== '' ? $thumbnail : ThemeAssetHelper::getThumbnail();
 
             $result = array('img' => $img, 'title' => $title, 'link' => $link);
         } else {
@@ -318,8 +318,8 @@ class Contents
     {
         $html = '<div class="post-other">';
         $AriaConfig = Helper::options()->AriaConfig;
-        $rewardConfig = Utils::getRewardConfigMap();
-        $showQRCode = Utils::isEnabled('showQRCode', 'AriaConfig');
+        $rewardConfig = ThemeOptions::getRewardConfigMap();
+        $showQRCode = ThemeOptions::isEnabled('showQRCode', 'AriaConfig');
 
         if ($rewardConfig) {
             $html .= '<div class="post-reward"><a href="javascript:void(0);" data-aria-action="toggle-post-other"><i class="iconfont icon-aria-reward"></i></a>
