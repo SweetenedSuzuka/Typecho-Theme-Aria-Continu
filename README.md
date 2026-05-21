@@ -82,8 +82,7 @@ Aria，即咏叹调。
 ### 2026-05-20 1.16.0  
 
 * 调整：`jQuery` 依赖大幅收缩  
-  * `base.js`、`action.js`、`toc.js`、`comment.js` 已全量原生化，不再依赖 `jQuery`  
-  * `core.js` 中仅保留 `Fancybox` 插件本体作为有意识保留的最后一个 `jQuery` 调用点  
+  * `base.js`、`action.js`、`toc.js`、`comment.js` 已改为原生实现，不再依赖 `jQuery`  
   * 删除不再需要的 `jquery-resize.js` 模块  
 * 新增：可选本地化图标包机制  
   * 内置 `Remix Icon v4.9.1`、`Bootstrap Icons v1.13.1`、`Font Awesome Free v7.2.0`  
