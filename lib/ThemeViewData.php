@@ -91,8 +91,8 @@ class ThemeViewData
      */
     public static function getCommentsViewData()
     {
-        $mathJaxEnabled = ThemeOptions::isFeatureEnabled('enableMathJax', 'AriaConfig');
-        $mathJaxEnabledInComments = ThemeOptions::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig');
+        $mathJaxEnabled = ThemeOptions::isMathJaxEnabled();
+        $mathJaxEnabledInComments = ThemeOptions::isMathJaxInCommentsEnabled();
         $options = Helper::options();
         $commentsRequireMail = !empty($options->commentsRequireMail);
         $commentsRequireUrl = !empty($options->commentsRequireURL);
@@ -148,7 +148,7 @@ class ThemeViewData
         $recordsEnabled = ThemeOptions::isOptionEnabled('footerRecordsEnabled', true);
 
         return array(
-            'showHitokoto' => ThemeOptions::isFeatureEnabled('showHitokoto', 'AriaConfig'),
+            'showHitokoto' => ThemeOptions::isHitokotoEnabled(),
             'widgetHtml' => self::getFooterWidgetHtml(),
             'recordsHtml' => $recordsEnabled ? self::getFooterRecordsHtml() : '',
             'customFooterHtml' => self::getCustomFooterHtml(),
@@ -261,7 +261,7 @@ class ThemeViewData
         $loadingImageUrl = ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false)
             ? ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg')
             : '';
-        $useLazyload = !$isArchiveContext && ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig');
+        $useLazyload = !$isArchiveContext && ThemeOptions::isLazyloadEnabled();
 
         return array(
             'thumbnailUrl' => $thumbnailUrl,

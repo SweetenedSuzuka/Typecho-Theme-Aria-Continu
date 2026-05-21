@@ -13,6 +13,13 @@
 class ThemeOptions
 {
     /**
+     * 已完成独立开关兼容镜像的配置项
+     *
+     * @var array<string, bool>
+     */
+    private static $mirroredFeatureOptions = array();
+
+    /**
      * 判断配置项是否存在
      *
      * @param string $name
@@ -102,6 +109,46 @@ class ThemeOptions
     }
 
     /**
+     * 获取懒加载开关状态
+     *
+     * @return bool
+     */
+    public static function isLazyloadEnabled()
+    {
+        return self::getMirroredFeatureOptionState('enableLazyload');
+    }
+
+    /**
+     * 获取 MathJax 开关状态
+     *
+     * @return bool
+     */
+    public static function isMathJaxEnabled()
+    {
+        return self::getMirroredFeatureOptionState('enableMathJax');
+    }
+
+    /**
+     * 获取评论区 MathJax 开关状态
+     *
+     * @return bool
+     */
+    public static function isMathJaxInCommentsEnabled()
+    {
+        return self::getMirroredFeatureOptionState('enableMathJaxInComments');
+    }
+
+    /**
+     * 获取一言开关状态
+     *
+     * @return bool
+     */
+    public static function isHitokotoEnabled()
+    {
+        return self::getMirroredFeatureOptionState('showHitokoto');
+    }
+
+    /**
      * 将文本配置拆分为字符串列表
      *
      * @param string $value
@@ -173,6 +220,41 @@ class ThemeOptions
         }
 
         return self::splitOptionList($value);
+    }
+
+    /**
+     * 获取带 legacy 镜像兼容的独立开关状态
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    private static function getMirroredFeatureOptionState($name)
+    {
+        self::mirrorLegacyFeatureOption($name);
+        return self::isOptionEnabled($name, false);
+    }
+
+    /**
+     * 将 legacy Checkbox 组中的旧值镜像到独立开关字段
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    private static function mirrorLegacyFeatureOption($name)
+    {
+        if (array_key_exists($name, self::$mirroredFeatureOptions)) {
+            return;
+        }
+
+        self::$mirroredFeatureOptions[$name] = true;
+        if (self::hasOption($name)) {
+            return;
+        }
+
+        $options = Helper::options();
+        $options->$name = self::isEnabled($name, 'AriaConfig') ? '1' : '0';
     }
 
     /**

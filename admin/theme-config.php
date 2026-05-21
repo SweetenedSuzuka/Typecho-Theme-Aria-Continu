@@ -155,7 +155,7 @@ function themeConfig($form)
     $enableLazyload = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableLazyload',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig')),
+        ariaThemeToggleValue(ThemeOptions::isLazyloadEnabled()),
         _t('开启图片懒加载'),
         _t('控制主题图片是否使用懒加载')
     );
@@ -174,7 +174,7 @@ function themeConfig($form)
     $enableMathJax = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableMathJax',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isFeatureEnabled('enableMathJax', 'AriaConfig')),
+        ariaThemeToggleValue(ThemeOptions::isMathJaxEnabled()),
         _t('启用 MathJax'),
         _t('控制是否加载 MathJax；关闭后将同时隐藏评论区解析开关和 MathJax 配置')
     );
@@ -183,7 +183,7 @@ function themeConfig($form)
     $enableMathJaxInComments = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableMathJaxInComments',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig')),
+        ariaThemeToggleValue(ThemeOptions::isMathJaxInCommentsEnabled()),
         _t('评论区启用 MathJax 解析'),
         _t('仅在启用 MathJax 时生效；关闭后评论区会跳过公式解析')
     );
@@ -200,7 +200,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
     $showHitokoto = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'showHitokoto',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isFeatureEnabled('showHitokoto', 'AriaConfig')),
+        ariaThemeToggleValue(ThemeOptions::isHitokotoEnabled()),
         _t('显示一言'),
         _t('控制页脚是否显示一言；开启后才会显示自定义接口地址设置')
     );

@@ -25,14 +25,14 @@ class ThemeRuntimeConfig
             'THEME_VERSION' => ARIA_VERSION,
             'SITE_URL' => rtrim((string) $options->siteUrl, '/'),
             'THEME_URL' => (string) $options->themeUrl,
-            'SHOW_HITOKOTO' => ThemeOptions::isFeatureEnabled('showHitokoto', 'AriaConfig'),
+            'SHOW_HITOKOTO' => ThemeOptions::isHitokotoEnabled(),
             'SHOW_QRCODE' => ThemeOptions::isEnabled('showQRCode', 'AriaConfig'),
             'SHOW_REWARD' => count(ThemeOptions::getRewardConfigMap()) > 0,
             'ENABLE_AJAX_COMMENT' => ThemeOptions::isEnabled('enableAjaxComment', 'AriaConfig'),
             'ENABLE_FANCYBOX' => ThemeOptions::isEnabled('enableFancybox', 'AriaConfig'),
-            'ENABLE_LAZYLOAD' => ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig'),
+            'ENABLE_LAZYLOAD' => ThemeOptions::isLazyloadEnabled(),
             'ENABLE_LAZYLOAD_PLACEHOLDER' => ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false),
-            'ENABLE_MATHJAX' => ThemeOptions::isFeatureEnabled('enableMathJax', 'AriaConfig'),
+            'ENABLE_MATHJAX' => ThemeOptions::isMathJaxEnabled(),
             'ENABLE_NAV_HEADROOM' => ThemeOptions::isOptionEnabled('enableNavHeadroom', true),
             'OWO_JSON' => $options->OwOJson
                 ? (string) $options->OwOJson

@@ -224,16 +224,16 @@ JS;
      */
     public static function getViewData()
     {
-        $enabled = ThemeOptions::isFeatureEnabled('enableMathJax', 'AriaConfig');
+        $enabled = ThemeOptions::isMathJaxEnabled();
 
         return array(
             'enabled' => $enabled,
-            'enabledInComments' => $enabled && ThemeOptions::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig'),
+            'enabledInComments' => $enabled && ThemeOptions::isMathJaxInCommentsEnabled(),
             'configScript' => self::getConfigScript(),
             'compatScript' => self::getCompatScript(),
             'ensureScript' => self::getEnsureScript(),
             'commentObserverScript' => $enabled
-                && ThemeOptions::isFeatureEnabled('enableMathJaxInComments', 'AriaConfig')
+                && ThemeOptions::isMathJaxInCommentsEnabled()
                 && ThemeOptions::isEnabled('enableAjaxComment', 'AriaConfig')
                 ? self::getCommentObserverScript()
                 : '',
