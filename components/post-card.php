@@ -13,6 +13,9 @@ $ariaCardShowLine = isset($postCardViewData['showLine'])
 $ariaCardMoreTitle = isset($postCardViewData['moreTitle'])
     ? (string) $postCardViewData['moreTitle']
     : (isset($ariaCardMoreTitle) ? (string) $ariaCardMoreTitle : '');
+$ariaCardViewCount = isset($postCardViewData['viewCount'])
+    ? (int) $postCardViewData['viewCount']
+    : 0;
 $ariaCardThumbnail = isset($postCardViewData['thumbnailUrl'])
     ? trim((string) $postCardViewData['thumbnailUrl'])
     : ThemeAssetHelper::getThumbnail();
@@ -53,7 +56,7 @@ $ariaCardLazyBackgroundStyle = $ariaCardLoadingImageUrl !== ''
     <?php endif; ?>
     <ul class="card-meta-bottom">
         <li class="card-meta-label card-meta-more"><a href="<?php $this->permalink(); ?>"<?php if ($ariaCardMoreTitle !== ''): ?> title="<?php echo htmlspecialchars($ariaCardMoreTitle, ENT_QUOTES, 'UTF-8'); ?>"<?php endif; ?> target="_blank"><i class="iconfont icon-aria-more"></i><i class="iconfont icon-aria-more"></i></a></li>
-        <li class="card-meta-label card-meta-views card-meta-right"><i class="iconfont icon-aria-view"></i> <?php Contents::getPostView($this); ?></li>
+        <li class="card-meta-label card-meta-views card-meta-right"><i class="iconfont icon-aria-view"></i> <?php echo $ariaCardViewCount; ?></li>
         <li class="card-meta-label card-meta-comments card-meta-right"><i class="iconfont icon-aria-comment"></i> <?php $this->commentsNum('%d'); ?></li>
         <!--li class="card-meta-label card-meta-likes"></li-->
     </ul>

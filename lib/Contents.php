@@ -204,20 +204,19 @@ class Contents
     }
 
     /**
-     * 输出文章浏览次数
+     * 获取文章浏览次数
      *
      * @param mixed $archive
      *
-     * @return void
+     * @return int
      */
-    public static function getPostView($archive)
+    public static function getPostViewCount($archive)
     {
         $cid = (int) $archive->cid;
         $db = Typecho_Db::get();
 
         if (!self::hasViewsColumn($db)) {
-            echo 0;
-            return;
+            return 0;
         }
 
         if (!array_key_exists($cid, self::$postViewsCache)) {
@@ -243,7 +242,20 @@ class Contents
                 Typecho_Cookie::set('extend_contents_views', implode(',', $views)); //记录查看cookie
             }
         }
-        echo $viewsCount;
+
+        return $viewsCount;
+    }
+
+    /**
+     * 输出文章浏览次数
+     *
+     * @param mixed $archive
+     *
+     * @return void
+     */
+    public static function getPostView($archive)
+    {
+        echo self::getPostViewCount($archive);
     }
 
     /**

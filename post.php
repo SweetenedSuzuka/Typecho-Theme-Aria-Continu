@@ -7,5 +7,5 @@
     <?php $this->need('comments.php'); ?>
 
 </div><!-- end #main-->
-<?php if (!empty($postViewData['showToc'])) $this->need('TOC.php'); ?>
+<?php echo $postViewData['tocHtml']; ?>
 <?php $this->need('footer.php'); ?>

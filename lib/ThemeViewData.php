@@ -191,10 +191,13 @@ class ThemeViewData
                 'showCategory' => $isPostContext,
                 'categorySeparator' => ' • ',
                 'viewsSuffix' => '次阅读',
+                'viewCount' => Contents::getPostViewCount($archive),
             ),
             'showTags' => $isPostContext,
             'showNextPrev' => $nextPrevHtml !== '',
-            'showToc' => !empty($archive->fields->showTOC),
+            'tocHtml' => !empty($archive->fields->showTOC)
+                ? '<div class="col-mb-12 col-2 kit-hidden-tb"><div id="toc-container"><div id="toc"></div></div></div>'
+                : '',
             'postOtherHtml' => $postOtherHtml,
             'nextPrevHtml' => $nextPrevHtml,
         );
@@ -260,6 +263,7 @@ class ThemeViewData
             'loadingImageUrl' => ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false)
                 ? ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg')
                 : '',
+            'viewCount' => Contents::getPostViewCount($archive),
             'categorySeparator' => $isArchiveContext ? ' ' : ' • ',
             'useLazyload' => !$isArchiveContext && ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig'),
             'showLine' => !$isArchiveContext,

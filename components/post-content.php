@@ -3,7 +3,7 @@
     <div class="post-header">
         <h3 class="post-title"><a href="<?php $this->permalink() ?>" class="post-link"><?php $this->title() ?></a></h3>
         <div class="post-meta">
-            <span class="post-meta-label post-meta-views"><?php Contents::getPostView($this); ?><?php echo htmlspecialchars($postViewData['meta']['viewsSuffix'], ENT_QUOTES, 'UTF-8'); ?></span>
+            <span class="post-meta-label post-meta-views"><?php echo (int) $postViewData['meta']['viewCount']; ?><?php echo htmlspecialchars($postViewData['meta']['viewsSuffix'], ENT_QUOTES, 'UTF-8'); ?></span>
             <?php if (!empty($postViewData['meta']['showCategory'])): ?>
             <span class="post-meta-label post-meta-cate"><?php $this->category($postViewData['meta']['categorySeparator']); ?></span>
             <?php endif; ?>
