@@ -160,22 +160,21 @@ class Contents
 
 
     /**
-     * 输出上下文内容，包括缩略图、标题、链接
+     * 获取上下文内容 HTML，包括缩略图、标题、链接
      *
      * @param mixed $archive
      *
-     * @return void
+     * @return string
      */
-    public static function theNextPrev($archive)
+    public static function getNextPrevHtml($archive)
     {
-        $html = null;
+        $html = '';
 
         $prevResult = self::getNextPrev(true, $archive);
         $nextResult = self::getNextPrev(false, $archive);
 
         if (!$prevResult && !$nextResult) {
-            //第一篇文章，什么也不需要输出
-            $html .= '';
+            return '';
         } else if (!$prevResult) {
             //没有上一篇了
             //只显示下一篇
@@ -189,7 +188,19 @@ class Contents
             $html .= '<div class="post-footer-box half next"><a href="' . $nextResult["link"] . '" rel="next"><div class="post-footer-thumbnail"><img src="' . $nextResult["img"] . '"></div><span class="post-footer-label">Next Post</span><div class="post-footer-title"><h3>' . $nextResult["title"] . '</h3></div></a></div>';
         }
 
-        echo $html;
+        return $html;
+    }
+
+    /**
+     * 输出上下文内容，包括缩略图、标题、链接
+     *
+     * @param mixed $archive
+     *
+     * @return void
+     */
+    public static function theNextPrev($archive)
+    {
+        echo self::getNextPrevHtml($archive);
     }
 
     /**
@@ -308,16 +319,15 @@ class Contents
     }
 
     /**
-     * 输出文章打赏二维码和本文链接二维码
+     * 获取文章打赏二维码和本文链接二维码 HTML
      *
      * @param mixed $archive
      *
-     * @return void
+     * @return string
      */
-    public static function getPostOther($archive)
+    public static function getPostOtherHtml($archive)
     {
         $html = '<div class="post-other">';
-        $AriaConfig = Helper::options()->AriaConfig;
         $rewardConfig = ThemeOptions::getRewardConfigMap();
         $showQRCode = ThemeOptions::isEnabled('showQRCode', 'AriaConfig');
 
@@ -334,7 +344,19 @@ class Contents
             $html .= '<div class="post-qrcode"><a href="javascript:void(0);" data-aria-action="toggle-post-other"><i class="iconfont icon-aria-qrcode"></i></a><div><span>手机上阅读<img no-lazyload src="' . $url . $archive->permalink . '"></span></div></div>';
         }
         $html .= "</div>";
-        echo $html;
+        return $html;
+    }
+
+    /**
+     * 输出文章打赏二维码和本文链接二维码
+     *
+     * @param mixed $archive
+     *
+     * @return void
+     */
+    public static function getPostOther($archive)
+    {
+        echo self::getPostOtherHtml($archive);
     }
 
     /**

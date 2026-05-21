@@ -183,6 +183,8 @@ class ThemeViewData
     public static function getPostViewData($archive, $context = 'post')
     {
         $isPostContext = $context === 'post';
+        $postOtherHtml = $isPostContext ? Contents::getPostOtherHtml($archive) : '';
+        $nextPrevHtml = $isPostContext ? Contents::getNextPrevHtml($archive) : '';
 
         return array(
             'meta' => array(
@@ -191,8 +193,53 @@ class ThemeViewData
                 'viewsSuffix' => '次阅读',
             ),
             'showTags' => $isPostContext,
-            'showNextPrev' => $isPostContext,
+            'showNextPrev' => $nextPrevHtml !== '',
             'showToc' => !empty($archive->fields->showTOC),
+            'postOtherHtml' => $postOtherHtml,
+            'nextPrevHtml' => $nextPrevHtml,
+        );
+    }
+
+    /**
+     * 判断首页文章是否应被排除
+     *
+     * @param Widget_Archive $archive
+     *
+     * @return bool
+     */
+    public static function shouldSkipHomePost($archive)
+    {
+        $postCategorySlug = isset($archive->category) ? trim((string) $archive->category) : '';
+        if ($postCategorySlug === '') {
+            return false;
+        }
+
+        return in_array($postCategorySlug, ThemeOptions::getHomeExcludeCategorySlugs(), true);
+    }
+
+    /**
+     * 获取归档页头展示数据
+     *
+     * @param Widget_Archive $archive
+     *
+     * @return array
+     */
+    public static function getArchiveHeaderViewData($archive)
+    {
+        $titleMappings = array(
+            'category' => _t('分类 %s 下的文章'),
+            'search' => _t('包含关键字 %s 的文章'),
+            'tag' => _t('标签 %s 下的文章'),
+            'author' => _t('%s 发布的文章'),
+        );
+
+        ob_start();
+        $archive->archiveTitle($titleMappings, '', '');
+        $titleHtml = trim((string) ob_get_clean());
+
+        return array(
+            'titleHtml' => $titleHtml,
+            'descriptionHtml' => trim((string) $archive->getDescription()),
         );
     }
 

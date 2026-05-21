@@ -14,7 +14,7 @@
         <div class="post-content">
             <?php $this->content(); ?>
         </div>
-        <?php Contents::getPostOther($this); ?>
+        <?php echo $postViewData['postOtherHtml']; ?>
         <div class="post-update">
             <?php /* ?><i class="iconfont icon-aria-date"></i>&nbsp;最后一次更新于<?php echo date($this->options->postDateFormat,$this->modified) ?><?php */ ?>
         </div>
@@ -28,7 +28,7 @@
     <?php endif; ?>
     <?php if (!empty($postViewData['showNextPrev'])): ?>
     <div class="post-footer nextprev">
-        <?php Contents::theNextPrev($this); ?>
+        <?php echo $postViewData['nextPrevHtml']; ?>
     </div>
     <?php endif; ?>
 </article>

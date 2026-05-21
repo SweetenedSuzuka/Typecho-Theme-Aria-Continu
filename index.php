@@ -19,21 +19,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  ?>
 
 <div id="main" class="col-mb-12 col-8 col-offset-2" >
-    <?php
-    $homeExcludeEnabled = ThemeOptions::isOptionEnabled('homeExcludeCategoriesEnabled', true);
-    $homeExcludeCategoriesText = ThemeOptions::hasOption('homeExcludeCategories')
-        ? ThemeOptions::getOptionStringValue('homeExcludeCategories', '', false)
-        : '填写分类的缩略名，可以参见Typecho后台的管理-分类';
-    $homeExcludeSlugs = $homeExcludeEnabled ? ThemeOptions::splitOptionList($homeExcludeCategoriesText) : array();
-    ?>
 	<?php while($this->next()): ?>
-        <?php
-        $postCategorySlug = isset($this->category) ? (string) $this->category : '';
-        if ($postCategorySlug !== '' && in_array($postCategorySlug, $homeExcludeSlugs, true)) {
-            continue;
-        }
-        $postCardViewData = ThemeViewData::getPostCardViewData($this, 'index');
-        ?>
+        <?php if (ThemeViewData::shouldSkipHomePost($this)) continue; ?>
+        <?php $postCardViewData = ThemeViewData::getPostCardViewData($this, 'index'); ?>
         <?php include __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'post-card.php'; ?>
 	<?php endwhile; ?>
 

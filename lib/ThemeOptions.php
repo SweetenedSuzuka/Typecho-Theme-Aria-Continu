@@ -124,6 +124,24 @@ class ThemeOptions
     }
 
     /**
+     * 获取首页需要排除的分类缩略名列表
+     *
+     * @return array
+     */
+    public static function getHomeExcludeCategorySlugs()
+    {
+        if (!self::isOptionEnabled('homeExcludeCategoriesEnabled', true)) {
+            return array();
+        }
+
+        $rawValue = self::hasOption('homeExcludeCategories')
+            ? self::getOptionStringValue('homeExcludeCategories', '', false)
+            : '填写分类的缩略名，可以参见Typecho后台的管理-分类';
+
+        return self::splitOptionList($rawValue);
+    }
+
+    /**
      * 获取多选配置项的字符串数组
      *
      * @param string $name

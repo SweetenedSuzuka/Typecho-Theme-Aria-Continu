@@ -140,7 +140,7 @@ function themeConfig($form)
     $homeExcludeCategories = new Typecho_Widget_Helper_Form_Element_Textarea(
         'homeExcludeCategories',
         null,
-        'negawakubakonotenikoufukuwo',
+        '',
         _t('首页排除分类（slug）'),
         _t('首页文章列表中需要排除的分类 slug；每行一个，或用空格/逗号分隔；留空则不排除任何分类')
     );
