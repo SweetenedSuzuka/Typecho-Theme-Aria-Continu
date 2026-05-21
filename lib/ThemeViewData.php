@@ -257,18 +257,78 @@ class ThemeViewData
     public static function getPostCardViewData($archive, $context = 'index')
     {
         $isArchiveContext = $context === 'archive';
+        $thumbnailUrl = self::getPostCardThumbnailUrl($archive);
+        $loadingImageUrl = ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false)
+            ? ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg')
+            : '';
+        $useLazyload = !$isArchiveContext && ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig');
 
         return array(
-            'thumbnailUrl' => self::getPostCardThumbnailUrl($archive),
-            'loadingImageUrl' => ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false)
-                ? ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg')
-                : '',
+            'thumbnailUrl' => $thumbnailUrl,
+            'loadingImageUrl' => $loadingImageUrl,
+            'thumbnailHtml' => self::getPostCardThumbnailHtml($archive, $thumbnailUrl, $useLazyload, $loadingImageUrl),
+            'bodyHtml' => self::getPostCardBodyHtml($archive),
             'viewCount' => Contents::getPostViewCount($archive),
             'categorySeparator' => $isArchiveContext ? ' ' : ' • ',
-            'useLazyload' => !$isArchiveContext && ThemeOptions::isFeatureEnabled('enableLazyload', 'AriaConfig'),
+            'useLazyload' => $useLazyload,
             'showLine' => !$isArchiveContext,
             'moreTitle' => $isArchiveContext ? '' : 'Read More',
         );
+    }
+
+    /**
+     * 获取文章卡片缩略图 HTML
+     *
+     * @param Widget_Archive $archive
+     * @param string $thumbnailUrl
+     * @param bool $useLazyload
+     * @param string $loadingImageUrl
+     *
+     * @return string
+     */
+    private static function getPostCardThumbnailHtml($archive, $thumbnailUrl, $useLazyload, $loadingImageUrl)
+    {
+        $permalink = self::getArchivePermalink($archive);
+        $thumbnailUrl = self::escapeAttr($thumbnailUrl);
+        $permalink = self::escapeAttr($permalink);
+
+        if ($useLazyload) {
+            $style = '';
+            if ($loadingImageUrl !== '') {
+                $style = ' style="background:url('
+                    . self::escapeAttr($loadingImageUrl)
+                    . ') center center no-repeat;background-size: 100% auto;"';
+            }
+
+            return '<a href="' . $permalink . '"><div class="card-thumbnail" data-aria-lazy-background="'
+                . $thumbnailUrl
+                . '"' . $style . '></div></a>';
+        }
+
+        return '<a class="card-thumbnail" href="'
+            . $permalink
+            . '" style="background:url('
+            . $thumbnailUrl
+            . ') center center no-repeat;background-size: 100% auto;"></a>';
+    }
+
+    /**
+     * 获取文章卡片正文摘要 HTML
+     *
+     * @param Widget_Archive $archive
+     *
+     * @return string
+     */
+    private static function getPostCardBodyHtml($archive)
+    {
+        ob_start();
+        if (!empty($archive->fields->previewContent)) {
+            $archive->fields->previewContent();
+        } else {
+            $archive->excerpt(50, '...');
+        }
+
+        return trim((string) ob_get_clean());
     }
 
     /**
@@ -282,6 +342,20 @@ class ThemeViewData
             && ThemeAssetHelper::getCustomCommentBoxBackgroundUrl() !== ''
             ? 'comment-form--custom-background'
             : '';
+    }
+
+    /**
+     * 获取文章永久链接字符串
+     *
+     * @param Widget_Archive $archive
+     *
+     * @return string
+     */
+    private static function getArchivePermalink($archive)
+    {
+        ob_start();
+        $archive->permalink();
+        return trim((string) ob_get_clean());
     }
 
     /**

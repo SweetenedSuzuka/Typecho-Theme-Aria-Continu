@@ -4,9 +4,6 @@ $postCardViewData = isset($postCardViewData) && is_array($postCardViewData) ? $p
 $ariaCardCategorySeparator = isset($postCardViewData['categorySeparator'])
     ? (string) $postCardViewData['categorySeparator']
     : (isset($ariaCardCategorySeparator) ? (string) $ariaCardCategorySeparator : ' • ');
-$ariaCardUseLazyload = isset($postCardViewData['useLazyload'])
-    ? !empty($postCardViewData['useLazyload'])
-    : !empty($ariaCardUseLazyload);
 $ariaCardShowLine = isset($postCardViewData['showLine'])
     ? !empty($postCardViewData['showLine'])
     : !empty($ariaCardShowLine);
@@ -16,14 +13,11 @@ $ariaCardMoreTitle = isset($postCardViewData['moreTitle'])
 $ariaCardViewCount = isset($postCardViewData['viewCount'])
     ? (int) $postCardViewData['viewCount']
     : 0;
-$ariaCardThumbnail = isset($postCardViewData['thumbnailUrl'])
-    ? trim((string) $postCardViewData['thumbnailUrl'])
-    : ThemeAssetHelper::getThumbnail();
-$ariaCardLoadingImageUrl = isset($postCardViewData['loadingImageUrl'])
-    ? trim((string) $postCardViewData['loadingImageUrl'])
+$ariaCardThumbnailHtml = isset($postCardViewData['thumbnailHtml'])
+    ? (string) $postCardViewData['thumbnailHtml']
     : '';
-$ariaCardLazyBackgroundStyle = $ariaCardLoadingImageUrl !== ''
-    ? 'background:url(' . htmlspecialchars($ariaCardLoadingImageUrl, ENT_QUOTES, 'UTF-8') . ') center center no-repeat;background-size: 100% auto;'
+$ariaCardBodyHtml = isset($postCardViewData['bodyHtml'])
+    ? (string) $postCardViewData['bodyHtml']
     : '';
 ?>
 <article itemscope itemtype="http://schema.org/BlogPosting" class="card animated wow fadeIn" data-wow-duration="1s" data-wow-offset="10">
@@ -33,23 +27,9 @@ $ariaCardLazyBackgroundStyle = $ariaCardLoadingImageUrl !== ''
     <div class="card-meta-top">
         <span class="card-meta-cate"><i class="iconfont icon-aria-category"></i> <?php $this->category($ariaCardCategorySeparator, true, '无'); ?></span><span class="card-meta-date"><i class="iconfont icon-aria-date"></i> <?php $this->date(); ?></span>
     </div>
-    <?php if ($ariaCardUseLazyload): ?>
-        <a href="<?php $this->permalink(); ?>">
-            <div class="card-thumbnail" data-aria-lazy-background="<?php echo htmlspecialchars($ariaCardThumbnail, ENT_QUOTES, 'UTF-8'); ?>"<?php if ($ariaCardLazyBackgroundStyle !== ''): ?> style="<?php echo $ariaCardLazyBackgroundStyle; ?>"<?php endif; ?>>
-            </div>
-        </a>
-    <?php else: ?>
-        <a class="card-thumbnail" href="<?php $this->permalink(); ?>" style="background:url(<?php echo htmlspecialchars($ariaCardThumbnail, ENT_QUOTES, 'UTF-8'); ?>) center center no-repeat;background-size: 100% auto;">
-        </a>
-    <?php endif; ?>
+    <?php echo $ariaCardThumbnailHtml; ?>
     <div class="card-body">
-        <?php
-        if ($this->fields->previewContent) {
-            $this->fields->previewContent();
-        } else {
-            $this->excerpt(50, '...');
-        }
-        ?>
+        <?php echo $ariaCardBodyHtml; ?>
     </div>
     <?php if ($ariaCardShowLine): ?>
         <div class="card-line"></div>
