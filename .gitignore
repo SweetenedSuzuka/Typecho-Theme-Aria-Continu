@@ -3,3 +3,5 @@ docs/
 .tools/
 .vscode/
 .dbg/
+node_modules/
+npm-debug.log*

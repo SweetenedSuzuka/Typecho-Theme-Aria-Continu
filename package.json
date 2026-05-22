@@ -1,0 +1,18 @@
+{
+  "name": "aria-continuo-theme",
+  "version": "1.17.1",
+  "private": true,
+  "type": "module",
+  "description": "Project-local engineering entry for Aria Continuo theme checks.",
+  "scripts": {
+    "check": "npm run check:php && npm run check:js && npm run check:json && npm run lint:js && npm run check:version",
+    "check:php": "node scripts/check-php.mjs",
+    "check:js": "node scripts/check-js.mjs",
+    "check:json": "node scripts/check-json.mjs",
+    "lint:js": "eslint \"assets/js/main.js\" \"assets/js/modules/**/*.js\"",
+    "check:version": "node scripts/check-version.mjs"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1"
+  }
+}
