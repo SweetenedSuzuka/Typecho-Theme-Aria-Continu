@@ -88,7 +88,7 @@ function themeConfig($form)
     $navConfig = new Typecho_Widget_Helper_Form_Element_Textarea('navConfig', null,
         ThemeOptions::getDefaultNavConfigExample(),
         _t('导航栏配置'),
-        _t('输入导航栏的配置信息；支持旧的 JSON 片段格式，也支持完整 JSON 数组格式。如需在 text 中换行，请使用 `[[br]]` 作为换行标记。该标记仅在导航栏文本中生效，不支持任意 HTML。默认使用主题自带 `iconfont icon-aria-*`；如果已启用附加图标包，也可以直接填写 `ri-*` 或 `bi bi-*` 类名。')
+        _t('输入导航栏的配置信息；只支持完整 JSON 数组格式。`text` 中如需换行，请使用 `[[br]]` 作为换行标记。该标记仅在导航栏文本中生效，不支持任意 HTML。默认使用主题自带 `iconfont icon-aria-*`；如果已启用附加图标包，也可以直接填写 `ri-*` 或 `bi bi-*` 类名。')
     );
     $form->addInput($navConfig);
 

@@ -325,7 +325,7 @@ class ThemeOptions
      */
     public static function getNavConfigItems()
     {
-        $data = self::convertConfigData('navConfig', true);
+        $data = self::decodeConfigArray(self::getOptionStringValue('navConfig', '', false));
         if (!$data) {
             return self::getDefaultNavConfigItems();
         }
@@ -477,6 +477,31 @@ class ThemeOptions
         $decoded = self::decodeJsonLike($json);
 
         return is_array($decoded) ? $decoded : false;
+    }
+
+    /**
+     * 解析完整 JSON 数组配置
+     *
+     * 导航配置从现在开始只接受完整 JSON 数组，不再兼容旧片段写法，
+     * 以避免继续出现“示例能写但保存后不生效”的歧义。
+     *
+     * @param string $raw
+     *
+     * @return array|bool
+     */
+    private static function decodeConfigArray($raw)
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return false;
+        }
+
+        $decoded = self::decodeJsonLike($raw);
+        if (!is_array($decoded)) {
+            return false;
+        }
+
+        return array_is_list($decoded) ? $decoded : false;
     }
 
     /**
