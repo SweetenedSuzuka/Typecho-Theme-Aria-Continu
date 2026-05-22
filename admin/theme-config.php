@@ -2,6 +2,7 @@
 // Theme admin configuration form registration.
 
 require_once __DIR__ . '/theme-config-ui.php';
+require_once __DIR__ . '/theme-config-transfer.php';
 
 function ariaThemeToggleValue($enabled)
 {
@@ -66,7 +67,7 @@ function themeConfig($form)
     );
     $form->addInput($customCommentBoxBackgroundUrl);
 
-    $heroSubtitle = new Typecho_Widget_Helper_Form_Element_Text('heroSubtitle', null, '越过喧嚣找到你', _t('首页副标题'), _t('显示在首页标题下方；优先级：主题设置 > Typecho 站点描述；留空则回退为站点描述（两者都为空则不输出）'));
+    $heroSubtitle = new Typecho_Widget_Helper_Form_Element_Text('heroSubtitle', null, '越过喧嚣找到你', _t('首页副标题'), _t('显示在首页标题下方；优先级：主题设置 > Typecho 站点描述；留空则回退为站点描述（两者都为空则不输出）；站点描述就是网页标题的“网站名 - 站点描述”的后半部分'));
     $form->addInput($heroSubtitle);
 
     $searchPlaceholder = new Typecho_Widget_Helper_Form_Element_Text('searchPlaceholder', null, '要看书架吗？请吧', _t('搜索框 placeholder'), _t('搜索框输入提示文本；留空可不显示 placeholder'));
@@ -320,11 +321,11 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
             "title":"公网安备信息"
         }',
         _t('页脚备案信息'),
-        _t('支持旧的 JSON 片段格式，也支持完整 JSON 数组格式；每项可包含 text、url、icon、title')
+        _t('填写完整 JSON 数组格式；每项可包含 text、url、icon、title')
     );
     $form->addInput($footerRecords);
 
-    $footerWidget = new Typecho_Widget_Helper_Form_Element_Textarea('footerWidget', null, null, _t('底部额外链接组件'), _t('支持旧的 JSON 片段格式，也支持完整 JSON 数组格式；留空则不显示额外链接'));
+    $footerWidget = new Typecho_Widget_Helper_Form_Element_Textarea('footerWidget', null, null, _t('底部额外链接组件'), _t('填写完整 JSON 数组格式；留空则不显示额外链接'));
     $form->addInput($footerWidget);
 
     $cpr = new Typecho_Widget_Helper_Form_Element_Text('cpr', null, '2022-{Y}', _t('Copyright年份'), _t('支持静态文本，也支持 {Y} / {y} / {year} 动态年份占位符，例如 2022-{Y}；留空时默认使用 2022-{Y}。<del>当然你想填什么都可以</del>'));
@@ -361,5 +362,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
 
     $customScript = new Typecho_Widget_Helper_Form_Element_Textarea('customScript', null, null, _t('自定义JS'), _t('会加载在主题主脚本 `main.js` 文件加载之前'));
     $form->addInput($customScript);
+
+    ariaRenderThemeConfigTransferScript(ariaGetThemeConfigTransferSchema());
 
 }
