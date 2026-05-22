@@ -89,19 +89,19 @@ Aria，即咏叹调。
   * 主题不再使用 `jQuery` 与 `Fancybox`  
   * 正文图片统一支持同页分组查看，评论图片保持单张查看  
   * 更换了模糊效果的灯箱效果  
-* 调整：图片灯箱配置命名收口到现行语义  
+* 调整：图片灯箱配置丢弃历史命名   
   * 后台开关统一为 `enableImageLightbox`  
   * 不再继续保留 `enableFancybox`、`ENABLE_FANCYBOX`、`Aria.fancybox` 等旧命名兼容  
 * 新增：项目内部最小检查链  
   * 新增 `npm run check`，统一执行 PHP、JS、JSON、主线 JS lint 与版本一致性检查  
-  * 补入项目内 `.editorconfig` 与最小 `eslint` 配置，收口当前可维护源码的检查边界  
+  * 增加 `.editorconfig` 与最小 `eslint` 配置  
+
+<details>
+<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
 
 ### 2026-05-22 1.17.1  
 
 * 修复：在检查更新借口接口添加时间戳查询参数，防止浏览器缓存导致检测更新问题
-
-<details>
-<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
 
 ### 2026-05-22 1.17.0  
 
