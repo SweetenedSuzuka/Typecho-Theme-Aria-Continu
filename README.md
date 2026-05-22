@@ -489,6 +489,8 @@ Legato · Then and Now
 - [SmartSpam](http://www.yovisun.com/archive/typecho-plugin-smartspam.html)
 - [Sticky](https://github.com/hitop/typechoSticky)
 
+> 这些是Aria遗留的推荐项，一些内容已经不再可用；还未更新。
+
 ---
 
 <div align="center">

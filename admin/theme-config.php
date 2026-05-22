@@ -256,7 +256,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
         array('1' => _t('开启')),
         ariaThemeToggleValue(ThemeOptions::isCommentToMailEnabled()),
         _t('显示评论邮件通知选项'),
-        _t('控制评论表单中是否显示“回复邮件通知”勾选项；需要站点端已正确接入相关邮件通知能力')
+        _t('Aria遗留功能：控制评论表单中是否显示“回复邮件通知”勾选项；需要站点端已正确接入相关邮件通知能力；需要CommentToMail插件（插件下载地址已失效）')
     );
     $form->addInput($enableCommentToMail->multiMode());
 
