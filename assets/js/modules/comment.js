@@ -131,7 +131,7 @@ function captureLayoutRects(elements) {
 }
 
 function animateCommentLayoutShift(previousRects) {
-  var duration = 180;
+  var duration = 300;
 
   if (!isContinuoReplyAnimationEnabled() || !previousRects || !previousRects.length) {
     return;
@@ -158,7 +158,7 @@ function animateCommentLayoutShift(previousRects) {
     element.style.willChange = "transform";
 
     window.requestAnimationFrame(function () {
-      element.style.transition = "transform " + duration + "ms cubic-bezier(.16, 1, .3, 1)";
+      element.style.transition = "transform " + duration + "ms cubic-bezier(0.16, 1, 0.3, 1)";
       element.style.transform = "";
     });
 
@@ -178,7 +178,7 @@ function animateRespondBoxMove(destinationCallback, afterMoveCallback) {
   var textarea = getCommentTextarea();
   var layoutElements;
   var previousRects;
-  var leaveDuration = 120;
+  var leaveDuration = 150;
 
   if (!respondBox || typeof destinationCallback !== "function") {
     if (typeof destinationCallback === "function") {

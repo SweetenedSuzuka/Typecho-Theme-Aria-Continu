@@ -1,12 +1,11 @@
 /**
  * typecho-theme-aria - Theme Aria for Typecho crafted by Siphils
  * 
- * @author Siphils
- * @email siphils16@gmail.com
+* Based on original work by Siphils
+ * @author SweetenedSuzuka
  * @version v1.10.0
- * @link https://eriri.ink
+ * @link https://suzuka.cc
  * @license GNU General Public License v2.0
- * @Modified by 永見涼花
  * 
  */
 @charset "utf-8";
@@ -49,9 +48,18 @@
 	--aria-shadow-nav-sub: 0 -4px 20px -1px rgba(0, 0, 0, 0.06), 0 -4px 40px 0 rgba(0, 0, 0, 0.06), 0 -1px 10px 0 rgba(0, 0, 0, 0.08);
 	--aria-shadow-footer: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 10px 0 rgba(0, 0, 0, 0.4);
 	
-	/* 统一过渡动画 */
+	/* 统一过渡动画体系 (非线性指数缓动) */
 	--aria-transition-time: 0.35s;
 	--aria-transition-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	
+	/* 增强视觉模式专用的非线性动效 (Continuo) */
+	--aria-duration-fast: 150ms;
+	--aria-duration-normal: 300ms;
+	--aria-duration-slow: 500ms;
+	
+	--aria-ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* 入场/展开/位移 (缓出 expo) */
+	--aria-ease-in: cubic-bezier(0.7, 0, 0.84, 0);  /* 退场/收起 (缓入 expo) */
+	--aria-ease-in-out: cubic-bezier(0.87, 0, 0.13, 1); /* 状态平滑切换 */
 }
 
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */

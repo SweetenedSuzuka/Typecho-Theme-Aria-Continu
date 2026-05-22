@@ -22,7 +22,7 @@
 }
 
 .aria-visual-enhancements .comment-list .respond {
-	transition: opacity .12s cubic-bezier(.16, 1, .3, 1), transform .18s cubic-bezier(.16, 1, .3, 1);
+	transition: opacity var(--aria-duration-fast) var(--aria-ease-in), transform var(--aria-duration-normal) var(--aria-ease-out);
 	transform-origin: top center;
 	will-change: opacity, transform;
 }
@@ -172,7 +172,7 @@
 	border-radius: var(--aria-radius-md);
 	z-index: 0;
 	pointer-events: none;
-	transition: opacity .18s cubic-bezier(.16, 1, .3, 1), transform .18s cubic-bezier(.16, 1, .3, 1);
+	transition: opacity var(--aria-duration-normal) var(--aria-ease-out), transform var(--aria-duration-normal) var(--aria-ease-out);
 }
 
 .aria-visual-enhancements .comment-body.aria-is-reply-target > div::before {
@@ -181,7 +181,7 @@
 }
 
 .aria-visual-enhancements .comment-body .comment-text {
-	transition: border-color .18s cubic-bezier(.16, 1, .3, 1), box-shadow .18s cubic-bezier(.16, 1, .3, 1);
+	transition: border-color var(--aria-duration-normal) var(--aria-ease-out), box-shadow var(--aria-duration-normal) var(--aria-ease-out);
 }
 
 .aria-visual-enhancements .comment-body.aria-is-reply-target .comment-text {
@@ -207,7 +207,7 @@
 	vertical-align: middle;
 	opacity: 0;
 	transform: translateY(-2px);
-	transition: opacity .18s cubic-bezier(.16, 1, .3, 1), transform .18s cubic-bezier(.16, 1, .3, 1);
+	transition: opacity var(--aria-duration-normal) var(--aria-ease-out), transform var(--aria-duration-normal) var(--aria-ease-out);
 	pointer-events: none;
 }
 
@@ -362,7 +362,7 @@
 	border: 1px solid rgba(0, 0, 0, 0.08);
 	background: var(--aria-bg-body);
 	border-radius: var(--aria-radius-sm);
-	transition: border-color var(--aria-transition), box-shadow var(--aria-transition), transform var(--aria-transition), background-color var(--aria-transition);
+	transition: border-color var(--aria-duration-normal) var(--aria-ease-in-out), box-shadow var(--aria-duration-normal) var(--aria-ease-in-out), transform var(--aria-duration-normal) var(--aria-ease-in-out), background-color var(--aria-duration-normal) var(--aria-ease-in-out);
 }
 
 .aria-visual-enhancements #comment-form textarea:focus,
@@ -468,7 +468,7 @@
 	border: 1px solid rgba(0, 0, 0, 0.08);
 	box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.1) !important;
 	border-radius: var(--aria-radius-md);
-	transition: opacity .28s cubic-bezier(.16, 1, .3, 1), transform .28s cubic-bezier(.16, 1, .3, 1), max-height .28s cubic-bezier(.16, 1, .3, 1), visibility 0s linear .28s;
+	transition: opacity var(--aria-duration-normal) var(--aria-ease-out), transform var(--aria-duration-normal) var(--aria-ease-out), max-height var(--aria-duration-normal) var(--aria-ease-out), visibility 0s linear var(--aria-duration-normal);
 }
 
 .aria-visual-enhancements .OwO.OwO-open .OwO-body {
