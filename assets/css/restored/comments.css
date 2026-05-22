@@ -21,6 +21,26 @@
 	background-color: #f2f2f2
 }
 
+.aria-visual-enhancements .comment-list .respond {
+	transition: opacity .22s cubic-bezier(.16, 1, .3, 1), transform .3s cubic-bezier(.16, 1, .3, 1), filter .22s cubic-bezier(.16, 1, .3, 1);
+	transform-origin: top center;
+	will-change: opacity, transform;
+}
+
+.aria-visual-enhancements .comment-list .respond.aria-respond-leave {
+	opacity: 0;
+	transform: translateY(14px) scale(.985);
+	filter: blur(2px);
+	pointer-events: none;
+}
+
+.aria-visual-enhancements .comment-list .respond.aria-respond-enter {
+	opacity: 0;
+	transform: translateY(-12px) scale(.985);
+	filter: blur(2px);
+	pointer-events: none;
+}
+
 .respond .cancel-comment-reply {
 	float: right;
 	margin-top: 15px;
