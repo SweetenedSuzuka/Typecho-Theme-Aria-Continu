@@ -109,7 +109,7 @@ class ThemeViewData
                 false
             ),
             'closedText' => ThemeOptions::getOptionStringValue('commentClosedText', '评论关闭了哟', false),
-            'showUserAgent' => ThemeOptions::isEnabled('showCommentUA', 'AriaConfig'),
+            'showUserAgent' => ThemeOptions::isCommentUserAgentEnabled(),
             'form' => array(
                 'className' => self::getCommentFormClassName(),
                 'style' => self::getCommentFormStyle(),
@@ -123,7 +123,7 @@ class ThemeViewData
                     && $allowedHtmlTags !== ''
                     && strpos($allowedHtmlTags, 'img') !== false,
                 'imageInsertText' => '图片',
-                'showCommentToMail' => ThemeOptions::isEnabled('enableCommentToMail', 'AriaConfig'),
+                'showCommentToMail' => ThemeOptions::isCommentToMailEnabled(),
                 'banMailStrongText' => '不接收',
                 'banMailLabelText' => '回复邮件通知',
                 'guestAvatarPrefix' => __TYPECHO_GRAVATAR_PREFIX__,
@@ -145,7 +145,7 @@ class ThemeViewData
      */
     public static function getFooterContentViewData()
     {
-        $recordsEnabled = ThemeOptions::isOptionEnabled('footerRecordsEnabled', true);
+        $recordsEnabled = ThemeOptions::getCheckboxOptionState('footerRecordsEnabled', true);
 
         return array(
             'showHitokoto' => ThemeOptions::isHitokotoEnabled(),
@@ -258,7 +258,7 @@ class ThemeViewData
     {
         $isArchiveContext = $context === 'archive';
         $thumbnailUrl = self::getPostCardThumbnailUrl($archive);
-        $loadingImageUrl = ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false)
+        $loadingImageUrl = ThemeOptions::isLazyloadPlaceholderEnabled()
             ? ThemeAssetHelper::getThemeAssetUrl('assets/img/loading.svg')
             : '';
         $useLazyload = !$isArchiveContext && ThemeOptions::isLazyloadEnabled();
@@ -581,7 +581,7 @@ class ThemeViewData
     {
         $styles = array();
 
-        if (ThemeOptions::isEnabled('enableFancybox', 'AriaConfig')) {
+        if (ThemeOptions::isFancyboxEnabled()) {
             $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/css/jquery.fancybox.min.css');
         }
 
@@ -708,7 +708,7 @@ class ThemeViewData
     public static function getSearchPlaceholder()
     {
         if (!ThemeOptions::hasOption('searchPlaceholder')) {
-            return '要想搜索请输入关键词';
+            return '要看书架吗？请吧';
         }
 
         return ThemeOptions::getOptionStringValue('searchPlaceholder', '', false);

@@ -341,7 +341,7 @@ class Contents
     {
         $html = '<div class="post-other">';
         $rewardConfig = ThemeOptions::getRewardConfigMap();
-        $showQRCode = ThemeOptions::isEnabled('showQRCode', 'AriaConfig');
+        $showQRCode = ThemeOptions::isPostQrCodeEnabled();
 
         if ($rewardConfig) {
             $html .= '<div class="post-reward"><a href="javascript:void(0);" data-aria-action="toggle-post-other"><i class="iconfont icon-aria-reward"></i></a>

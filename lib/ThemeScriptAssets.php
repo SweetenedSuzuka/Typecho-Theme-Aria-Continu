@@ -21,7 +21,7 @@ class ThemeScriptAssets
     {
         $scripts = array();
 
-        if (ThemeOptions::isEnabled('enableFancybox', 'AriaConfig')) {
+        if (ThemeOptions::isFancyboxEnabled()) {
             $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/jquery.fancybox.min.js');
         }
 

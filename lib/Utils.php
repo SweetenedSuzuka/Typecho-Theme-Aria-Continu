@@ -53,20 +53,6 @@ class Utils
     }
 
     /**
-     * 获取独立布尔配置项的启用状态，缺失时回退到旧的 Checkbox 配置组
-     *
-     * @param string $name
-     * @param string $legacyConfig
-     * @param bool $default
-     *
-     * @return bool
-     */
-    public static function isFeatureEnabled($name, $legacyConfig = 'AriaConfig', $default = false)
-    {
-        return ThemeOptions::isFeatureEnabled($name, $legacyConfig, $default);
-    }
-
-    /**
      * 将文本配置拆分为字符串列表
      *
      * @param string $value
@@ -271,19 +257,6 @@ class Utils
     public static function getPagesInfo()
     {
         return ThemeSiteLookup::getPagesInfo();
-    }
-
-    /**
-     * 返回主题设置中某项开关的开启/关闭状态
-     *
-     * @param string $item 项目名
-     * @param string $config 设置名
-     *
-     * @return bool
-     */
-    public static function isEnabled($item, $config)
-    {
-        return ThemeOptions::isEnabled($item, $config);
     }
 
     /**

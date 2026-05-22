@@ -13,11 +13,9 @@
 class ThemeOptions
 {
     /**
-     * 已完成独立开关兼容镜像的配置项
-     *
-     * @var array<string, bool>
+     * 主题配置结构版本
      */
-    private static $mirroredFeatureOptions = array();
+    private const THEME_CONFIG_SCHEMA_VERSION = '1';
 
     /**
      * 判断配置项是否存在
@@ -87,22 +85,24 @@ class ThemeOptions
     }
 
     /**
-     * 获取独立布尔配置项的启用状态，缺失时回退到旧的 Checkbox 配置组
+     * 获取独立复选框配置项状态
+     *
+     * 一旦当前主题配置结构已经保存过，缺失字段就视为明确关闭，
+     * 避免 Typecho 在未勾选 checkbox 时不提交字段而导致回弹到默认值。
      *
      * @param string $name
-     * @param string $legacyConfig
      * @param bool $default
      *
      * @return bool
      */
-    public static function isFeatureEnabled($name, $legacyConfig = 'AriaConfig', $default = false)
+    public static function getCheckboxOptionState($name, $default = false)
     {
         if (self::hasOption($name)) {
-            return self::isOptionEnabled($name, $default);
+            return self::isOptionEnabled($name, false);
         }
 
-        if (self::hasOption($legacyConfig)) {
-            return self::isEnabled($name, $legacyConfig);
+        if (self::hasThemeConfigSchemaVersion()) {
+            return false;
         }
 
         return $default;
@@ -115,7 +115,17 @@ class ThemeOptions
      */
     public static function isLazyloadEnabled()
     {
-        return self::getMirroredFeatureOptionState('enableLazyload');
+        return self::getCheckboxOptionState('enableLazyload', false);
+    }
+
+    /**
+     * 获取懒加载占位图开关状态
+     *
+     * @return bool
+     */
+    public static function isLazyloadPlaceholderEnabled()
+    {
+        return self::getCheckboxOptionState('lazyloadPlaceholderEnabled', false);
     }
 
     /**
@@ -125,7 +135,7 @@ class ThemeOptions
      */
     public static function isMathJaxEnabled()
     {
-        return self::getMirroredFeatureOptionState('enableMathJax');
+        return self::getCheckboxOptionState('enableMathJax', false);
     }
 
     /**
@@ -135,7 +145,7 @@ class ThemeOptions
      */
     public static function isMathJaxInCommentsEnabled()
     {
-        return self::getMirroredFeatureOptionState('enableMathJaxInComments');
+        return self::getCheckboxOptionState('enableMathJaxInComments', false);
     }
 
     /**
@@ -145,7 +155,57 @@ class ThemeOptions
      */
     public static function isHitokotoEnabled()
     {
-        return self::getMirroredFeatureOptionState('showHitokoto');
+        return self::getCheckboxOptionState('showHitokoto', false);
+    }
+
+    /**
+     * 获取 AJAX 评论开关状态
+     *
+     * @return bool
+     */
+    public static function isAjaxCommentEnabled()
+    {
+        return self::getCheckboxOptionState('enableAjaxComment', false);
+    }
+
+    /**
+     * 获取 Fancybox 开关状态
+     *
+     * @return bool
+     */
+    public static function isFancyboxEnabled()
+    {
+        return self::getCheckboxOptionState('enableFancybox', false);
+    }
+
+    /**
+     * 获取评论邮件通知开关状态
+     *
+     * @return bool
+     */
+    public static function isCommentToMailEnabled()
+    {
+        return self::getCheckboxOptionState('enableCommentToMail', false);
+    }
+
+    /**
+     * 获取文章二维码开关状态
+     *
+     * @return bool
+     */
+    public static function isPostQrCodeEnabled()
+    {
+        return self::getCheckboxOptionState('showQRCode', false);
+    }
+
+    /**
+     * 获取评论 UserAgent 显示开关状态
+     *
+     * @return bool
+     */
+    public static function isCommentUserAgentEnabled()
+    {
+        return self::getCheckboxOptionState('showCommentUA', false);
     }
 
     /**
@@ -177,13 +237,11 @@ class ThemeOptions
      */
     public static function getHomeExcludeCategorySlugs()
     {
-        if (!self::isOptionEnabled('homeExcludeCategoriesEnabled', true)) {
+        if (!self::getCheckboxOptionState('homeExcludeCategoriesEnabled', true)) {
             return array();
         }
 
-        $rawValue = self::hasOption('homeExcludeCategories')
-            ? self::getOptionStringValue('homeExcludeCategories', '', false)
-            : '填写分类的缩略名，可以参见Typecho后台的管理-分类';
+        $rawValue = self::getOptionStringValue('homeExcludeCategories', '', false);
 
         return self::splitOptionList($rawValue);
     }
@@ -223,52 +281,24 @@ class ThemeOptions
     }
 
     /**
-     * 获取带 legacy 镜像兼容的独立开关状态
-     *
-     * @param string $name
+     * 判断主题配置结构是否已完成持久化切换
      *
      * @return bool
      */
-    private static function getMirroredFeatureOptionState($name)
+    public static function hasThemeConfigSchemaVersion()
     {
-        self::mirrorLegacyFeatureOption($name);
-        return self::isOptionEnabled($name, false);
+        return self::getOptionStringValue('themeConfigSchemaVersion', '', false)
+            === self::THEME_CONFIG_SCHEMA_VERSION;
     }
 
     /**
-     * 将 legacy Checkbox 组中的旧值镜像到独立开关字段
+     * 获取主题配置结构版本号
      *
-     * @param string $name
-     *
-     * @return void
+     * @return string
      */
-    private static function mirrorLegacyFeatureOption($name)
+    public static function getThemeConfigSchemaVersion()
     {
-        if (array_key_exists($name, self::$mirroredFeatureOptions)) {
-            return;
-        }
-
-        self::$mirroredFeatureOptions[$name] = true;
-        if (self::hasOption($name)) {
-            return;
-        }
-
-        $options = Helper::options();
-        $options->$name = self::isEnabled($name, 'AriaConfig') ? '1' : '0';
-    }
-
-    /**
-     * 返回主题设置中某项开关的开启/关闭状态
-     *
-     * @param string $item 项目名
-     * @param string $config 设置名
-     *
-     * @return bool
-     */
-    public static function isEnabled($item, $config)
-    {
-        $config = Helper::options()->$config;
-        return !empty($config) && in_array($item, $config);
+        return self::THEME_CONFIG_SCHEMA_VERSION;
     }
 
     /**
@@ -313,6 +343,21 @@ class ThemeOptions
         }
 
         return !empty($items) ? $items : self::getDefaultNavConfigItems();
+    }
+
+    /**
+     * 获取后台导航配置默认示例
+     *
+     * @return string
+     */
+    public static function getDefaultNavConfigExample()
+    {
+        $json = json_encode(
+            self::buildDefaultNavConfigItems('https://example.com/'),
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+        );
+
+        return is_string($json) ? $json : '[]';
     }
 
     /**
@@ -423,10 +468,32 @@ class ThemeOptions
             return false;
         }
 
+        $decoded = self::decodeJsonLike($raw);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
         $json = $mode ? '[' . $raw . ']' : '{' . $raw . '}';
-        $decoded = json_decode($json, true);
+        $decoded = self::decodeJsonLike($json);
 
         return is_array($decoded) ? $decoded : false;
+    }
+
+    /**
+     * 解析 JSON 或近似 JSON 字符串
+     *
+     * @param string $raw
+     *
+     * @return mixed
+     */
+    private static function decodeJsonLike($raw)
+    {
+        $sanitized = preg_replace('/,\s*([\]}])/m', '$1', (string) $raw);
+        if (!is_string($sanitized) || trim($sanitized) === '') {
+            return false;
+        }
+
+        return json_decode($sanitized, true);
     }
 
     /**
@@ -498,10 +565,26 @@ class ThemeOptions
      */
     private static function getDefaultNavConfigItems()
     {
+        $siteUrl = rtrim((string) Helper::options()->siteUrl, '/') . '/';
+
+        return self::buildDefaultNavConfigItems($siteUrl);
+    }
+
+    /**
+     * 构建默认导航配置
+     *
+     * @param string $siteUrl
+     *
+     * @return array
+     */
+    private static function buildDefaultNavConfigItems($siteUrl)
+    {
+        $siteUrl = rtrim((string) $siteUrl, '/') . '/';
+
         return array(
             array(
                 'text' => '首页',
-                'href' => Helper::options()->siteUrl,
+                'href' => $siteUrl,
                 'icon' => 'iconfont icon-aria-home',
                 'title' => '',
                 'target' => '',
@@ -510,16 +593,35 @@ class ThemeOptions
             ),
             array(
                 'text' => '归档',
-                'href' => '#',
+                'href' => $siteUrl . 'archives/',
                 'icon' => 'iconfont icon-aria-archives',
                 'title' => '',
                 'target' => '',
                 'slug' => '',
-                'sub' => array(),
+                'sub' => array(
+                    array(
+                        'text' => '日记',
+                        'href' => $siteUrl . '1',
+                        'icon' => 'iconfont icon-aria-book',
+                        'title' => '',
+                        'target' => '',
+                        'slug' => '',
+                        'sub' => array(),
+                    ),
+                    array(
+                        'text' => '项目',
+                        'href' => $siteUrl . '2',
+                        'icon' => 'iconfont icon-aria-code',
+                        'title' => '',
+                        'target' => '',
+                        'slug' => '',
+                        'sub' => array(),
+                    ),
+                ),
             ),
             array(
-                'text' => '留言',
-                'href' => '#',
+                'text' => '留言版',
+                'href' => $siteUrl . 'messageboard/',
                 'icon' => 'iconfont icon-aria-guestbook',
                 'title' => '',
                 'target' => '',
@@ -528,7 +630,7 @@ class ThemeOptions
             ),
             array(
                 'text' => '朋友',
-                'href' => '#',
+                'href' => $siteUrl . 'friends/',
                 'icon' => 'iconfont icon-aria-friends',
                 'title' => '',
                 'target' => '',
@@ -537,8 +639,36 @@ class ThemeOptions
             ),
             array(
                 'text' => '关于',
-                'href' => '#',
+                'href' => $siteUrl . 'about/',
                 'icon' => 'iconfont icon-aria-about',
+                'title' => '',
+                'target' => '',
+                'slug' => '',
+                'sub' => array(
+                    array(
+                        'text' => '关于本站',
+                        'href' => $siteUrl . 'about/',
+                        'icon' => 'iconfont icon-aria-home',
+                        'title' => '',
+                        'target' => '',
+                        'slug' => '',
+                        'sub' => array(),
+                    ),
+                    array(
+                        'text' => '关于我',
+                        'href' => $siteUrl . 'aboutme/',
+                        'icon' => 'iconfont icon-aria-like',
+                        'title' => '',
+                        'target' => '',
+                        'slug' => '',
+                        'sub' => array(),
+                    ),
+                ),
+            ),
+            array(
+                'text' => '管理员',
+                'href' => $siteUrl . 'admin/',
+                'icon' => 'iconfont icon-aria-write',
                 'title' => '',
                 'target' => '',
                 'slug' => '',

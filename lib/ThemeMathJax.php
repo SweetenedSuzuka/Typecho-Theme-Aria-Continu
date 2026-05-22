@@ -234,7 +234,7 @@ JS;
             'ensureScript' => self::getEnsureScript(),
             'commentObserverScript' => $enabled
                 && ThemeOptions::isMathJaxInCommentsEnabled()
-                && ThemeOptions::isEnabled('enableAjaxComment', 'AriaConfig')
+                && ThemeOptions::isAjaxCommentEnabled()
                 ? self::getCommentObserverScript()
                 : '',
             'cdnUrl' => 'https://cdn.jsdelivr.net/npm/mathjax@4.1.2/tex-mml-chtml.js',

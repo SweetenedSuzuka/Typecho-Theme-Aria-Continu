@@ -13,6 +13,16 @@ function themeConfig($form)
     ariaRenderThemeConfigAssets();
     ariaRenderThemeConfigIntro();
 
+    $themeConfigSchemaVersion = new Typecho_Widget_Helper_Form_Element_Text(
+        'themeConfigSchemaVersion',
+        null,
+        ThemeOptions::getThemeConfigSchemaVersion(),
+        '',
+        ''
+    );
+    $themeConfigSchemaVersion->input->setAttribute('type', 'hidden');
+    $form->addInput($themeConfigSchemaVersion);
+
     // Site identity and hero.
     $avatarUrl = new Typecho_Widget_Helper_Form_Element_Text('avatarUrl', null, null, _t('站点头像'), _t('在这里填入一个图片URL地址, 以在网站标题前加上一个头像,需要带上http(s)://'));
     $form->addInput($avatarUrl);
@@ -23,7 +33,7 @@ function themeConfig($form)
     $customPageBackgroundEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'customPageBackgroundEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('customPageBackgroundEnabled', false)),
+        ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('customPageBackgroundEnabled', false)),
         _t('启用网页背景自定义'),
         _t('设置整个网页的背景图，关闭后将会使用Aria默认的纯色样式')
     );
@@ -41,7 +51,7 @@ function themeConfig($form)
     $customCommentBoxBackgroundEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'customCommentBoxBackgroundEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('customCommentBoxBackgroundEnabled', false)),
+        ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('customCommentBoxBackgroundEnabled', false)),
         _t('启用评论框背景自定义'),
         _t('控制是否为评论输入框右下角显示自定义背景图；关闭时保持原版样式')
     );
@@ -76,33 +86,9 @@ function themeConfig($form)
 
     // Navigation and list pages.
     $navConfig = new Typecho_Widget_Helper_Form_Element_Textarea('navConfig', null,
-        '{
-            "text":"首页",
-            "href":"' . Helper::options()->siteUrl . '",
-            "icon":"iconfont icon-aria-home"
-        },
-        {
-            "text":"归档",
-            "href":"#",
-            "icon":"iconfont icon-aria-archives"
-        },
-        {
-            "text":"留言",
-            "href":"#",
-            "icon":"iconfont icon-aria-guestbook"
-        },
-        {
-            "text":"朋友",
-            "href":"#",
-            "icon":"iconfont icon-aria-friends"
-        },
-        {
-            "text":"关于",
-            "href":"#",
-            "icon":"iconfont icon-aria-about"
-        }',
+        ThemeOptions::getDefaultNavConfigExample(),
         _t('导航栏配置'),
-        _t('输入导航栏的配置信息；如需在 text 中换行，请使用 `[[br]]` 作为换行标记。该标记仅在导航栏文本中生效，不支持任意 HTML。默认使用主题自带 `iconfont icon-aria-*`；如果已启用附加图标包，也可以直接填写 `ri-*` 或 `bi bi-*` 类名。')
+        _t('输入导航栏的配置信息；支持旧的 JSON 片段格式，也支持完整 JSON 数组格式。如需在 text 中换行，请使用 `[[br]]` 作为换行标记。该标记仅在导航栏文本中生效，不支持任意 HTML。默认使用主题自带 `iconfont icon-aria-*`；如果已启用附加图标包，也可以直接填写 `ri-*` 或 `bi bi-*` 类名。')
     );
     $form->addInput($navConfig);
 
@@ -122,7 +108,7 @@ function themeConfig($form)
     $enableNavHeadroom = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'enableNavHeadroom',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('enableNavHeadroom', true)),
+        ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('enableNavHeadroom', true)),
         _t('启用导航栏吸顶隐藏'),
         _t('控制导航栏是否在向下滚动时自动收起、向上滚动时重新显示；关闭后导航栏将始终保持显示')
     );
@@ -131,7 +117,7 @@ function themeConfig($form)
     $homeExcludeCategoriesEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'homeExcludeCategoriesEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('homeExcludeCategoriesEnabled', true)),
+        ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('homeExcludeCategoriesEnabled', true)),
         _t('启用首页分类排除'),
         _t('控制“首页排除分类（slug）”是否生效；关闭时仍会保留配置内容但不会执行过滤')
     );
@@ -148,8 +134,26 @@ function themeConfig($form)
 
     // Content and page enhancement.
     $rewardConfig = new Typecho_Widget_Helper_Form_Element_Textarea('rewardConfig', null, null
-        , _t('打赏功能配置'), _t('按照格式填写,留空关闭打赏功能'));
+        , _t('打赏功能配置'), _t('支持旧的 JSON 片段格式，也支持完整 JSON 对象格式；留空关闭打赏功能'));
     $form->addInput($rewardConfig);
+
+    $showQRCode = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'showQRCode',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(ThemeOptions::isPostQrCodeEnabled()),
+        _t('文章底部显示本文链接二维码'),
+        _t('控制文章底部是否显示当前文章链接二维码；关闭后仅保留打赏入口')
+    );
+    $form->addInput($showQRCode->multiMode());
+
+    $enableFancybox = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'enableFancybox',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(ThemeOptions::isFancyboxEnabled()),
+        _t('文章/评论图片启用 Fancybox'),
+        _t('控制文章与评论中的图片是否启用 Fancybox 查看器；当前仍是阶段 A 有意识保留的最后一个活跃 jQuery 依赖点')
+    );
+    $form->addInput($enableFancybox->multiMode());
 
     // Lazyload settings.
     $enableLazyload = new Typecho_Widget_Helper_Form_Element_Checkbox(
@@ -164,7 +168,7 @@ function themeConfig($form)
     $lazyloadPlaceholderEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'lazyloadPlaceholderEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('lazyloadPlaceholderEnabled', false)),
+        ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('lazyloadPlaceholderEnabled', false)),
         _t('懒加载完成前显示占位图'),
         _t('开启后，在懒加载完成前会显示占位用的加载图，这个样式来自Aria原版，不开启时默认是空白填充；无论开启与否，如果加载失败都会显示占位图')
     );
@@ -237,6 +241,33 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
     $gravatarPrefix = new Typecho_Widget_Helper_Form_Element_Text('gravatarPrefix', null, null, _t('Gravatar头像源'), _t('留空为https://cn.gravatar.com/avatar/，按照前面的url地址格式填写'));
     $form->addInput($gravatarPrefix);
 
+    $enableAjaxComment = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'enableAjaxComment',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(ThemeOptions::isAjaxCommentEnabled()),
+        _t('开启 AJAX 评论'),
+        _t('控制评论提交是否使用前台异步提交；关闭后回退为普通表单提交')
+    );
+    $form->addInput($enableAjaxComment->multiMode());
+
+    $enableCommentToMail = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'enableCommentToMail',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(ThemeOptions::isCommentToMailEnabled()),
+        _t('显示评论邮件通知选项'),
+        _t('控制评论表单中是否显示“回复邮件通知”勾选项；需要站点端已正确接入相关邮件通知能力')
+    );
+    $form->addInput($enableCommentToMail->multiMode());
+
+    $showCommentUA = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'showCommentUA',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(ThemeOptions::isCommentUserAgentEnabled()),
+        _t('评论显示 UserAgent'),
+        _t('控制评论区是否显示访客使用的操作系统与浏览器信息')
+    );
+    $form->addInput($showCommentUA->multiMode());
+
     // Footer and copyright.
     $footerSiteName = new Typecho_Widget_Helper_Form_Element_Text('footerSiteName', null, '网站名称', _t('页脚站点名称'), _t('页脚版权行中显示的站点名称'));
     $form->addInput($footerSiteName);
@@ -267,7 +298,7 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
     $footerRecordsEnabled = new Typecho_Widget_Helper_Form_Element_Checkbox(
         'footerRecordsEnabled',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isOptionEnabled('footerRecordsEnabled', true)),
+        ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('footerRecordsEnabled', true)),
         _t('显示页脚备案信息'),
         _t('控制页脚备案信息是否显示；关闭时仅保存不显示')
     );
@@ -289,11 +320,11 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
             "title":"公网安备信息"
         }',
         _t('页脚备案信息'),
-        _t('按原有 JSON 片段格式填写，每项可包含 text、url、icon、title')
+        _t('支持旧的 JSON 片段格式，也支持完整 JSON 数组格式；每项可包含 text、url、icon、title')
     );
     $form->addInput($footerRecords);
 
-    $footerWidget = new Typecho_Widget_Helper_Form_Element_Textarea('footerWidget', null, null, _t('底部额外链接组件'), _t('填入 JSON 片段，不需要最外层包裹，忘记格式可以全部删掉并保存，然后会恢复默认，照着填即可；至少填一个，可以无限增加；如果一个都不想填，请直接关闭开关'));
+    $footerWidget = new Typecho_Widget_Helper_Form_Element_Textarea('footerWidget', null, null, _t('底部额外链接组件'), _t('支持旧的 JSON 片段格式，也支持完整 JSON 数组格式；留空则不显示额外链接'));
     $form->addInput($footerWidget);
 
     $cpr = new Typecho_Widget_Helper_Form_Element_Text('cpr', null, '2022-{Y}', _t('Copyright年份'), _t('支持静态文本，也支持 {Y} / {y} / {year} 动态年份占位符，例如 2022-{Y}；留空时默认使用 2022-{Y}。<del>当然你想填什么都可以</del>'));
@@ -325,24 +356,10 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
     $customHeader = new Typecho_Widget_Helper_Form_Element_Textarea('customHeader', null, null, _t('顶部自定义内容'), _t('会加载在<strong>head</strong>结束标签之前'));
     $form->addInput($customHeader);
 
-    $customFooter = new Typecho_Widget_Helper_Form_Element_Textarea('customFooter', null, null, _t('底部自定义内容'), _t('会加载在<strong>copyright</strong>之前'));
+    $customFooter = new Typecho_Widget_Helper_Form_Element_Textarea('customFooter', null, null, _t('底部自定义内容'), _t('会加载在页脚内容区域的最前面'));
     $form->addInput($customFooter);
 
     $customScript = new Typecho_Widget_Helper_Form_Element_Textarea('customScript', null, null, _t('自定义JS'), _t('会加载在主题主脚本 `main.js` 文件加载之前'));
     $form->addInput($customScript);
-
-    // Generic frontend switches.
-    $AriaConfig = new Typecho_Widget_Helper_Form_Element_Checkbox('AriaConfig',
-        array(
-            'enableAjaxComment' => '开启AJAX评论',
-            'enableFancybox' => '文章/评论图片使用<a href="https://fancyapps.com/" target="_blank">fancybox</a>',
-            'enableCommentToMail' => '是否接收评论邮件回复按钮，需要配合<a href="https://9sb.org/58">CommentToMail</a>（文章中最后一个插件)使用',
-            'showQRCode' => '文章底部显示本文链接二维码',
-            'showCommentUA' => '评论显示UserAgent（显示操作系统和浏览器信息）',
-        ),
-        null,
-        '开关设置'
-    );
-    $form->addInput($AriaConfig->multiMode());
 
 }
