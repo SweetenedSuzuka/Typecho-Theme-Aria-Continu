@@ -87,6 +87,9 @@ Aria，即咏叹调。
 
 * 修复：在检查更新借口接口添加时间戳查询参数，防止浏览器缓存导致检测更新问题
 
+<details>
+<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
+
 ### 2026-05-22 1.17.0  
 
 * **破坏性更新：不再支持旧Aria主题的无缝升级，请手动复制设置到相应栏目保存**
@@ -120,9 +123,6 @@ Aria，即咏叹调。
 * 修正：`go-top` 返回顶部按钮在滚动过程中不再反复闪烁  
 * 调整：评论回复/取消回复从 `TypechoComment` 全局脚本迁到主题前端模块  
 * 调整：继续收口 `OwO` 为评论表单按需加载资源（CSS + JS 均不再全站固定装载）
-
-<details>
-<summary><strong>展开更多Aria Continuo更新日志</strong></summary>
 
 ### 2026-05-20 1.15.0  
 
