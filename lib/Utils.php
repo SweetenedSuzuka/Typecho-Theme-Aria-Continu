@@ -339,6 +339,7 @@ class Utils
      */
     public static function getBackground()
     {
+        // 兼容旧方法 `Utils::getBackground()`：这里的 background 是首页封面旧名，现行入口是 `Utils::getCover()`，不是网页背景字段 `customPageBackgroundUrl`。
         self::getCover();
     }
 
@@ -349,6 +350,7 @@ class Utils
      */
     public static function getBackgroundUrl()
     {
+        // 兼容旧方法 `Utils::getBackgroundUrl()`：这里的 background 是首页封面旧名，现行入口是 `Utils::getCoverUrl()`，不是网页背景字段 `customPageBackgroundUrl`。
         return self::getCoverUrl();
     }
 

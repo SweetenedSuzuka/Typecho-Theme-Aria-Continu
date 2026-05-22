@@ -108,6 +108,7 @@ class ThemeAssetHelper
      */
     public static function getBackgroundUrl()
     {
+        // 兼容旧方法 `ThemeAssetHelper::getBackgroundUrl()`：这里的 background 是首页封面旧名，现行入口是 `ThemeAssetHelper::getCoverUrl()`，不是网页背景 `getCustomPageBackgroundUrl()`。
         return self::getCoverUrl();
     }
 

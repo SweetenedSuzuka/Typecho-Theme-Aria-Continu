@@ -242,6 +242,7 @@ class ThemeOptions
             return self::getOptionStringValue('coverUrl', '', false);
         }
 
+        // 兼容网页封面的旧字段 `backgroundUrl`：对应 `coverUrl` / `ThemeOptions::getCoverConfigValue()`，不是网页背景字段 `customPageBackgroundUrl`。
         if (self::hasOption('backgroundUrl')) {
             return self::getOptionStringValue('backgroundUrl', '', false);
         }

@@ -93,7 +93,7 @@ function themeConfig($form)
         'coverUrl',
         null,
         ThemeOptions::getCoverConfigValue(),
-        _t('首页背景图片'),
+        _t('首页封面图片'),
         _t('用于首页与归档页头封面；支持填写 http(s):// 地址或站点绝对路径，每行一个 URL，随机展示；留空时使用主题自带封面图')
     );
     $form->addInput($coverUrl);

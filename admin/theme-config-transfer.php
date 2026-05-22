@@ -10,7 +10,7 @@ function ariaGetThemeConfigTransferSchema()
 {
     return array(
         'avatarUrl' => array('label' => '站点头像', 'type' => 'text', 'default' => ''),
-        'coverUrl' => array('label' => '首页背景图片', 'type' => 'textarea', 'default' => ''),
+        'coverUrl' => array('label' => '首页封面图片', 'type' => 'textarea', 'default' => ''),
         'customPageBackgroundEnabled' => array('label' => '启用网页背景自定义', 'type' => 'checkbox', 'default' => false),
         'customPageBackgroundUrl' => array('label' => '网页背景图地址', 'type' => 'text', 'default' => '/assets/img/background.webp'),
         'customCommentBoxBackgroundEnabled' => array('label' => '启用评论框背景自定义', 'type' => 'checkbox', 'default' => false),
@@ -455,6 +455,7 @@ function ariaRenderThemeConfigTransferScript(array $schema)
                 var normalized = {};
                 var hasAdvancedCustomCodeContent = false;
 
+                // 兼容旧导入字段 `backgroundUrl`：对应当前的网页封面 `coverUrl` 字段，不是网页背景字段 `customPageBackgroundUrl`。
                 if (!Object.prototype.hasOwnProperty.call(payloadConfig, 'coverUrl')
                     && Object.prototype.hasOwnProperty.call(payloadConfig, 'backgroundUrl')) {
                     payloadConfig.coverUrl = payloadConfig.backgroundUrl;
