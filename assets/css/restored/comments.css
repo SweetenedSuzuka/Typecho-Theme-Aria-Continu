@@ -220,26 +220,6 @@
 	transform: translateY(0);
 }
 
-/* “@某某某” 胶囊化标签 (Pill) */
-.aria-visual-enhancements .comment-at {
-	display: inline-flex;
-	align-items: center;
-	padding: 0 6px;
-	margin-right: 6px;
-	font-size: 0.9em;
-	background: rgba(0, 0, 0, 0.04);
-	color: var(--aria-text-body);
-	border-radius: 4px;
-	font-weight: 500;
-	vertical-align: middle;
-}
-.aria-visual-enhancements .comment-at::before {
-	content: "@";
-	opacity: 0.5;
-	margin-right: 2px;
-	font-size: 0.9em;
-}
-
 /* 博主徽章 (Author Badge) 精致化 */
 .aria-visual-enhancements .comment-by-author > div > .comment-avatar::before {
 	content: "博主";

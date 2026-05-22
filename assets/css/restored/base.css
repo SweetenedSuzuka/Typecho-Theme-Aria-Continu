@@ -36,7 +36,7 @@
 	--aria-border-color: #e1e1e1;
 	--aria-border-dashed: #dadada;
 	
-	/* 圆角系统 (Aero时代的温润，非扁平时代的超大圆角) */
+	/* 圆角系统 (可以扁，但是扁了就不准搭配超大圆角) */
 	--aria-radius-sm: 5px;
 	--aria-radius-md: 10px;
 	--aria-radius-lg: 14px;

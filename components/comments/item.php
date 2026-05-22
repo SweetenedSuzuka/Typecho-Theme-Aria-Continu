@@ -17,9 +17,6 @@ echo $commentClass;
             <div class="comment-text"><span class="comment-reply" style="float:right"><a href="#comment-form" data-aria-action="comment-reply" data-parent-id="<?php echo (int) $comments->coid; ?>"><i class="iconfont icon-aria-reply"></i></a></span>
             <?php
             $commentContent = $comments->content;
-            if (preg_match('/^<p><a href="#comment-\d+">@([^<]+)<\/a>(.*)$/is', $commentContent, $matches)) {
-                $commentContent = '<p><span class="comment-at">' . $matches[1] . '</span>' . $matches[2];
-            }
             if ('waiting' == $comments->status) {
                 $waitingText = isset($commentsViewData['waitingText']) ? (string) $commentsViewData['waitingText'] : '';
                 if ($waitingText !== '') {
