@@ -115,6 +115,7 @@ function createDirectory(container, mountPoint) {
 
   mountPoint.appendChild(rootList);
   Aria.toc.titleId = titleIds;
+  return titleIds.length;
 }
 
 Aria.toc = Aria.toc || {};
@@ -257,6 +258,7 @@ function bindTocHeightSync() {
 Aria.toc.init = function () {
   var toc = document.getElementById("toc");
   var postContent = document.querySelector(".post-content");
+  var titleCount = 0;
 
   if (!toc || !postContent) {
     this.titleId = [];
@@ -265,9 +267,20 @@ Aria.toc.init = function () {
     return;
   }
 
+  toc.classList.remove("aria-toc-ready");
+  toc.setAttribute("aria-hidden", "true");
   toc.innerHTML = "";
-  createDirectory(postContent, toc, !0);
+  titleCount = createDirectory(postContent, toc, !0);
 
   bindTocScroll();
   bindTocHeightSync();
+
+  if (!titleCount) {
+    return;
+  }
+
+  window.requestAnimationFrame(function () {
+    toc.classList.add("aria-toc-ready");
+    toc.setAttribute("aria-hidden", "false");
+  });
 };

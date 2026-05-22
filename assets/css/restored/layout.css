@@ -732,7 +732,7 @@ input[type=password] {
    Triggered by .aria-visual-enhancements body class
    ========================================================================== */
 
-/* 优化文章卡片 (Card) 悬浮动画：更立体的上浮与更通透的阴影 */
+/* 调整文章卡片悬浮动画：上浮位移与阴影一起变化 */
 .aria-visual-enhancements .card {
     transition: transform var(--aria-transition-time) var(--aria-transition-timing), 
                 box-shadow var(--aria-transition-time) var(--aria-transition-timing) !important;
@@ -744,9 +744,9 @@ input[type=password] {
                 0 4px 12px -4px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* 优化顶部导航栏 (Nav) 的阴影与模糊质感 (Aero/iOS7 物理质感) */
+/* 调整顶部导航栏 (Nav) 的阴影与模糊参数 */
 .aria-visual-enhancements #nav-menu {
-    /* Impeccable: 进一步降低 blur 半径，稍微提一点饱和度，让背后的风景能够更清晰地透射过来 */
+    /* 收窄模糊半径并保留背景透色 */
     backdrop-filter: blur(10px) saturate(120%);
     -webkit-backdrop-filter: blur(10px) saturate(120%);
     
@@ -793,4 +793,3 @@ input[type=password] {
     animation-duration: 0.25s !important;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
-
