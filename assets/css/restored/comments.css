@@ -22,22 +22,20 @@
 }
 
 .aria-visual-enhancements .comment-list .respond {
-	transition: opacity .22s cubic-bezier(.16, 1, .3, 1), transform .3s cubic-bezier(.16, 1, .3, 1), filter .22s cubic-bezier(.16, 1, .3, 1);
+	transition: opacity .12s cubic-bezier(.16, 1, .3, 1), transform .18s cubic-bezier(.16, 1, .3, 1);
 	transform-origin: top center;
 	will-change: opacity, transform;
 }
 
 .aria-visual-enhancements .comment-list .respond.aria-respond-leave {
 	opacity: 0;
-	transform: translateY(14px) scale(.985);
-	filter: blur(2px);
+	transform: translateY(8px) scale(.992);
 	pointer-events: none;
 }
 
 .aria-visual-enhancements .comment-list .respond.aria-respond-enter {
 	opacity: 0;
-	transform: translateY(-12px) scale(.985);
-	filter: blur(2px);
+	transform: translateY(-6px) scale(.992);
 	pointer-events: none;
 }
 
@@ -105,29 +103,140 @@
 	overflow: hidden
 }
 
-.aria-visual-enhancements .comment-body .comment-text {
-	border: none;
-	background: var(--aria-bg-body);
-	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.03);
-	padding: 15px;
+/* 恢复评论块的物理边界，但使其更加精致 */
+.aria-visual-enhancements .comment-body:not(.comment-child) {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	margin: 0 0 1.5em;
+	padding-bottom: 1.5em;
 }
 
-/* 隐藏对话框指向头像的三角小尾巴 */
+.aria-visual-enhancements .comment-body .comment-text {
+	background: var(--aria-bg-body);
+	border: 1px solid rgba(0, 0, 0, 0.06);
+	box-shadow: 0 2px 8px -4px rgba(0, 0, 0, 0.03), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+	padding: 12px 15px;
+}
+
+/* 隐藏对话框指向头像的三角小尾巴（保留去碎片化） */
 .aria-visual-enhancements .comment-body .comment-text:before {
 	display: none;
 }
 
-/* 优化层级指示线 */
+/* 优化层级指示线：不再废除，而是变得更加干净 */
+.aria-visual-enhancements .comment-body:before {
+	border: 2px solid var(--aria-bg-container);
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+	background: #eee;
+}
+
 .aria-visual-enhancements .comment-data:before {
 	background: rgba(0, 0, 0, 0.04);
 	width: 2px;
 	left: 65px;
 }
 
-.aria-visual-enhancements .comment-body:before {
-	border: 2px solid var(--aria-bg-container);
-	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
-	background: #eee;
+/* 嵌套评论的间距优化，取代危险的纯背景色阶 */
+.aria-visual-enhancements .comment-child {
+	margin-top: 12px;
+}
+
+/* 正在被回复的评论高亮 (Highlight Target) - 保持保留 */
+.aria-visual-enhancements .comment-body.aria-is-reply-target > div {
+	position: relative;
+}
+
+.aria-visual-enhancements .comment-body > div::before {
+	content: "";
+	position: absolute;
+	top: -4px;
+	left: -4px;
+	right: -4px;
+	bottom: -4px;
+	background: var(--aria-color-primary);
+	opacity: 0;
+	transform: scale(.992);
+	border-radius: var(--aria-radius-md);
+	z-index: 0;
+	pointer-events: none;
+	transition: opacity .18s cubic-bezier(.16, 1, .3, 1), transform .18s cubic-bezier(.16, 1, .3, 1);
+}
+
+.aria-visual-enhancements .comment-body.aria-is-reply-target > div::before {
+	opacity: 0.04;
+	transform: scale(1);
+}
+
+.aria-visual-enhancements .comment-body .comment-text {
+	transition: border-color .18s cubic-bezier(.16, 1, .3, 1), box-shadow .18s cubic-bezier(.16, 1, .3, 1);
+}
+
+.aria-visual-enhancements .comment-body.aria-is-reply-target .comment-text {
+	border-color: rgba(244, 114, 182, 0.22);
+	box-shadow: 0 6px 18px -10px rgba(244, 114, 182, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.aria-visual-enhancements .comment-body .comment-meta {
+	position: relative;
+}
+
+.aria-visual-enhancements .comment-body .comment-meta::after {
+	content: "正在回复";
+	display: inline-flex;
+	align-items: center;
+	margin-left: 8px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	font-size: 12px;
+	line-height: 1.4;
+	color: rgba(157, 23, 77, 0.92);
+	background: rgba(244, 114, 182, 0.12);
+	vertical-align: middle;
+	opacity: 0;
+	transform: translateY(-2px);
+	transition: opacity .18s cubic-bezier(.16, 1, .3, 1), transform .18s cubic-bezier(.16, 1, .3, 1);
+	pointer-events: none;
+}
+
+.aria-visual-enhancements .comment-body.aria-is-reply-target .comment-meta::after {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* “@某某某” 胶囊化标签 (Pill) */
+.aria-visual-enhancements .comment-at {
+	display: inline-flex;
+	align-items: center;
+	padding: 0 6px;
+	margin-right: 6px;
+	font-size: 0.9em;
+	background: rgba(0, 0, 0, 0.04);
+	color: var(--aria-text-body);
+	border-radius: 4px;
+	font-weight: 500;
+	vertical-align: middle;
+}
+.aria-visual-enhancements .comment-at::before {
+	content: "@";
+	opacity: 0.5;
+	margin-right: 2px;
+	font-size: 0.9em;
+}
+
+/* 博主徽章 (Author Badge) 精致化 */
+.aria-visual-enhancements .comment-by-author > div > .comment-avatar::before {
+	content: "博主";
+	font-family: inherit;
+	position: absolute;
+	right: -10px;
+	bottom: -4px;
+	font-size: 10px;
+	color: #fff;
+	background: var(--aria-color-primary);
+	padding: 2px 6px;
+	border-radius: 10px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	line-height: 1;
+	z-index: 2;
 }
 
 /* 头像质感：移除旧阴影，改为细描边 */
@@ -239,7 +348,7 @@
 	border: 1px solid rgba(0, 0, 0, 0.08);
 	background: var(--aria-bg-body);
 	border-radius: var(--aria-radius-sm);
-	transition: border-color var(--aria-transition), box-shadow var(--aria-transition), transform var(--aria-transition);
+	transition: border-color var(--aria-transition), box-shadow var(--aria-transition), transform var(--aria-transition), background-color var(--aria-transition);
 }
 
 .aria-visual-enhancements #comment-form textarea:focus,
@@ -251,7 +360,7 @@
 }
 
 .aria-visual-enhancements #comment-form textarea:focus {
-	background-color: transparent;
+	background-color: var(--aria-bg-body);
 }
 
 .aria-visual-enhancements .comment-form--custom-background #comment-form textarea:focus {

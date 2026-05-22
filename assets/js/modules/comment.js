@@ -65,7 +65,7 @@ function captureLayoutRects(elements) {
 }
 
 function animateCommentLayoutShift(previousRects) {
-  var duration = 320;
+  var duration = 180;
 
   if (!isContinuoReplyAnimationEnabled() || !previousRects || !previousRects.length) {
     return;
@@ -111,6 +111,7 @@ function animateRespondBoxMove(destinationCallback, afterMoveCallback) {
   var respondBox = getCommentRespondBox();
   var layoutElements;
   var previousRects;
+  var leaveDuration = 120;
 
   if (!respondBox || typeof destinationCallback !== "function") {
     if (typeof destinationCallback === "function") {
@@ -150,7 +151,7 @@ function animateRespondBoxMove(destinationCallback, afterMoveCallback) {
         }
       });
     });
-  }, 220);
+  }, leaveDuration);
 }
 
 function ensureReplyPlaceholder(respondBox) {
@@ -204,6 +205,17 @@ function moveCommentFormToReply(targetComment, parentId, replyRootId) {
   ensureReplyPlaceholder(respondBox);
   parentInput = ensureReplyParentInput(form);
   parentInput.value = String(parentId);
+
+  var previousTarget = document.querySelector(".aria-is-reply-target");
+  if (previousTarget) {
+    previousTarget.classList.remove("aria-is-reply-target");
+  }
+
+  var liComment = document.getElementById("li-comment-" + parentId);
+  if (liComment) {
+    liComment.classList.add("aria-is-reply-target");
+  }
+
   animateRespondBoxMove(
     function () {
       targetComment.appendChild(respondBox);
@@ -232,6 +244,11 @@ function cancelCommentReply() {
 
   if (!respondBox || !placeholder || !placeholder.parentNode) {
     return false;
+  }
+
+  var previousTarget = document.querySelector(".aria-is-reply-target");
+  if (previousTarget) {
+    previousTarget.classList.remove("aria-is-reply-target");
   }
 
   animateRespondBoxMove(function () {

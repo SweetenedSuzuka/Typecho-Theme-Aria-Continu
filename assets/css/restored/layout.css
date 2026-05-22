@@ -766,7 +766,20 @@ input[type=password] {
         0 4px 16px -4px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* 优化导航下拉子菜单 (Sub-menu) 的出现动效与玻璃质感 */
+/* 优化移动端侧边抽屉 (Drawer) 的玻璃质感 */
+.aria-visual-enhancements #nav-vertical {
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(20px) saturate(120%);
+    -webkit-backdrop-filter: blur(20px) saturate(120%);
+    box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.aria-visual-enhancements #search-box {
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(20px) saturate(120%);
+    -webkit-backdrop-filter: blur(20px) saturate(120%);
+}
 .aria-visual-enhancements .nav-sub {
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
