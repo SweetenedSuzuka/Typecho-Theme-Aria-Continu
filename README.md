@@ -14,11 +14,10 @@
 ---
 
 > [!NOTE]
-> 当前项目仍以旧版 Aria 的功能优化与 BUG 修复为主，尚未进入完整风格重构阶段。  
-> 由于原版中存在较多编译后的前端资源，恢复可维护源码仍需要一定时间。
-
-> [!NOTE]
+> ~~当前项目仍以旧版 Aria 的功能优化与 BUG 修复为主，尚未进入完整风格重构阶段。  ~~
+> ~~由于原版中存在较多编译后的前端资源，恢复可维护源码仍需要一定时间。~~
 > 已恢复可维护源码，进入重构。
+> 希望2.0可以带来新的视觉效果。
 
 ---
 
@@ -71,17 +70,29 @@ Aria，即咏叹调。
 
 ---
 
-# 使用方法
+### 使用方法
 
-- [旧版 Wiki（原项目）](https://eriri.ink/archives/Aria-manual.html)
-- 其实直接将文件解压到Typecho的`/usr/themes/`目录下即可安装。
-- 更新时删除旧文件，然后解压新版本到原目录即可。
-- 注意，从1.16.0及更早版本更新，会清除所有配置，请手动保存自己的配置，并在更新后手动切换到其它主题一次以清除旧数据。
-- 1.17.0及以后的版本无需额外操作，直接将文件替换为新版本文件即可
+#### 快速安装
+
+**将主题文件解压到 Typecho 的 `/usr/themes/` 目录下即可完成安装。**
+
+#### 更新指南
+
+| 版本范围 | 更新步骤 | 备注 |
+|---------|--------|------|
+| **1.16.0 及更早版本** | 1. 保存当前配置文件<br>2. 删除旧主题文件<br>3. 解压新版本到原目录<br>4. 切换到其他主题再切换回来以清除旧数据 | 必须手动清除旧数据 |
+| **1.17.0 及以后版本** | 直接将新版本文件覆盖旧文件 | 无需额外操作 |
+
+#### 更多资料
+
+- [旧版 Wiki（原项目文档）](https://eriri.ink/archives/Aria-manual.html)
+
+> [!IMPORTANT]
+> Aria中的一些功能，在 Aria Continuo 已经移除或更换，原 Wiki 的信息对于 Aria Continuo 来说有可能已经过时。
 
 ---
 
-# 更新日志
+## 更新日志
 
 ### 2026-05-22 1.18.0  
 
@@ -455,7 +466,7 @@ Andante · 2019 → 2026
 
 ---
 
-# 相关开源项目
+## 相关开源项目
 
 - [highlight.js](https://highlightjs.org/)
 - [Bento Grid System](https://github.com/fenbox/bento)
@@ -479,7 +490,7 @@ Legato · Then and Now
 ──────────── ✦ ────────────
 </p>
 
-# 曾经使用过的开源项目
+## 曾经使用过的开源项目
 
 - [jQuery](https://jquery.com/)
 - [jquery-pjax](https://github.com/defunkt/jquery-pjax)
@@ -496,7 +507,7 @@ Legato · Then and Now
 
 ---
 
-# 推荐插件（非必需）
+## 推荐插件（非必需）
 
 - [CommentToMail](https://9sb.org/58)
 - [SmartSpam](http://www.yovisun.com/archive/typecho-plugin-smartspam.html)
