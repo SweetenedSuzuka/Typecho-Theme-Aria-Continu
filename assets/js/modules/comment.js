@@ -20,6 +20,72 @@ function getCancelReplyLink() {
   return document.getElementById("cancel-comment-reply-link");
 }
 
+function focusElementWithoutScroll(element) {
+  var scrollX;
+  var scrollY;
+
+  if (!element || typeof element.focus !== "function") {
+    return;
+  }
+
+  scrollX = window.scrollX || window.pageXOffset || 0;
+  scrollY = window.scrollY || window.pageYOffset || 0;
+
+  try {
+    element.focus({
+      preventScroll: true,
+    });
+  } catch (error) {
+    element.focus();
+    window.scrollTo(scrollX, scrollY);
+  }
+}
+
+function gentlyRevealRespondBox(respondBox) {
+  var rect;
+  var viewportHeight;
+  var visibleTop;
+  var visibleBottom;
+  var visibleHeight;
+  var visibleRatio;
+  var bottomGap;
+  var revealMargin = 24;
+  var topSafeMargin = 48;
+  var minVisibleRatio = 0;
+  var maxAutoScrollDistance = 600;
+  var remainingTopAfterScroll;
+
+  if (!respondBox || !isContinuoReplyAnimationEnabled()) {
+    return;
+  }
+
+  rect = respondBox.getBoundingClientRect();
+  viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+  visibleTop = Math.max(rect.top, 0);
+  visibleBottom = Math.min(rect.bottom, viewportHeight);
+  visibleHeight = Math.max(visibleBottom - visibleTop, 0);
+  visibleRatio = rect.height > 0 ? visibleHeight / rect.height : 1;
+  bottomGap = rect.bottom - (viewportHeight - revealMargin);
+  remainingTopAfterScroll = rect.top - bottomGap;
+
+  if (bottomGap <= 0) {
+    return;
+  }
+
+  if (visibleRatio < minVisibleRatio || bottomGap > maxAutoScrollDistance) {
+    return;
+  }
+
+  if (remainingTopAfterScroll < topSafeMargin) {
+    return;
+  }
+
+  window.scrollTo({
+    top: window.scrollY + bottomGap,
+    behavior: "smooth",
+  });
+}
+
 function prefersReducedMotion() {
   return !!(
     window.matchMedia &&
@@ -109,6 +175,7 @@ function animateCommentLayoutShift(previousRects) {
 
 function animateRespondBoxMove(destinationCallback, afterMoveCallback) {
   var respondBox = getCommentRespondBox();
+  var textarea = getCommentTextarea();
   var layoutElements;
   var previousRects;
   var leaveDuration = 120;
@@ -131,6 +198,10 @@ function animateRespondBoxMove(destinationCallback, afterMoveCallback) {
       afterMoveCallback();
     }
     return;
+  }
+
+  if (textarea && document.activeElement === textarea && typeof textarea.blur === "function") {
+    textarea.blur();
   }
 
   respondBox.classList.add("aria-respond-leave");
@@ -224,8 +295,13 @@ function moveCommentFormToReply(targetComment, parentId, replyRootId) {
     },
     function () {
       if (textarea) {
-        textarea.focus();
+        focusElementWithoutScroll(textarea);
       }
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          gentlyRevealRespondBox(respondBox);
+        });
+      });
     },
   );
 }

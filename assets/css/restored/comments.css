@@ -122,22 +122,36 @@
 	display: none;
 }
 
-/* 优化层级指示线：不再废除，而是变得更加干净 */
-.aria-visual-enhancements .comment-body:before {
-	border: 2px solid var(--aria-bg-container);
-	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
-	background: #eee;
-}
-
+/* 阶梯状的左侧边框指示线 (Indent Border) */
+.aria-visual-enhancements .comment-body:before,
 .aria-visual-enhancements .comment-data:before {
-	background: rgba(0, 0, 0, 0.04);
-	width: 2px;
-	left: 65px;
+	display: none;
 }
 
-/* 嵌套评论的间距优化，取代危险的纯背景色阶 */
+.aria-visual-enhancements .comment-children {
+	margin-top: 14px;
+	padding-left: 18px;
+	/* 画一条极细的层级参考线，类似 Reddit / HackerNews */
+	border-left: 2px solid rgba(0, 0, 0, 0.05);
+}
+
 .aria-visual-enhancements .comment-child {
-	margin-top: 12px;
+	margin-top: 0;
+	position: relative;
+}
+
+.aria-visual-enhancements .comment-child + .comment-child {
+	margin-top: 16px;
+}
+
+/* 控制最大缩进层级：超过第3层的回复，不再继续向右缩进 */
+.aria-visual-enhancements .comment-children .comment-children .comment-children .comment-children {
+	padding-left: 0;
+	border-left: none;
+}
+
+.aria-visual-enhancements .comment-child .comment-avatar {
+	margin-left: 0;
 }
 
 /* 正在被回复的评论高亮 (Highlight Target) - 保持保留 */
