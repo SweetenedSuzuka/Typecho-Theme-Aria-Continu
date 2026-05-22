@@ -418,11 +418,7 @@ Object.assign(Aria, {
   },
 
   refresh: function () {
-    if (
-      (THEME_CONFIG.ENABLE_IMAGE_LIGHTBOX || THEME_CONFIG.ENABLE_FANCYBOX) &&
-      this.lightbox &&
-      typeof this.lightbox.init === "function"
-    ) {
+    if (THEME_CONFIG.ENABLE_IMAGE_LIGHTBOX && this.lightbox && typeof this.lightbox.init === "function") {
       this.lightbox.init();
     }
     if (THEME_CONFIG.SHOW_HITOKOTO) {

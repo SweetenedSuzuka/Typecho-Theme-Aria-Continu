@@ -8,7 +8,7 @@
  *
  * Based on original work by Siphils
  * @author     SweetenedSuzuka
- * @version    since 1.17.1
+ * @version    since 1.18.0
  */
 class ThemeScriptAssets
 {
@@ -27,7 +27,7 @@ class ThemeScriptAssets
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/toc.js'),
         );
 
-        if (ThemeOptions::isFancyboxEnabled()) {
+        if (ThemeOptions::isImageLightboxEnabled()) {
             array_splice(
                 $moduleScripts,
                 2,

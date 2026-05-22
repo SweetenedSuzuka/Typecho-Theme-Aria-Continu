@@ -14,12 +14,20 @@
 }
 
 .aria-lightbox__backdrop {
-  background: rgba(15, 18, 28, 0.92);
+  background: rgba(24, 24, 24, 0.6);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   border: 0;
   cursor: zoom-out;
   inset: 0;
+  opacity: 0;
   padding: 0;
   position: absolute;
+  transition:
+    opacity 0.4s ease,
+    backdrop-filter 0.4s ease,
+    -webkit-backdrop-filter 0.4s ease;
+  will-change: opacity, backdrop-filter;
   width: 100%;
 }
 
@@ -30,30 +38,45 @@
   inset: 0;
   justify-content: center;
   outline: none;
+  opacity: 0;
   padding: 24px;
   position: absolute;
+  transform: translateY(24px) scale(0.975);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .aria-lightbox__figure {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  box-shadow:
+    0 24px 64px rgba(15, 24, 42, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin: 0;
   max-width: min(92vw, 1280px);
+  padding: 14px 14px 10px;
   position: relative;
+  transform: scale(1);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .aria-lightbox__image {
+  border-radius: 10px;
   display: block;
   margin: 0 auto;
   max-height: calc(100vh - 140px);
   max-width: min(92vw, 1280px);
   opacity: 1;
-  transition: opacity 0.2s ease;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .aria-lightbox.is-loading .aria-lightbox__image {
-  opacity: 0.25;
+  opacity: 0.18;
+  transform: scale(0.985);
 }
 
 .aria-lightbox__loading {
@@ -117,6 +140,41 @@
 .aria-lightbox__nav:hover,
 .aria-lightbox__nav:focus {
   background: rgba(255, 255, 255, 0.22);
+}
+
+.aria-lightbox.is-active .aria-lightbox__backdrop {
+  opacity: 1;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.aria-lightbox.is-active .aria-lightbox__dialog {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.aria-lightbox.is-active .aria-lightbox__figure {
+  transform: scale(1);
+}
+
+.aria-lightbox.is-closing .aria-lightbox__backdrop {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+}
+
+.aria-lightbox.is-closing .aria-lightbox__dialog {
+  opacity: 0;
+  transform: translateY(12px) scale(0.982);
+}
+
+.aria-lightbox.is-closing .aria-lightbox__figure {
+  transform: scale(0.945);
+}
+
+.aria-lightbox.is-closing .aria-lightbox__image {
+  opacity: 0;
+  transform: scale(0.92);
 }
 
 .aria-lightbox__close {

@@ -5,7 +5,7 @@
 > 书写自己的篇章  
 > 让期许不再落幕
 
-[![Version](https://img.shields.io/badge/version-1.17.1-blue.svg)](#更新日志)
+[![Version](https://img.shields.io/badge/version-1.18.0-blue.svg)](#更新日志)
 [![Typecho](https://img.shields.io/badge/Typecho-Compatible-green.svg)](#)
 [![License](https://img.shields.io/badge/license-GPL%202.0-blue.svg)](#)
 
@@ -82,6 +82,19 @@ Aria，即咏叹调。
 ---
 
 # 更新日志
+
+### 2026-05-22 1.18.0  
+
+* 调整：主题图片查看体验改为内置灯箱实现  
+  * 主题不再使用 `jQuery` 与 `Fancybox`  
+  * 正文图片统一支持同页分组查看，评论图片保持单张查看  
+  * 更换了模糊效果的灯箱效果  
+* 调整：图片灯箱配置命名收口到现行语义  
+  * 后台开关统一为 `enableImageLightbox`  
+  * 不再继续保留 `enableFancybox`、`ENABLE_FANCYBOX`、`Aria.fancybox` 等旧命名兼容  
+* 新增：项目内部最小检查链  
+  * 新增 `npm run check`，统一执行 PHP、JS、JSON、主线 JS lint 与版本一致性检查  
+  * 补入项目内 `.editorconfig` 与最小 `eslint` 配置，收口当前可维护源码的检查边界  
 
 ### 2026-05-22 1.17.1  
 
@@ -446,7 +459,6 @@ Andante · 2019 → 2026
 
 - [highlight.js](https://highlightjs.org/)
 - [Bento Grid System](https://github.com/fenbox/bento)
-- [Fancybox3](https://fancyapps.com/fancybox/3/)
 - [MathJax](https://www.mathjax.org/)
 - [DIYgod/OwO](https://github.com/DIYgod/OwO)
 - [animate.css](https://daneden.github.io/animate.css/)
@@ -473,6 +485,7 @@ Legato · Then and Now
 - [jquery-pjax](https://github.com/defunkt/jquery-pjax)
 - [jquery-lazyload](https://appelsiini.net/projects/lazyload/)
 - [highlightjs-line-numbers](https://wcoder.github.io/highlightjs-line-numbers.js/)
+- [Fancybox3](https://fancyapps.com/fancybox/3/)
 - [clipboard.js](https://zenorocha.github.io/clipboard.js)
 - [smooth-scroll](https://github.com/cferdinandi/smooth-scroll)
 - [headroom.js](http://wicky.nillia.ms/headroom.js/)

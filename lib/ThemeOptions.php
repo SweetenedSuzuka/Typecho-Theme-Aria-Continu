@@ -8,7 +8,7 @@
  *
  * Based on original work by Siphils
  * @author     SweetenedSuzuka
- * @version    since 1.17.1
+ * @version    since 1.18.0
  */
 class ThemeOptions
 {
@@ -169,13 +169,13 @@ class ThemeOptions
     }
 
     /**
-     * 获取 Fancybox 开关状态
+     * 获取图片灯箱开关状态
      *
      * @return bool
      */
-    public static function isFancyboxEnabled()
+    public static function isImageLightboxEnabled()
     {
-        return self::getCheckboxOptionState('enableFancybox', false);
+        return self::getCheckboxOptionState('enableImageLightbox', false);
     }
 
     /**

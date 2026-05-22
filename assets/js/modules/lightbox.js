@@ -13,6 +13,8 @@ var ariaLightboxState = {
   closeButton: null,
   prevButton: null,
   nextButton: null,
+  closeTimer: null,
+  switchDirection: 0,
 };
 
 function toArray(nodeList) {
@@ -20,7 +22,7 @@ function toArray(nodeList) {
 }
 
 function isImageLightboxEnabled() {
-  return !!(THEME_CONFIG.ENABLE_IMAGE_LIGHTBOX || THEME_CONFIG.ENABLE_FANCYBOX);
+  return !!THEME_CONFIG.ENABLE_IMAGE_LIGHTBOX;
 }
 
 function getImageSource(image) {
@@ -84,11 +86,16 @@ function renderCurrentImage() {
 
   ariaLightboxState.image.onload = function () {
     ariaLightboxState.root.classList.remove("is-loading");
+    animateImageEntry(ariaLightboxState.switchDirection);
+    ariaLightboxState.root.classList.remove("is-switching-prev", "is-switching-next");
+    ariaLightboxState.switchDirection = 0;
   };
 
   ariaLightboxState.image.onerror = function () {
     ariaLightboxState.root.classList.remove("is-loading");
     ariaLightboxState.root.classList.add("is-error");
+    ariaLightboxState.root.classList.remove("is-switching-prev", "is-switching-next");
+    ariaLightboxState.switchDirection = 0;
     ariaLightboxState.caption.hidden = false;
     ariaLightboxState.caption.textContent = caption
       ? caption + "（图片加载失败）"
@@ -98,25 +105,94 @@ function renderCurrentImage() {
   ariaLightboxState.image.src = imageUrl;
 }
 
+function animateImageEntry(direction) {
+  var offsetX = 0;
+  var offsetY = 10;
+
+  if (!ariaLightboxState.image || typeof ariaLightboxState.image.animate !== "function") {
+    return;
+  }
+
+  if (direction > 0) {
+    offsetX = 20;
+    offsetY = 0;
+  } else if (direction < 0) {
+    offsetX = -20;
+    offsetY = 0;
+  }
+
+  ariaLightboxState.image.animate(
+    [
+      {
+        opacity: 0,
+        transform: "translate3d(" + String(offsetX) + "px, " + String(offsetY) + "px, 0) scale(0.985)",
+      },
+      {
+        opacity: 1,
+        transform: "translate3d(0, 0, 0) scale(1)",
+      },
+    ],
+    {
+      duration: direction === 0 ? 400 : 320,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+      fill: "both",
+    },
+  );
+}
+
+function focusElementWithoutScroll(element) {
+  var scrollX;
+  var scrollY;
+
+  if (!element || typeof element.focus !== "function") {
+    return;
+  }
+
+  scrollX = window.pageXOffset || window.scrollX || 0;
+  scrollY = window.pageYOffset || window.scrollY || 0;
+
+  try {
+    element.focus({ preventScroll: true });
+  } catch (error) {
+    element.focus();
+    window.scrollTo(scrollX, scrollY);
+  }
+}
+
 function closeLightbox() {
   if (!ariaLightboxState.root || !ariaLightboxState.active) {
     return;
   }
 
   ariaLightboxState.active = false;
-  ariaLightboxState.root.hidden = true;
+  if (ariaLightboxState.closeTimer) {
+    window.clearTimeout(ariaLightboxState.closeTimer);
+    ariaLightboxState.closeTimer = null;
+  }
   ariaLightboxState.root.setAttribute("aria-hidden", "true");
-  ariaLightboxState.root.classList.remove("is-active", "is-loading", "is-error");
-  ariaLightboxState.image.removeAttribute("src");
-  ariaLightboxState.caption.textContent = "";
-  ariaLightboxState.counter.textContent = "";
-  ariaLightboxState.currentItems = [];
+  ariaLightboxState.root.classList.add("is-closing");
+  ariaLightboxState.root.classList.remove("is-active");
   document.body.classList.remove("aria-lightbox-open");
   document.removeEventListener("keydown", handleLightboxKeydown);
 
-  if (ariaLightboxState.lastTrigger && typeof ariaLightboxState.lastTrigger.focus === "function") {
-    ariaLightboxState.lastTrigger.focus();
-  }
+  focusElementWithoutScroll(ariaLightboxState.lastTrigger);
+
+  ariaLightboxState.closeTimer = window.setTimeout(function () {
+    ariaLightboxState.root.hidden = true;
+    ariaLightboxState.root.classList.remove(
+      "is-closing",
+      "is-loading",
+      "is-error",
+      "is-switching-prev",
+      "is-switching-next",
+    );
+    ariaLightboxState.image.removeAttribute("src");
+    ariaLightboxState.caption.textContent = "";
+    ariaLightboxState.counter.textContent = "";
+    ariaLightboxState.currentItems = [];
+    ariaLightboxState.switchDirection = 0;
+    ariaLightboxState.closeTimer = null;
+  }, 420);
 }
 
 function moveLightbox(step) {
@@ -127,6 +203,9 @@ function moveLightbox(step) {
   }
 
   ariaLightboxState.currentIndex = nextIndex;
+  ariaLightboxState.switchDirection = step > 0 ? 1 : -1;
+  ariaLightboxState.root.classList.remove("is-switching-prev", "is-switching-next");
+  ariaLightboxState.root.classList.add(step > 0 ? "is-switching-next" : "is-switching-prev");
   renderCurrentImage();
 }
 
@@ -161,17 +240,29 @@ function openLightbox(trigger) {
   }
 
   ensureLightboxRoot();
+  if (ariaLightboxState.closeTimer) {
+    window.clearTimeout(ariaLightboxState.closeTimer);
+    ariaLightboxState.closeTimer = null;
+  }
   ariaLightboxState.active = true;
   ariaLightboxState.currentItems = items;
   ariaLightboxState.currentIndex = Math.max(items.indexOf(trigger), 0);
   ariaLightboxState.lastTrigger = trigger;
+  ariaLightboxState.switchDirection = 0;
   ariaLightboxState.root.hidden = false;
   ariaLightboxState.root.setAttribute("aria-hidden", "false");
+  
+  // 强制浏览器重排，确保初始状态（blur: 0, opacity: 0）被真正应用，防止中途闪现
+  void ariaLightboxState.root.offsetWidth;
+  
+  ariaLightboxState.root.classList.remove("is-closing", "is-switching-prev", "is-switching-next");
   ariaLightboxState.root.classList.add("is-active");
+  
   document.body.classList.add("aria-lightbox-open");
   document.addEventListener("keydown", handleLightboxKeydown);
   renderCurrentImage();
-  ariaLightboxState.dialog.focus();
+
+  focusElementWithoutScroll(ariaLightboxState.dialog);
 }
 
 function handleTriggerClick(event) {
@@ -220,6 +311,11 @@ function ensureLightboxRoot() {
   ariaLightboxState.nextButton = root.querySelector(".aria-lightbox__nav--next");
 
   root.querySelector(".aria-lightbox__backdrop").addEventListener("click", closeLightbox);
+  dialog.addEventListener("click", function (event) {
+    if (event.target === dialog) {
+      closeLightbox();
+    }
+  });
   ariaLightboxState.closeButton.addEventListener("click", closeLightbox);
   ariaLightboxState.prevButton.addEventListener("click", function () {
     moveLightbox(-1);
@@ -272,7 +368,7 @@ function prepareImageTrigger(image, groupName) {
 }
 
 function prepareLightboxImages() {
-  toArray(document.querySelectorAll(".post-content img:not(.link-avatar):not([no-fancybox])")).forEach(
+  toArray(document.querySelectorAll(".post-content img:not(.link-avatar)")).forEach(
     function (image) {
       prepareImageTrigger(image, "post-gallery");
     },
@@ -299,6 +395,3 @@ Aria.lightbox = {
 
   close: closeLightbox,
 };
-
-// Compatibility alias for legacy references during the transition away from Fancybox naming.
-Aria.fancybox = Aria.lightbox;

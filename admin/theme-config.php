@@ -216,14 +216,14 @@ function themeConfig($form)
     );
     $form->addInput($showQRCode->multiMode());
 
-    $enableFancybox = new Typecho_Widget_Helper_Form_Element_Checkbox(
-        'enableFancybox',
+    $enableImageLightbox = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'enableImageLightbox',
         array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isFancyboxEnabled()),
+        ariaThemeToggleValue(ThemeOptions::isImageLightboxEnabled()),
         _t('文章/评论图片启用灯箱查看'),
         _t('控制文章内容图片的分组查看和评论图片的单张查看；关闭后不再启用图片灯箱')
     );
-    $form->addInput($enableFancybox->multiMode());
+    $form->addInput($enableImageLightbox->multiMode());
 
     // Lazyload settings.
     $enableLazyload = new Typecho_Widget_Helper_Form_Element_Checkbox(

@@ -8,7 +8,7 @@
  *
  * Based on original work by Siphils
  * @author     SweetenedSuzuka
- * @version    since 1.17.1
+ * @version    since 1.18.0
  */
 class ThemeViewData
 {
@@ -598,7 +598,7 @@ class ThemeViewData
     {
         $styles = array();
 
-        if (ThemeOptions::isFancyboxEnabled()) {
+        if (ThemeOptions::isImageLightboxEnabled()) {
             $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/css/lightbox.css');
         }
 
