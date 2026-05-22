@@ -404,56 +404,6 @@ function logVersion() {
   console.log("%cBased on Aria By Siphils", "color: #fff; background: #435561cf; padding:6px;");
 }
 
-function createFancyboxAnchor(image, useGallery) {
-  var anchor = document.createElement("a");
-
-  anchor.href = image.src;
-  anchor.setAttribute("data-caption", image.title || "");
-  anchor.className = "fancybox";
-  anchor.style.outline = "0";
-
-  if (useGallery) {
-    anchor.setAttribute("data-fancybox", "gallery");
-  }
-
-  return anchor;
-}
-
-function wrapImageWithFancybox(image, useGallery) {
-  var anchor;
-  var parent;
-
-  if (!image || image.getAttribute("data-aria-fancybox-bound") === "true") {
-    return;
-  }
-
-  parent = image.parentNode;
-  if (!parent) {
-    return;
-  }
-
-  anchor = createFancyboxAnchor(image, useGallery);
-  image.setAttribute("data-aria-fancybox-bound", "true");
-  parent.insertBefore(anchor, image);
-  anchor.appendChild(image);
-}
-
-function prepareFancyboxImages() {
-  Array.prototype.forEach.call(
-    document.querySelectorAll(".post-content img:not(.link-avatar):not([no-fancybox])"),
-    function (image) {
-      wrapImageWithFancybox(image, !0);
-    },
-  );
-
-  Array.prototype.forEach.call(
-    document.querySelectorAll(".comment-text img"),
-    function (image) {
-      wrapImageWithFancybox(image, !1);
-    },
-  );
-}
-
 Object.assign(Aria, {
   init: function () {
     if (this.state.initialized) {
@@ -468,8 +418,12 @@ Object.assign(Aria, {
   },
 
   refresh: function () {
-    if (THEME_CONFIG.ENABLE_FANCYBOX) {
-      this.fancybox();
+    if (
+      (THEME_CONFIG.ENABLE_IMAGE_LIGHTBOX || THEME_CONFIG.ENABLE_FANCYBOX) &&
+      this.lightbox &&
+      typeof this.lightbox.init === "function"
+    ) {
+      this.lightbox.init();
     }
     if (THEME_CONFIG.SHOW_HITOKOTO) {
       this.hitokoto();
@@ -481,33 +435,6 @@ Object.assign(Aria, {
     this.hljs.init();
     this.commentPlus.init();
     this.toc.init();
-  },
-
-  fancybox: function () {
-    if (
-      !document.querySelector(".post-content img") &&
-      !document.querySelector(".comment-content img")
-    ) {
-      return;
-    }
-
-    prepareFancyboxImages();
-
-    if (!document.querySelector("a.fancybox")) {
-      return;
-    }
-
-    $("a.fancybox").fancybox({
-      animationEffect: "zoom-in-out",
-      animationDuration: 500,
-      transitionEffect: "tube",
-      transitionDuration: 500,
-      backFocus: false,
-      spinnerTpl:
-        '<img style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);" src="' +
-        THEME_CONFIG.THEME_URL +
-        '/assets/img/loading.svg">',
-    });
   },
 
   hitokoto: function () {

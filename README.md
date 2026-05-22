@@ -447,7 +447,6 @@ Andante · 2019 → 2026
 - [highlight.js](https://highlightjs.org/)
 - [Bento Grid System](https://github.com/fenbox/bento)
 - [Fancybox3](https://fancyapps.com/fancybox/3/)
-- [jQuery](https://jquery.com/)
 - [MathJax](https://www.mathjax.org/)
 - [DIYgod/OwO](https://github.com/DIYgod/OwO)
 - [animate.css](https://daneden.github.io/animate.css/)
@@ -470,6 +469,7 @@ Legato · Then and Now
 
 # 曾经使用过的开源项目
 
+- [jQuery](https://jquery.com/)
 - [jquery-pjax](https://github.com/defunkt/jquery-pjax)
 - [jquery-lazyload](https://appelsiini.net/projects/lazyload/)
 - [highlightjs-line-numbers](https://wcoder.github.io/highlightjs-line-numbers.js/)

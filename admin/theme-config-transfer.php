@@ -26,7 +26,7 @@ function ariaGetThemeConfigTransferSchema()
         'homeExcludeCategories' => array('label' => '首页排除分类（slug）', 'type' => 'textarea', 'default' => ''),
         'rewardConfig' => array('label' => '打赏功能配置', 'type' => 'json_object_legacy', 'default' => ''),
         'showQRCode' => array('label' => '文章底部显示本文链接二维码', 'type' => 'checkbox', 'default' => false),
-        'enableFancybox' => array('label' => '文章/评论图片启用 Fancybox', 'type' => 'checkbox', 'default' => false),
+        'enableFancybox' => array('label' => '文章/评论图片启用灯箱查看', 'type' => 'checkbox', 'default' => false),
         'enableLazyload' => array('label' => '开启图片懒加载', 'type' => 'checkbox', 'default' => false),
         'lazyloadPlaceholderEnabled' => array('label' => '懒加载完成前显示占位图', 'type' => 'checkbox', 'default' => false),
         'enableMathJax' => array('label' => '启用 MathJax', 'type' => 'checkbox', 'default' => false),

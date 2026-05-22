@@ -29,6 +29,8 @@ class ThemeRuntimeConfig
             'SHOW_QRCODE' => ThemeOptions::isPostQrCodeEnabled(),
             'SHOW_REWARD' => count(ThemeOptions::getRewardConfigMap()) > 0,
             'ENABLE_AJAX_COMMENT' => ThemeOptions::isAjaxCommentEnabled(),
+            'ENABLE_IMAGE_LIGHTBOX' => ThemeOptions::isFancyboxEnabled(),
+            // Keep the old flag for compatibility with remaining historical references.
             'ENABLE_FANCYBOX' => ThemeOptions::isFancyboxEnabled(),
             'ENABLE_LAZYLOAD' => ThemeOptions::isLazyloadEnabled(),
             'ENABLE_LAZYLOAD_PLACEHOLDER' => ThemeOptions::isLazyloadPlaceholderEnabled(),

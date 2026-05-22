@@ -1,0 +1,171 @@
+.aria-lightbox-open {
+  overflow: hidden;
+}
+
+.aria-lightbox-trigger,
+.aria-lightbox-trigger img {
+  cursor: zoom-in;
+}
+
+.aria-lightbox {
+  inset: 0;
+  position: fixed;
+  z-index: 99992;
+}
+
+.aria-lightbox__backdrop {
+  background: rgba(15, 18, 28, 0.92);
+  border: 0;
+  cursor: zoom-out;
+  inset: 0;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.aria-lightbox__dialog {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  outline: none;
+  padding: 24px;
+  position: absolute;
+}
+
+.aria-lightbox__figure {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  max-width: min(92vw, 1280px);
+  position: relative;
+}
+
+.aria-lightbox__image {
+  display: block;
+  margin: 0 auto;
+  max-height: calc(100vh - 140px);
+  max-width: min(92vw, 1280px);
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.aria-lightbox.is-loading .aria-lightbox__image {
+  opacity: 0.25;
+}
+
+.aria-lightbox__loading {
+  align-items: center;
+  display: none;
+  inset: 0;
+  justify-content: center;
+  pointer-events: none;
+  position: absolute;
+}
+
+.aria-lightbox.is-loading .aria-lightbox__loading {
+  display: flex;
+}
+
+.aria-lightbox__loading img {
+  height: 42px;
+  width: 42px;
+}
+
+.aria-lightbox__caption {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 auto;
+  max-width: min(92vw, 960px);
+  text-align: center;
+}
+
+.aria-lightbox__counter {
+  bottom: 24px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  left: 50%;
+  letter-spacing: 0.04em;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.aria-lightbox__close,
+.aria-lightbox__nav {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 28px;
+  height: 44px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  position: absolute;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  width: 44px;
+}
+
+.aria-lightbox__close:hover,
+.aria-lightbox__close:focus,
+.aria-lightbox__nav:hover,
+.aria-lightbox__nav:focus {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.aria-lightbox__close {
+  right: 24px;
+  top: 24px;
+}
+
+.aria-lightbox__nav--prev {
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.aria-lightbox__nav--next {
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.aria-lightbox__nav[disabled] {
+  cursor: default;
+  opacity: 0.28;
+}
+
+@media (max-width: 768px) {
+  .aria-lightbox__dialog {
+    padding: 16px;
+  }
+
+  .aria-lightbox__close,
+  .aria-lightbox__nav {
+    height: 40px;
+    width: 40px;
+  }
+
+  .aria-lightbox__close {
+    right: 16px;
+    top: 16px;
+  }
+
+  .aria-lightbox__nav--prev {
+    left: 12px;
+  }
+
+  .aria-lightbox__nav--next {
+    right: 12px;
+  }
+
+  .aria-lightbox__counter {
+    bottom: 14px;
+  }
+}

@@ -220,8 +220,8 @@ function themeConfig($form)
         'enableFancybox',
         array('1' => _t('开启')),
         ariaThemeToggleValue(ThemeOptions::isFancyboxEnabled()),
-        _t('文章/评论图片启用 Fancybox'),
-        _t('控制文章与评论中的图片是否启用 Fancybox 查看器')
+        _t('文章/评论图片启用灯箱查看'),
+        _t('控制文章内容图片的分组查看和评论图片的单张查看；关闭后不再启用图片灯箱')
     );
     $form->addInput($enableFancybox->multiMode());
 

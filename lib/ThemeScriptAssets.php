@@ -19,21 +19,27 @@ class ThemeScriptAssets
      */
     public static function getFooterScriptUrls()
     {
-        $scripts = array();
-
-        if (ThemeOptions::isFancyboxEnabled()) {
-            $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/jquery.fancybox.min.js');
-        }
-
-        $scripts[] = ThemeAssetHelper::getThemeAssetUrl('assets/js/highlight.min.js');
-
-        return array_merge($scripts, array(
+        $moduleScripts = array(
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/base.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/core.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/comment.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/action.js'),
             ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/toc.js'),
-        ));
+        );
+
+        if (ThemeOptions::isFancyboxEnabled()) {
+            array_splice(
+                $moduleScripts,
+                2,
+                0,
+                array(ThemeAssetHelper::getThemeAssetUrl('assets/js/modules/lightbox.js'))
+            );
+        }
+
+        return array_merge(
+            array(ThemeAssetHelper::getThemeAssetUrl('assets/js/highlight.min.js')),
+            $moduleScripts
+        );
     }
 
     /**

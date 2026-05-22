@@ -599,7 +599,7 @@ class ThemeViewData
         $styles = array();
 
         if (ThemeOptions::isFancyboxEnabled()) {
-            $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/css/jquery.fancybox.min.css');
+            $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/css/lightbox.css');
         }
 
         return array_merge($styles, array(
@@ -648,9 +648,7 @@ class ThemeViewData
      */
     private static function getHeaderScriptUrls()
     {
-        return array(
-            ThemeAssetHelper::getThemeAssetUrl('assets/js/jquery.min.js'),
-        );
+        return array();
     }
 
     /**
