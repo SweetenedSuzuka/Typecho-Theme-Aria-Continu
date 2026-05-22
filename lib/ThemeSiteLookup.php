@@ -8,7 +8,7 @@
  *
  * Based on original work by Siphils
  * @author     SweetenedSuzuka
- * @version    since 1.17.0
+ * @version    since 1.17.1
  */
 class ThemeSiteLookup
 {

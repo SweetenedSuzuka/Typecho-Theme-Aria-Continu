@@ -61,24 +61,30 @@ function ariaRenderThemeConfigAssets()
 
                     try {
                         var data = JSON.parse(request.responseText);
+                        var updateInfo = document.getElementById('update-info');
                         if (data.version == ARIA_VERSION.trim()) {
                             setButtonState(dom, 'confirm', '已经为最新版');
+                            if (updateInfo) {
+                                updateInfo.remove();
+                            }
                             return;
                         }
 
                         setButtonState(dom, 'alert', '检查到新版本');
-                        if (typeof document.getElementById('update-info') === 'undefined' || document.getElementById('update-info') === null) {
-                            var log = document.createElement('div');
-                            log.id = 'update-info';
-                            log.classList.add('tip');
-                            var html = '<ul><li>新版本：' + data.version + '</li><li>更新日志：<a href="' + data.changeLog + '" target="_blank">changeLog</a></li><li>使用帮助（Aria）：<a href="' + data.wiki + '" target="_blank">Wiki</a></li>';
-                            if (data.warning) {
-                                html += '<li><strong>更新须知:' + data.warning + '</strong></li>';
-                            }
-                            html += '</ul>';
-                            log.innerHTML = html;
-                            Array.prototype.slice.call(document.getElementsByClassName('tip')).pop().after(log);
+                        var html = '<ul><li>新版本：' + data.version + '</li><li>更新日志：<a href="' + data.changeLog + '" target="_blank">changeLog</a></li><li>使用帮助（Aria）：<a href="' + data.wiki + '" target="_blank">Wiki</a></li>';
+                        if (data.warning) {
+                            html += '<li><strong>更新须知:' + data.warning + '</strong></li>';
                         }
+                        html += '</ul>';
+
+                        if (!updateInfo) {
+                            updateInfo = document.createElement('div');
+                            updateInfo.id = 'update-info';
+                            updateInfo.classList.add('tip');
+                            Array.prototype.slice.call(document.getElementsByClassName('tip')).pop().after(updateInfo);
+                        }
+
+                        updateInfo.innerHTML = html;
                     } catch (error) {
                         dom.classList.remove('loading');
                         dom.style.paddingLeft = '';
@@ -87,7 +93,8 @@ function ariaRenderThemeConfigAssets()
                 };
 
                 try {
-                    request.open('GET', 'https://raw.githubusercontent.com/SweetenedSuzuka/Typecho-Theme-Aria-Continuo/master/version.json?raw=true', true);
+                    var requestUrl = 'https://raw.githubusercontent.com/SweetenedSuzuka/Typecho-Theme-Aria-Continuo/master/version.json?raw=true&_=' + Date.now();
+                    request.open('GET', requestUrl, true);
                     request.send();
                 } catch (error) {
                     dom.classList.remove('loading');
