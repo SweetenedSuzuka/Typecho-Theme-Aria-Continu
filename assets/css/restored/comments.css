@@ -22,20 +22,24 @@
 }
 
 .aria-visual-enhancements .comment-list .respond {
-	transition: opacity var(--aria-duration-fast) var(--aria-ease-in), transform var(--aria-duration-normal) var(--aria-ease-out);
+	transition: opacity var(--aria-duration-fast) var(--aria-ease-in), transform var(--aria-duration-normal) var(--aria-ease-out), padding var(--aria-duration-normal) var(--aria-ease-out), margin var(--aria-duration-normal) var(--aria-ease-out);
 	transform-origin: top center;
-	will-change: opacity, transform;
+	will-change: opacity, transform, padding, margin;
+	background: transparent;
+	border: none;
+	padding: 12px 0 0 0;
+	margin: 12px 0 0 0;
 }
 
 .aria-visual-enhancements .comment-list .respond.aria-respond-leave {
 	opacity: 0;
-	transform: translateY(8px) scale(.992);
+	transform: translateY(4px) scale(.995);
 	pointer-events: none;
 }
 
 .aria-visual-enhancements .comment-list .respond.aria-respond-enter {
 	opacity: 0;
-	transform: translateY(-6px) scale(.992);
+	transform: translateY(-4px) scale(.995);
 	pointer-events: none;
 }
 
