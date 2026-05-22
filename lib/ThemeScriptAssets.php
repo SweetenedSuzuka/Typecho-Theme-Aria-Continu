@@ -53,6 +53,10 @@ class ThemeScriptAssets
      */
     public static function getCustomScriptHtml()
     {
+        if (!ThemeOptions::isAdvancedCustomCodeEnabled()) {
+            return '';
+        }
+
         $customScript = ThemeOptions::hasOption('customScript')
             ? trim((string) Helper::options()->customScript)
             : '';

@@ -229,6 +229,41 @@ class ThemeOptions
     }
 
     /**
+     * 获取首页封面配置文本
+     *
+     * 优先读取新的 `coverUrl` 字段；如果当前实例仍只有旧的
+     * `backgroundUrl` 字段，则继续读取旧值，直到用户重新保存。
+     *
+     * @return string
+     */
+    public static function getCoverConfigValue()
+    {
+        if (self::hasOption('coverUrl')) {
+            return self::getOptionStringValue('coverUrl', '', false);
+        }
+
+        if (self::hasOption('backgroundUrl')) {
+            return self::getOptionStringValue('backgroundUrl', '', false);
+        }
+
+        return '';
+    }
+
+    /**
+     * 获取高级自定义代码开关状态
+     *
+     * @return bool
+     */
+    public static function isAdvancedCustomCodeEnabled()
+    {
+        if (self::hasOption('enableAdvancedCustomCode')) {
+            return self::getCheckboxOptionState('enableAdvancedCustomCode', false);
+        }
+
+        return self::hasCustomCodeContent();
+    }
+
+    /**
      * 将文本配置拆分为字符串列表
      *
      * @param string $value
@@ -248,6 +283,23 @@ class ThemeOptions
         }
 
         return array_values(array_unique($parts));
+    }
+
+    /**
+     * 判断是否存在任意高级自定义代码内容
+     *
+     * @return bool
+     */
+    private static function hasCustomCodeContent()
+    {
+        $fields = array('customHeader', 'customFooter', 'customScript');
+        foreach ($fields as $field) {
+            if (self::getOptionStringValue($field, '', false) !== '') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -319,6 +371,80 @@ class ThemeOptions
     public static function getThemeConfigSchemaVersion()
     {
         return self::THEME_CONFIG_SCHEMA_VERSION;
+    }
+
+    /**
+     * 校验导航配置是否符合当前规则
+     *
+     * @param string $raw
+     *
+     * @return bool
+     */
+    public static function validateNavConfigInput($raw)
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return true;
+        }
+
+        $data = self::decodeConfigArray($raw);
+        if (!is_array($data)) {
+            return false;
+        }
+
+        if ($data === array()) {
+            return true;
+        }
+
+        foreach ($data as $item) {
+            if (is_array($item) && self::normalizeNavConfigItem($item) !== null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 校验页脚链接配置是否符合当前规则
+     *
+     * @param string $raw
+     *
+     * @return bool
+     */
+    public static function validateFooterWidgetInput($raw)
+    {
+        return self::validateStrictLinkConfigInput($raw);
+    }
+
+    /**
+     * 校验页脚备案配置是否符合当前规则
+     *
+     * @param string $raw
+     *
+     * @return bool
+     */
+    public static function validateFooterRecordsInput($raw)
+    {
+        return self::validateStrictLinkConfigInput($raw, true);
+    }
+
+    /**
+     * 校验打赏配置是否符合当前规则
+     *
+     * @param string $raw
+     *
+     * @return bool
+     */
+    public static function validateRewardConfigInput($raw)
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return true;
+        }
+
+        $data = self::decodeConfigFragment($raw, false);
+        return is_array($data);
     }
 
     /**
@@ -617,6 +743,52 @@ class ThemeOptions
         }
 
         return $normalized;
+    }
+
+    /**
+     * 校验严格 JSON 数组链接配置
+     *
+     * @param string $raw
+     * @param bool $isFooterRecord
+     *
+     * @return bool
+     */
+    private static function validateStrictLinkConfigInput($raw, $isFooterRecord = false)
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return true;
+        }
+
+        $data = self::decodeConfigArray($raw);
+        if (!is_array($data)) {
+            return false;
+        }
+
+        if ($data === array()) {
+            return true;
+        }
+
+        foreach ($data as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            if ($isFooterRecord) {
+                $text = array_key_exists('text', $item) ? trim((string) $item['text']) : '';
+                if ($text !== '') {
+                    return true;
+                }
+
+                continue;
+            }
+
+            if (self::normalizeLinkConfigItem($item) !== null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -10,7 +10,7 @@ function ariaGetThemeConfigTransferSchema()
 {
     return array(
         'avatarUrl' => array('label' => '站点头像', 'type' => 'text', 'default' => ''),
-        'backgroundUrl' => array('label' => '首页背景图片', 'type' => 'textarea', 'default' => ''),
+        'coverUrl' => array('label' => '首页背景图片', 'type' => 'textarea', 'default' => ''),
         'customPageBackgroundEnabled' => array('label' => '启用网页背景自定义', 'type' => 'checkbox', 'default' => false),
         'customPageBackgroundUrl' => array('label' => '网页背景图地址', 'type' => 'text', 'default' => '/assets/img/background.webp'),
         'customCommentBoxBackgroundEnabled' => array('label' => '启用评论框背景自定义', 'type' => 'checkbox', 'default' => false),
@@ -66,6 +66,7 @@ function ariaGetThemeConfigTransferSchema()
         'notFoundTitle' => array('label' => '404 标题文案', 'type' => 'text', 'default' => '404:没有找到界面呢，是书架摆错了吗？'),
         'notFoundDescription' => array('label' => '404 描述文案', 'type' => 'textarea', 'default' => '这个页面不存在或者被删除，你可以尝试搜索你想要的内容。'),
         'statistics' => array('label' => '统计代码', 'type' => 'textarea', 'default' => ''),
+        'enableAdvancedCustomCode' => array('label' => '启用高级自定义代码', 'type' => 'checkbox', 'default' => false),
         'customHeader' => array('label' => '顶部自定义内容', 'type' => 'textarea', 'default' => ''),
         'customFooter' => array('label' => '底部自定义内容', 'type' => 'textarea', 'default' => ''),
         'customScript' => array('label' => '自定义JS', 'type' => 'textarea', 'default' => ''),
@@ -247,7 +248,7 @@ function ariaRenderThemeConfigTransferScript(array $schema)
                 );
             }
 
-            function normalizeSchemaValue(meta, rawValue) {
+            function normalizeSchemaValue(meta, rawValue, allowInvalidStructured) {
                 switch (meta.type) {
                     case 'checkbox':
                         return !!rawValue;
@@ -259,17 +260,38 @@ function ariaRenderThemeConfigTransferScript(array $schema)
                         if (Array.isArray(rawValue)) {
                             return rawValue;
                         }
-                        return parseStrictJsonArray(rawValue, meta.label);
+                        try {
+                            return parseStrictJsonArray(rawValue, meta.label);
+                        } catch (error) {
+                            if (allowInvalidStructured) {
+                                return normalizeLineEndings(rawValue);
+                            }
+                            throw error;
+                        }
                     case 'json_array_legacy':
                         if (Array.isArray(rawValue)) {
                             return rawValue;
                         }
-                        return parseLegacyJsonArray(rawValue, meta.label);
+                        try {
+                            return parseLegacyJsonArray(rawValue, meta.label);
+                        } catch (error) {
+                            if (allowInvalidStructured) {
+                                return normalizeLineEndings(rawValue);
+                            }
+                            throw error;
+                        }
                     case 'json_object_legacy':
                         if (isPlainObject(rawValue)) {
                             return rawValue;
                         }
-                        return parseLegacyJsonObject(rawValue, meta.label);
+                        try {
+                            return parseLegacyJsonObject(rawValue, meta.label);
+                        } catch (error) {
+                            if (allowInvalidStructured) {
+                                return normalizeLineEndings(rawValue);
+                            }
+                            throw error;
+                        }
                     case 'select':
                     case 'text':
                     case 'textarea':
@@ -278,10 +300,10 @@ function ariaRenderThemeConfigTransferScript(array $schema)
                 }
             }
 
-            function getFormValue(name, meta) {
+            function getFormValue(name, meta, allowInvalidStructured) {
                 var nodes = getFieldNodes(name);
                 if (!nodes.length) {
-                    return normalizeSchemaValue(meta, meta.default);
+                    return normalizeSchemaValue(meta, meta.default, allowInvalidStructured);
                 }
 
                 if (meta.type === 'checkbox') {
@@ -293,10 +315,10 @@ function ariaRenderThemeConfigTransferScript(array $schema)
                         return node.checked;
                     }).map(function (node) {
                         return String(node.value);
-                    }));
+                    }), allowInvalidStructured);
                 }
 
-                return normalizeSchemaValue(meta, nodes[0].value);
+                return normalizeSchemaValue(meta, nodes[0].value, allowInvalidStructured);
             }
 
             function formatValueForField(meta, value) {
@@ -308,6 +330,9 @@ function ariaRenderThemeConfigTransferScript(array $schema)
                     case 'json_array_strict':
                     case 'json_array_legacy':
                     case 'json_object_legacy':
+                        if (typeof value === 'string') {
+                            return normalizeLineEndings(value);
+                        }
                         return JSON.stringify(value, null, 4);
                     case 'checkbox':
                         return !!value;
@@ -350,7 +375,7 @@ function ariaRenderThemeConfigTransferScript(array $schema)
             function getNormalizedDefaults() {
                 var defaults = {};
                 Object.keys(transferMeta.fields).forEach(function (name) {
-                    defaults[name] = normalizeSchemaValue(transferMeta.fields[name], transferMeta.fields[name].default);
+                    defaults[name] = normalizeSchemaValue(transferMeta.fields[name], transferMeta.fields[name].default, false);
                 });
                 return defaults;
             }
@@ -358,7 +383,7 @@ function ariaRenderThemeConfigTransferScript(array $schema)
             function getCurrentNormalizedValues() {
                 var values = {};
                 Object.keys(transferMeta.fields).forEach(function (name) {
-                    values[name] = getFormValue(name, transferMeta.fields[name]);
+                    values[name] = getFormValue(name, transferMeta.fields[name], true);
                 });
                 return values;
             }
@@ -428,14 +453,30 @@ function ariaRenderThemeConfigTransferScript(array $schema)
 
             function normalizeImportedConfig(payloadConfig) {
                 var normalized = {};
+                var hasAdvancedCustomCodeContent = false;
+
+                if (!Object.prototype.hasOwnProperty.call(payloadConfig, 'coverUrl')
+                    && Object.prototype.hasOwnProperty.call(payloadConfig, 'backgroundUrl')) {
+                    payloadConfig.coverUrl = payloadConfig.backgroundUrl;
+                }
 
                 Object.keys(transferMeta.fields).forEach(function (name) {
                     if (!Object.prototype.hasOwnProperty.call(payloadConfig, name)) {
                         return;
                     }
 
-                    normalized[name] = normalizeSchemaValue(transferMeta.fields[name], payloadConfig[name]);
+                    normalized[name] = normalizeSchemaValue(transferMeta.fields[name], payloadConfig[name], true);
+
+                    if ((name === 'customHeader' || name === 'customFooter' || name === 'customScript')
+                        && normalizeLineEndings(payloadConfig[name]).trim() !== '') {
+                        hasAdvancedCustomCodeContent = true;
+                    }
                 });
+
+                if (!Object.prototype.hasOwnProperty.call(normalized, 'enableAdvancedCustomCode')
+                    && hasAdvancedCustomCodeContent) {
+                    normalized.enableAdvancedCustomCode = true;
+                }
 
                 return normalized;
             }

@@ -76,23 +76,39 @@ class ThemeAssetHelper
     }
 
     /**
-     * 获取背景图片 URL
+     * 获取首页封面图片 URL
+     *
+     * @return string
+     */
+    public static function getCoverUrl()
+    {
+        $coverConfig = ThemeOptions::getCoverConfigValue();
+        if ($coverConfig !== '') {
+            $imgs = trim($coverConfig);
+            $urls = preg_split('/\r\n|\r|\n/', $imgs);
+            if (!is_array($urls)) {
+                $urls = array($imgs);
+            }
+            $urls = array_values(array_filter(array_map('trim', $urls), function ($url) {
+                return $url !== '';
+            }));
+            if (count($urls) > 0) {
+                $n = mt_rand(0, count($urls) - 1);
+                return $urls[$n];
+            }
+        }
+
+        return Helper::options()->themeUrl . '/assets/img/cover.webp';
+    }
+
+    /**
+     * 获取首页封面图片 URL（兼容旧命名）
      *
      * @return string
      */
     public static function getBackgroundUrl()
     {
-        $options = Helper::options();
-
-        if ($options->backgroundUrl) {
-            $str = $options->backgroundUrl;
-            $imgs = trim($str);
-            $urls = explode("\r\n", $imgs);
-            $n = mt_rand(0, count($urls) - 1);
-            return $urls[$n];
-        }
-
-        return $options->themeUrl . '/assets/img/background.jpg';
+        return self::getCoverUrl();
     }
 
     /**
@@ -109,7 +125,7 @@ class ThemeAssetHelper
             return $customUrl;
         }
 
-        return $options->themeUrl . '/assets/img/404.jpg';
+        return $options->themeUrl . '/assets/img/404.webp';
     }
 
     /**
@@ -128,7 +144,7 @@ class ThemeAssetHelper
             return $urls[$n];
         }
 
-        return $options->themeUrl . '/assets/img/thumbnail.jpg';
+        return $options->themeUrl . '/assets/img/thumbnail.webp';
     }
 
     /**
@@ -168,6 +184,16 @@ class ThemeAssetHelper
             return $value;
         }
 
-        return self::getThemeStaticUrl($value);
+        $relativePath = ltrim($value, '/');
+        $assetPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+        if (file_exists($assetPath)) {
+            return self::getThemeStaticUrl($relativePath);
+        }
+
+        if ($defaultRelativePath !== '') {
+            return self::getThemeStaticUrl($defaultRelativePath);
+        }
+
+        return self::getThemeStaticUrl($relativePath);
     }
 }

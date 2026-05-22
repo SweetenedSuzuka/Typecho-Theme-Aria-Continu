@@ -313,23 +313,43 @@ class Utils
     }
 
     /**
-     * 获取背景图片
+     * 获取首页封面图片
+     *
+     * @return void
+     */
+    public static function getCover()
+    {
+        echo self::getCoverUrl();
+    }
+
+    /**
+     * 获取首页封面图片 URL
+     *
+     * @return string
+     */
+    public static function getCoverUrl()
+    {
+        return ThemeAssetHelper::getCoverUrl();
+    }
+
+    /**
+     * 获取首页封面图片（兼容旧命名）
      *
      * @return void
      */
     public static function getBackground()
     {
-        echo self::getBackgroundUrl();
+        self::getCover();
     }
 
     /**
-     * 获取背景图片 URL
+     * 获取首页封面图片 URL（兼容旧命名）
      *
      * @return string
      */
     public static function getBackgroundUrl()
     {
-        return ThemeAssetHelper::getBackgroundUrl();
+        return self::getCoverUrl();
     }
 
     /**

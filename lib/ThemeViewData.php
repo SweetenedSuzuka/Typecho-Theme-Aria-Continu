@@ -51,7 +51,7 @@ class ThemeViewData
             || $archive->is('single')
             || $archive->is('archive');
         $options = Helper::options();
-        $headerBackgroundUrl = self::getHeaderBackgroundUrl($archive, $is404Page);
+        $heroCoverUrl = self::getHeroCoverUrl($archive, $is404Page);
 
         return array(
             'head' => array(
@@ -77,7 +77,7 @@ class ThemeViewData
             ),
             'hero' => array(
                 'className' => implode(' ', self::getHeaderClassNames($isContentHeroPage, $is404Page)),
-                'backgroundCss' => self::getHeaderBackgroundCss($headerBackgroundUrl),
+                'coverCss' => self::getHeroCoverCss($heroCoverUrl),
                 'siteTitle' => trim((string) $options->title),
                 'subtitle' => self::getHeroSubtitle(),
             ),
@@ -455,6 +455,23 @@ class ThemeViewData
     }
 
     /**
+     * 渲染页脚链接图标
+     *
+     * @param string $icon
+     *
+     * @return string
+     */
+    private static function renderFooterLinkIcon($icon)
+    {
+        $iconHtml = self::renderFooterRecordIcon($icon);
+        if ($iconHtml === '') {
+            return '';
+        }
+
+        return $iconHtml;
+    }
+
+    /**
      * 获取页脚版权年份文本
      *
      * @return string
@@ -476,14 +493,14 @@ class ThemeViewData
     }
 
     /**
-     * 获取页头背景图 URL
+     * 获取页头封面图 URL
      *
      * @param Widget_Archive $archive
      * @param bool $is404Page
      *
      * @return string
      */
-    private static function getHeaderBackgroundUrl($archive, $is404Page)
+    private static function getHeroCoverUrl($archive, $is404Page)
     {
         if ($archive->is('post') || $archive->is('page') || $archive->is('single')) {
             return $archive->fields->thumbnail ? $archive->fields->thumbnail : ThemeAssetHelper::getThumbnail();
@@ -493,7 +510,7 @@ class ThemeViewData
             return ThemeAssetHelper::get404BackgroundUrl();
         }
 
-        return ThemeAssetHelper::getBackgroundUrl();
+        return ThemeAssetHelper::getCoverUrl();
     }
 
     /**
@@ -521,20 +538,20 @@ class ThemeViewData
     }
 
     /**
-     * 将背景图 URL 转为页头 style 变量
+     * 将首页封面 URL 转为页头 style 变量
      *
-     * @param string $backgroundUrl
+     * @param string $coverUrl
      *
      * @return string
      */
-    private static function getHeaderBackgroundCss($backgroundUrl)
+    private static function getHeroCoverCss($coverUrl)
     {
         return sprintf(
             "--aria-header-bg: url('%s');",
             str_replace(
                 array('\\', "'"),
                 array('\\\\', "\\'"),
-                (string) $backgroundUrl
+                (string) $coverUrl
             )
         );
     }
@@ -656,6 +673,10 @@ class ThemeViewData
      */
     private static function getCustomHeaderHtml()
     {
+        if (!ThemeOptions::isAdvancedCustomCodeEnabled()) {
+            return '';
+        }
+
         return ThemeOptions::hasOption('customHeader') ? (string) Helper::options()->customHeader : '';
     }
 
@@ -750,10 +771,11 @@ class ThemeViewData
         $href = array_key_exists('href', $item) ? trim((string) $item['href']) : '';
         $title = array_key_exists('title', $item) ? trim((string) $item['title']) : '';
         $target = array_key_exists('target', $item) ? trim((string) $item['target']) : '';
-        $escapedText = self::escapeHtml($text);
+        $icon = array_key_exists('icon', $item) ? trim((string) $item['icon']) : '';
+        $content = ' • ' . self::renderFooterLinkIcon($icon) . self::escapeHtml($text);
 
         if ($href === '') {
-            return '<span> • ' . $escapedText . '</span>';
+            return '<span>' . $content . '</span>';
         }
 
         $attributes = 'href="' . self::escapeAttr($href) . '"';
@@ -764,7 +786,7 @@ class ThemeViewData
             $attributes .= ' target="' . self::escapeAttr($target) . '"';
         }
 
-        return '<span><a ' . $attributes . '> • ' . $escapedText . '</a></span>';
+        return '<span><a ' . $attributes . '>' . $content . '</a></span>';
     }
 
     /**
@@ -841,6 +863,10 @@ class ThemeViewData
      */
     private static function getCustomFooterHtml()
     {
+        if (!ThemeOptions::isAdvancedCustomCodeEnabled()) {
+            return '';
+        }
+
         return ThemeOptions::hasOption('customFooter') ? (string) Helper::options()->customFooter : '';
     }
 }

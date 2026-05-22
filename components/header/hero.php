@@ -1,7 +1,7 @@
 <header
     id="header"
     class="<?php echo htmlspecialchars($headerViewData['hero']['className'], ENT_QUOTES, 'UTF-8'); ?>"
-    style="<?php echo htmlspecialchars($headerViewData['hero']['backgroundCss'], ENT_QUOTES, 'UTF-8'); ?>"
+    style="<?php echo htmlspecialchars($headerViewData['hero']['coverCss'], ENT_QUOTES, 'UTF-8'); ?>"
 >
     <div id="site-meta">
             <h1 id="site-name"><?php echo htmlspecialchars($headerViewData['hero']['siteTitle'], ENT_QUOTES, 'UTF-8'); ?></h1>
