@@ -86,6 +86,15 @@ function themeConfig($form)
     $form->addInput($themeConfigSchemaVersion);
 
     // Site identity and hero.
+    $enableContinuoVisuals = new Typecho_Widget_Helper_Form_Element_Checkbox(
+        'enableContinuoVisuals',
+        array('1' => _t('开启')),
+        ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('enableContinuoVisuals', true)),
+        _t('启用 Aria Continuo 视觉增强'),
+        _t('开启后将应用调整后的正文排版与容器表现；关闭则保持原有经典样式。')
+    );
+    $form->addInput($enableContinuoVisuals->multiMode());
+
     $avatarUrl = new Typecho_Widget_Helper_Form_Element_Text('avatarUrl', null, null, _t('站点头像'), _t('在这里填入一个图片URL地址, 以在网站标题前加上一个头像,需要带上http(s)://'));
     $form->addInput($avatarUrl);
 

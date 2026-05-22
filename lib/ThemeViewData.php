@@ -557,15 +557,23 @@ class ThemeViewData
     }
 
     /**
-     * 获取网页背景自定义 body class
+     * 获取网页背景与增强样式自定义 body class
      *
      * @return string
      */
     private static function getBodyClassName()
     {
-        return ThemeOptions::isCustomPageBackgroundEnabled()
-            ? 'body--custom-background'
-            : '';
+        $classes = array();
+        
+        if (ThemeOptions::isCustomPageBackgroundEnabled()) {
+            $classes[] = 'body--custom-background';
+        }
+
+        if (ThemeOptions::isContinuoVisualsEnabled()) {
+            $classes[] = 'aria-visual-enhancements';
+        }
+
+        return implode(' ', $classes);
     }
 
     /**

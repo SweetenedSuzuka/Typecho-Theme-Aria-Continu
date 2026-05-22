@@ -4,10 +4,10 @@
  */
 
 #comments {
-	box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, .2) !important;
-	background: rgba(255, 255, 255, .9);
+	box-shadow: var(--aria-shadow-base) !important;
+	background: var(--aria-bg-container);
 	padding: 25px;
-	border-radius: 10px;
+	border-radius: var(--aria-radius-md);
 	margin-bottom: 20px
 	/* margin-bottom: 20px;
 	padding-top: 15px */
@@ -540,9 +540,9 @@
 }
 
 #footer {
-	background: rgba(255, 255, 255, .9);
-	-webkit-box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .2), 0 1px 10px 0 rgba(0, 0, 0, .4);
-	box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .2), 0 1px 10px 0 rgba(0, 0, 0, .4);
+	background: var(--aria-bg-container);
+	-webkit-box-shadow: var(--aria-shadow-footer);
+	box-shadow: var(--aria-shadow-footer);
 	padding: 15px 0;
 	font-size: 11px
 	/* padding: 15px 0;

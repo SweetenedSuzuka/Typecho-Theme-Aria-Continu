@@ -57,7 +57,7 @@
 	padding: 0 0 0 15px;
 	font-weight: 400;
 	line-height: 1.5;
-	border-left: 3px solid #f4c;
+	border-left: 3px solid var(--aria-color-primary-light);
 	margin: 20px 0 10px
 }
 
@@ -76,12 +76,13 @@
 /* 正文内超链接颜色 */
 /* 新增 */
 .post-content a {
-	color: #f5c
+	color: var(--aria-color-primary);
+	transition: var(--aria-transition-time) var(--aria-transition-timing);
 }
 
 /* 新增 */
 .post-content a:hover {
-	color: #a07
+	color: var(--aria-color-primary-hover)
 }
 
 .post-content hr {
@@ -668,3 +669,77 @@ pre .lang {
 #response i {
 	font-size: 25px
 }
+
+/* ==========================================================================
+   Aria Continuo 视觉增强体验 (Typography & Readability)
+   Triggered by .aria-visual-enhancements body class
+   ========================================================================== */
+
+/* 优化段落：行高更松弛，限制行长，提升中文阅读体验 */
+.aria-visual-enhancements .post-content p {
+    line-height: 1.8;
+    max-width: 75ch;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+}
+
+/* 移除 H1-H6 的左侧硬边框，通过字重、字号与留白建立层级 */
+.aria-visual-enhancements .post-content h1,
+.aria-visual-enhancements .post-content h2,
+.aria-visual-enhancements .post-content h3,
+.aria-visual-enhancements .post-content h4,
+.aria-visual-enhancements .post-content h5,
+.aria-visual-enhancements .post-content h6 {
+    border-left: none;
+    padding-left: 0;
+    font-weight: 600;
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    color: var(--aria-text-heading);
+}
+
+.aria-visual-enhancements .post-content h1 { font-size: 1.75em; }
+.aria-visual-enhancements .post-content h2 { font-size: 1.5em; }
+.aria-visual-enhancements .post-content h3 { font-size: 1.25em; }
+.aria-visual-enhancements .post-content h4 { font-size: 1.1em; }
+
+/* 重新设计引用块（Blockquote）：移除左侧边框，采用通透的背景填充与内边距 */
+.aria-visual-enhancements .post-content blockquote {
+    border-left: none;
+    background: rgba(150, 150, 150, 0.08);
+    padding: 1.25em 1.5em;
+    margin: 2em auto;
+    max-width: 75ch;
+    border-radius: var(--aria-radius-sm);
+    color: var(--aria-text-muted);
+}
+
+.aria-visual-enhancements .post-content blockquote p {
+    margin: 0;
+    max-width: none;
+}
+
+/* 优化列表排版 */
+.aria-visual-enhancements .post-content ul,
+.aria-visual-enhancements .post-content ol {
+    max-width: 75ch;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2em;
+}
+
+/* 表格视觉优化：去除过时的阴影和渐变，走向清爽干净的线条 */
+.aria-visual-enhancements .post-content table:not([class*=hljs-ln]) {
+    box-shadow: none;
+    border: 1px solid var(--aria-border-color);
+}
+
+.aria-visual-enhancements .post-content table:not([class*=hljs-ln]) th {
+    background-image: none;
+    background-color: rgba(150, 150, 150, 0.08);
+    box-shadow: none;
+    text-shadow: none;
+    border-bottom: 2px solid var(--aria-border-color);
+}
+

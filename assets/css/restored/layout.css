@@ -4,8 +4,8 @@
  */
 
 body {
-	background-color: #f2f2f2;
-	color: #444;
+	background-color: var(--aria-bg-body);
+	color: var(--aria-text-main);
 	font-family: BlinkMacSystemFont, "Microsoft YaHei", "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	font-size: 95%;
 	width: 100%;
@@ -34,9 +34,9 @@ h6 {
 a {
 	background-color: transparent;
 	font-family: Roboto, "Open Sans", "Microsoft YaHei", "Helvetica Neue", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-	-webkit-transition: .24s;
-	transition: .24s;
-	color: #333;
+	-webkit-transition: var(--aria-transition-time) var(--aria-transition-timing);
+	transition: var(--aria-transition-time) var(--aria-transition-timing);
+	color: var(--aria-text-link);
 	text-decoration: none
 	/* font-family: Roboto, "Open Sans", "Microsoft YaHei", "Helvetica Neue", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 	-webkit-transition: all .24s ease;
@@ -47,7 +47,7 @@ a {
 
 a:active,
 a:hover {
-	color: grey
+	color: var(--aria-text-link-hover)
 }
 
 .submit {
@@ -196,9 +196,9 @@ input[type=password] {
 #nav-menu {
 	width: 100%;
 	height: 64px;
-	-webkit-box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .06), 0 4px 5px 0 rgba(0, 0, 0, .06), 0 1px 10px 0 rgba(0, 0, 0, .08);
-	box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .06), 0 4px 5px 0 rgba(0, 0, 0, .06), 0 1px 10px 0 rgba(0, 0, 0, .08);
-	background-color: rgba(255, 255, 255, .4)
+	-webkit-box-shadow: var(--aria-shadow-nav);
+	box-shadow: var(--aria-shadow-nav);
+	background-color: var(--aria-bg-glass-light)
 	/* width: 100%;
 	height: 64px;
 	-webkit-box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .06), 0 4px 5px 0 rgba(0, 0, 0, .06), 0 1px 10px 0 rgba(0, 0, 0, .08);
@@ -211,14 +211,14 @@ input[type=password] {
 } */
 
 #nav-menu.headroom--top {
-	background-color: rgba(255, 255, 255, .4);
+	background-color: var(--aria-bg-glass-light);
 	box-shadow: initial
 	/* background-color: rgba(255, 255, 255, .2);
 	box-shadow: initial */
 }
 
 #nav-menu.headroom--not-top {
-	background-color: rgba(255, 255, 255, .5) !important
+	background-color: var(--aria-bg-glass-medium) !important
 	/* background-color: #fff !important */
 }
 
@@ -346,17 +346,17 @@ input[type=password] {
 	position: absolute;
 	left: 50%;
 	top: 60px;
-	-webkit-box-shadow: 0 -4px 20px -1px rgba(0, 0, 0, .06), 0 -4px 40px 0 rgba(0, 0, 0, .06), 0 -1px 10px 0 rgba(0, 0, 0, .08);
-	box-shadow: 0 -4px 20px -1px rgba(0, 0, 0, .06), 0 -4px 40px 0 rgba(0, 0, 0, .06), 0 -1px 10px 0 rgba(0, 0, 0, .08);
+	-webkit-box-shadow: var(--aria-shadow-nav-sub);
+	box-shadow: var(--aria-shadow-nav-sub);
 	/* 顶部卡片颜色 */
-	background: rgba(255, 255, 255, .65);
+	background: var(--aria-bg-glass-heavy);
 	/* 去除background: #fff; */
-	border-radius: 5px;
+	border-radius: var(--aria-radius-sm);
 	padding: 5px !important;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	-ms-border-radius: 5px;
-	-o-border-radius: 5px;
+	-webkit-border-radius: var(--aria-radius-sm);
+	-moz-border-radius: var(--aria-radius-sm);
+	-ms-border-radius: var(--aria-radius-sm);
+	-o-border-radius: var(--aria-radius-sm);
 	transform: translateX(-50%) !important;
 	-webkit-transform: translateX(-50%) !important;
 	-moz-transform: translateX(-50%) !important;
@@ -373,7 +373,7 @@ input[type=password] {
 	border-width: 12px;
 	border-style: solid;
 	/* 应与.nav-sub中background保持一致 */
-	border-color: transparent transparent rgba(255, 255, 255, .65)
+	border-color: transparent transparent var(--aria-bg-glass-heavy)
 	/* border-color: transparent transparent #fff */
 }
 
@@ -445,7 +445,7 @@ input[type=password] {
 	/* 去除background-color: #f2f2f2; */
 	left: -20rem;
 	z-index: 1000;
-	background-color: rgba(242, 242, 242, .85);
+	background-color: var(--aria-bg-mobile-nav);
 	box-shadow: rgba(0, 0, 0, .5) 0 0 20px 0
 }
 
@@ -545,8 +545,8 @@ input[type=password] {
 	width: 420px;
 	line-height: 64px;
 	font-size: 32px;
-	border-radius: 10px;
-	background-color: rgba(255, 255, 255, .05);
+	border-radius: var(--aria-radius-md);
+	background-color: var(--aria-bg-search);
 	box-shadow: 0 0 4px 0 #939090
 }
 
@@ -623,11 +623,11 @@ input[type=password] {
 
 #main article {
 	/* 使文章区域透明 */
-	box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, .2);
-	background: rgba(255, 255, 255, .9);
+	box-shadow: var(--aria-shadow-base);
+	background: var(--aria-bg-container);
 	margin: 40px auto;
 	padding: 15px;
-	border-radius: 10px
+	border-radius: var(--aria-radius-md)
 	/* margin: 50px auto;
 	padding: 15px;
 	background: #fff;
@@ -635,16 +635,16 @@ input[type=password] {
 }
 
 .card {
-	-moz-transition: .5s;
-	-o-transition: .5s;
-	transition: .5s
+	-moz-transition: var(--aria-transition-time) var(--aria-transition-timing);
+	-o-transition: var(--aria-transition-time) var(--aria-transition-timing);
+	transition: var(--aria-transition-time) var(--aria-transition-timing)
 	/* -moz-transition: all .5s ease;
 	-o-transition: all .5s ease;
 	transition: all .5s ease */
 }
 
 .card:hover {
-	box-shadow: 0 5px 10px 5px rgba(110, 110, 110, .4)
+	box-shadow: var(--aria-shadow-hover)
 }
 
 .card-title {
@@ -663,7 +663,7 @@ input[type=password] {
 
 .card-meta-cate,
 .card-meta-date {
-	color: #8a8a8a
+	color: var(--aria-text-muted)
 }
 
 .card-meta-date:before {
@@ -671,7 +671,7 @@ input[type=password] {
 }
 
 .card-thumbnail {
-	border-radius: 0 0 10px 10px;
+	border-radius: 0 0 var(--aria-radius-md) var(--aria-radius-md);
 	box-shadow: inset 0 -115px 50px -105px #000;
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -705,7 +705,7 @@ input[type=password] {
 	margin: 10px 0;
 	overflow: hidden;
 	font-size: 0;
-	border-bottom: 1px solid #e1e1e1
+	border-bottom: 1px solid var(--aria-border-color)
 }
 
 .card-meta-bottom {
@@ -719,10 +719,78 @@ input[type=password] {
 	display: inline-block;
 	vertical-align: middle;
 	margin-left: 10px;
-	color: #8a8a8a;
+	color: var(--aria-text-muted);
 	line-height: 1.3
 }
 
 .card-meta-label:first-child {
 	margin: 0
 }
+
+/* ==========================================================================
+   Aria Continuo 视觉增强体验 (Component Micro-interactions)
+   Triggered by .aria-visual-enhancements body class
+   ========================================================================== */
+
+/* 优化文章卡片 (Card) 悬浮动画：更立体的上浮与更通透的阴影 */
+.aria-visual-enhancements .card {
+    transition: transform var(--aria-transition-time) var(--aria-transition-timing), 
+                box-shadow var(--aria-transition-time) var(--aria-transition-timing) !important;
+}
+
+.aria-visual-enhancements .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.12), 
+                0 4px 12px -4px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 优化顶部导航栏 (Nav) 的阴影与模糊质感 (Aero/iOS7 物理质感) */
+.aria-visual-enhancements #nav-menu {
+    /* Impeccable: 进一步降低 blur 半径，稍微提一点饱和度，让背后的风景能够更清晰地透射过来 */
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    
+    /* 进一步降低白色遮罩的透明度，确保不是“白膜”而是“清透玻璃” */
+    background: rgba(255, 255, 255, 0.15) !important;
+    
+    /* 极细的顶部高光，只在边缘暗示物理厚度 */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    border-bottom: none;
+}
+
+.aria-visual-enhancements #nav-menu.headroom--not-top {
+    /* 滚动后虽然需要保证可读性，但也应该尽量保持透明度 */
+    background: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 4px 16px -4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 优化导航下拉子菜单 (Sub-menu) 的出现动效与玻璃质感 */
+.aria-visual-enhancements .nav-sub {
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    /* 干净的弥散阴影，剥离过度复杂的内发光 */
+    box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 重写子菜单弹出动画 (原 show-sub 是从 Y轴 15% 滑入，我们改用更细腻的 8px 滑入加轻微缩放) */
+@keyframes aria-sub-menu-fade-in {
+    0% {
+        opacity: 0;
+        transform: translate3d(-50%, 8px, 0) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: translate3d(-50%, 0, 0) scale(1);
+    }
+}
+
+.aria-visual-enhancements .show-sub {
+    animation-name: aria-sub-menu-fade-in !important;
+    animation-duration: 0.25s !important;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+

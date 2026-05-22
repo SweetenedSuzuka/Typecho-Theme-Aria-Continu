@@ -125,9 +125,40 @@
 	position: -webkit-sticky;
 	position: sticky;
 	top: 80px
-	/* position: -webkit-sticky;
+}
+
+.aria-visual-enhancements #toc {
+	/* 统一的克制毛玻璃质感，替换掉原本死板的白色 */
+	background: rgba(255, 255, 255, 0.2) !important;
+	backdrop-filter: blur(16px) saturate(120%);
+	-webkit-backdrop-filter: blur(16px) saturate(120%);
+	
+	/* 极其微弱的物理边缘高光与通透弥散阴影 */
+	border: 1px solid rgba(255, 255, 255, 0.4);
+	box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.08) !important;
+	
+	padding: 15px;
+	border-radius: var(--aria-radius-md);
+	position: -webkit-sticky;
 	position: sticky;
-	top: 80px */
+	top: 80px;
+
+	/* 入场动画：解决 DOM 加载完成后的生硬闪现问题 */
+	animation: toc-entrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	transform-origin: top center;
+}
+
+@keyframes toc-entrance {
+	0% {
+		opacity: 0;
+		transform: translateY(15px) scale(0.98);
+		backdrop-filter: blur(0px) saturate(100%);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+		backdrop-filter: blur(16px) saturate(120%);
+	}
 }
 
 #toc li,

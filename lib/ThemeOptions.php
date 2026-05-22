@@ -109,6 +109,16 @@ class ThemeOptions
     }
 
     /**
+     * 获取 Aria Continuo 视觉增强开关状态
+     *
+     * @return bool
+     */
+    public static function isContinuoVisualsEnabled()
+    {
+        return self::getCheckboxOptionState('enableContinuoVisuals', true);
+    }
+
+    /**
      * 获取懒加载开关状态
      *
      * @return bool

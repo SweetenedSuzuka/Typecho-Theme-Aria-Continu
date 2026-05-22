@@ -379,4 +379,31 @@ function ariaRenderThemeConfigIntro()
     ariaRenderThemeConfigTransferButtons();
     echo '<button id="check-update" class="btn primary">检查更新</button></p>
 </div>';
+
+    $script = <<<EOF
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var configForm = document.querySelector('.typecho-page-main form');
+    if (!configForm) return;
+
+    var configVersion = configForm.querySelector('input[name="themeConfigSchemaVersion"]');
+    if (!configVersion || configVersion.value !== '') return;
+
+    var notices = document.querySelectorAll('.typecho-page-title + .message');
+    notices.forEach(function(notice) { notice.style.display = 'none'; });
+
+    var firstUl = configForm.querySelector('ul');
+    if (firstUl) {
+        var noticeLi = document.createElement('li');
+        noticeLi.className = 'message notice';
+        noticeLi.style.marginBottom = '1em';
+        noticeLi.style.listStyle = 'none';
+        noticeLi.innerHTML = '<strong>主题更新提示：</strong>检测到这是 Aria Continuo 的首次配置。已自动将大部分功能初始化为主题默认值，<strong>点击下方的“保存设置”即可使新配置生效</strong>。';
+        firstUl.parentNode.insertBefore(noticeLi, firstUl);
+    }
+});
+</script>
+EOF;
+
+    echo $script;
 }

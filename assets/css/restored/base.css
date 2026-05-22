@@ -11,6 +11,49 @@
  */
 @charset "utf-8";
 
+:root {
+	/* 品牌与色彩基建 */
+	--aria-color-primary: #f5c;
+	--aria-color-primary-hover: #a07;
+	--aria-color-primary-light: #f4c;
+	--aria-bg-body: #f2f2f2;
+	
+	/* 玻璃态与半透明容器底色 */
+	--aria-bg-container: rgba(255, 255, 255, 0.9);
+	--aria-bg-glass-heavy: rgba(255, 255, 255, 0.65);
+	--aria-bg-glass-medium: rgba(255, 255, 255, 0.5);
+	--aria-bg-glass-light: rgba(255, 255, 255, 0.4);
+	--aria-bg-mobile-nav: rgba(242, 242, 242, 0.85);
+	--aria-bg-search: rgba(255, 255, 255, 0.05);
+	
+	/* 文本层级 */
+	--aria-text-main: #444444;
+	--aria-text-heading: #333333;
+	--aria-text-muted: #8a8a8a;
+	--aria-text-link: #333333;
+	--aria-text-link-hover: grey;
+	
+	/* 边框与线条 */
+	--aria-border-color: #e1e1e1;
+	--aria-border-dashed: #dadada;
+	
+	/* 圆角系统 (Aero时代的温润，非扁平时代的超大圆角) */
+	--aria-radius-sm: 5px;
+	--aria-radius-md: 10px;
+	--aria-radius-lg: 14px;
+	
+	/* 阴影与微质感 (Z轴深度) */
+	--aria-shadow-base: 1px 1px 3px 1px rgba(0, 0, 0, 0.2);
+	--aria-shadow-hover: 0 5px 10px 5px rgba(110, 110, 110, 0.4);
+	--aria-shadow-nav: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 4px 5px 0 rgba(0, 0, 0, 0.06), 0 1px 10px 0 rgba(0, 0, 0, 0.08);
+	--aria-shadow-nav-sub: 0 -4px 20px -1px rgba(0, 0, 0, 0.06), 0 -4px 40px 0 rgba(0, 0, 0, 0.06), 0 -1px 10px 0 rgba(0, 0, 0, 0.08);
+	--aria-shadow-footer: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 10px 0 rgba(0, 0, 0, 0.4);
+	
+	/* 现代过渡动画 */
+	--aria-transition-time: 0.35s;
+	--aria-transition-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */
 #toc a.toc-active,
 b,
@@ -204,7 +247,7 @@ template {
 }
 
 #nprogress .bar {
-	background: #f4c;
+	background: var(--aria-color-primary-light);
 	position: fixed;
 	z-index: 1031;
 	top: 0;
@@ -219,7 +262,7 @@ template {
 	right: 0;
 	width: 100px;
 	height: 100%;
-	box-shadow: 0 0 10px #f4c, 0 0 5px #f4c;
+	box-shadow: 0 0 10px var(--aria-color-primary-light), 0 0 5px var(--aria-color-primary-light);
 	opacity: 1;
 	-webkit-transform: rotate(3deg) translate(0, -4px);
 	-ms-transform: rotate(3deg) translate(0, -4px);
@@ -235,8 +278,8 @@ template {
 #nprogress .spinner-icon {
 	box-sizing: border-box;
 	border: 2px solid transparent;
-	border-top-color: #f4c;
-	border-left-color: #f4c;
+	border-top-color: var(--aria-color-primary-light);
+	border-left-color: var(--aria-color-primary-light);
 	border-radius: 50%;
 	-webkit-animation: nprogress-spinner .4s linear infinite;
 	animation: nprogress-spinner .4s linear infinite
