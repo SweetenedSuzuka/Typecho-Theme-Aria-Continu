@@ -338,7 +338,7 @@ class ThemeViewData
      */
     private static function getCommentFormClassName()
     {
-        return ThemeOptions::isOptionEnabled('customCommentBoxBackgroundEnabled', false)
+        return ThemeOptions::isCustomCommentBoxBackgroundEnabled()
             && ThemeAssetHelper::getCustomCommentBoxBackgroundUrl() !== ''
             ? 'comment-form--custom-background'
             : '';
@@ -546,7 +546,7 @@ class ThemeViewData
      */
     private static function getBodyClassName()
     {
-        return ThemeOptions::isOptionEnabled('customPageBackgroundEnabled', false)
+        return ThemeOptions::isCustomPageBackgroundEnabled()
             ? 'body--custom-background'
             : '';
     }
@@ -558,7 +558,7 @@ class ThemeViewData
      */
     private static function getBodyStyle()
     {
-        if (!ThemeOptions::isOptionEnabled('customPageBackgroundEnabled', false)) {
+        if (!ThemeOptions::isCustomPageBackgroundEnabled()) {
             return '';
         }
 
@@ -667,7 +667,7 @@ class ThemeViewData
     private static function getCommentFormStyle()
     {
         $backgroundUrl = ThemeAssetHelper::getCustomCommentBoxBackgroundUrl();
-        if (!ThemeOptions::isOptionEnabled('customCommentBoxBackgroundEnabled', false) || $backgroundUrl === '') {
+        if (!ThemeOptions::isCustomCommentBoxBackgroundEnabled() || $backgroundUrl === '') {
             return '';
         }
 

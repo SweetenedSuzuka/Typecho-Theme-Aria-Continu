@@ -58,21 +58,10 @@ function ariaGetThemeConfigTransferSchema()
         'footerRecordsEnabled' => array('label' => '显示页脚备案信息', 'type' => 'checkbox', 'default' => true),
         'footerRecords' => array(
             'label' => '页脚备案信息',
-            'type' => 'json_array_legacy',
-            'default' => "{\n"
-                . "    \"text\":\"ICP备00000000号-0\",\n"
-                . "    \"url\":\"https://beian.miit.gov.cn/\",\n"
-                . "    \"icon\":\"\",\n"
-                . "    \"title\":\"ICP备案信息\"\n"
-                . "},\n"
-                . "{\n"
-                . "    \"text\":\"公网安备 00000000000000号\",\n"
-                . "    \"url\":\"https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=00000000000000\",\n"
-                . "    \"icon\":\"\",\n"
-                . "    \"title\":\"公网安备信息\"\n"
-                . "}",
+            'type' => 'json_array_strict',
+            'default' => ThemeOptions::getDefaultFooterRecordsExample(),
         ),
-        'footerWidget' => array('label' => '底部额外链接组件', 'type' => 'json_array_legacy', 'default' => ''),
+        'footerWidget' => array('label' => '底部额外链接组件', 'type' => 'json_array_strict', 'default' => ''),
         'cpr' => array('label' => 'Copyright年份', 'type' => 'text', 'default' => '2022-{Y}'),
         'notFoundTitle' => array('label' => '404 标题文案', 'type' => 'text', 'default' => '404:没有找到界面呢，是书架摆错了吗？'),
         'notFoundDescription' => array('label' => '404 描述文案', 'type' => 'textarea', 'default' => '这个页面不存在或者被删除，你可以尝试搜索你想要的内容。'),

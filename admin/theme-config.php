@@ -152,7 +152,7 @@ function themeConfig($form)
         array('1' => _t('开启')),
         ariaThemeToggleValue(ThemeOptions::isFancyboxEnabled()),
         _t('文章/评论图片启用 Fancybox'),
-        _t('控制文章与评论中的图片是否启用 Fancybox 查看器；当前仍是阶段 A 有意识保留的最后一个活跃 jQuery 依赖点')
+        _t('控制文章与评论中的图片是否启用 Fancybox 查看器')
     );
     $form->addInput($enableFancybox->multiMode());
 
@@ -301,31 +301,20 @@ MathJax.tex.processEscapes = true;", _t('MathJax配置信息'), _t('在此输入
         array('1' => _t('开启')),
         ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('footerRecordsEnabled', true)),
         _t('显示页脚备案信息'),
-        _t('控制页脚备案信息是否显示；关闭时仅保存不显示')
+        _t('控制页脚备案信息是否显示')
     );
     $form->addInput($footerRecordsEnabled->multiMode());
 
     $footerRecords = new Typecho_Widget_Helper_Form_Element_Textarea(
         'footerRecords',
         null,
-        '{
-            "text":"ICP备00000000号-0",
-            "url":"https://beian.miit.gov.cn/",
-            "icon":"",
-            "title":"ICP备案信息"
-        },
-        {
-            "text":"公网安备 00000000000000号",
-            "url":"https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=00000000000000",
-            "icon":"",
-            "title":"公网安备信息"
-        }',
+        ThemeOptions::getDefaultFooterRecordsExample(),
         _t('页脚备案信息'),
-        _t('填写完整 JSON 数组格式；每项可包含 text、url、icon、title')
+        _t('支持完整 JSON 数组格式；每项可包含 text、url、icon、title；留空则不显示备案信息，解析失败时回退到主题默认示例')
     );
     $form->addInput($footerRecords);
 
-    $footerWidget = new Typecho_Widget_Helper_Form_Element_Textarea('footerWidget', null, null, _t('底部额外链接组件'), _t('填写完整 JSON 数组格式；留空则不显示额外链接'));
+    $footerWidget = new Typecho_Widget_Helper_Form_Element_Textarea('footerWidget', null, null, _t('底部额外链接组件'), _t('支持完整 JSON 数组格式；每项可包含 text、href、title、target、icon；留空则不显示额外链接'));
     $form->addInput($footerWidget);
 
     $cpr = new Typecho_Widget_Helper_Form_Element_Text('cpr', null, '2022-{Y}', _t('Copyright年份'), _t('支持静态文本，也支持 {Y} / {y} / {year} 动态年份占位符，例如 2022-{Y}；留空时默认使用 2022-{Y}。<del>当然你想填什么都可以</del>'));

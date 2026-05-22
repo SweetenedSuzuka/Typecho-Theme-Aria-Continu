@@ -209,6 +209,26 @@ class ThemeOptions
     }
 
     /**
+     * 获取网页背景自定义开关状态
+     *
+     * @return bool
+     */
+    public static function isCustomPageBackgroundEnabled()
+    {
+        return self::getCheckboxOptionState('customPageBackgroundEnabled', false);
+    }
+
+    /**
+     * 获取评论框背景自定义开关状态
+     *
+     * @return bool
+     */
+    public static function isCustomCommentBoxBackgroundEnabled()
+    {
+        return self::getCheckboxOptionState('customCommentBoxBackgroundEnabled', false);
+    }
+
+    /**
      * 将文本配置拆分为字符串列表
      *
      * @param string $value
@@ -361,13 +381,28 @@ class ThemeOptions
     }
 
     /**
+     * 获取后台页脚备案配置默认示例
+     *
+     * @return string
+     */
+    public static function getDefaultFooterRecordsExample()
+    {
+        $json = json_encode(
+            self::getDefaultFooterRecords(),
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+        );
+
+        return is_string($json) ? $json : '[]';
+    }
+
+    /**
      * 获取归一化后的页脚扩展链接配置
      *
      * @return array
      */
     public static function getFooterWidgetItems()
     {
-        $data = self::convertConfigData('footerWidget', true);
+        $data = self::decodeConfigArray(self::getOptionStringValue('footerWidget', '', false));
         if (!$data) {
             return array();
         }
@@ -399,7 +434,7 @@ class ThemeOptions
             return array();
         }
 
-        $records = self::convertConfigData('footerRecords', true);
+        $records = self::decodeConfigArray(self::getOptionStringValue('footerRecords', '', false));
         if (!$records) {
             $records = self::getDefaultFooterRecords();
         }
@@ -482,7 +517,8 @@ class ThemeOptions
     /**
      * 解析完整 JSON 数组配置
      *
-     * 导航配置从现在开始只接受完整 JSON 数组，不再兼容旧片段写法，
+     * 当前 `navConfig`、`footerWidget`、`footerRecords`
+     * 都只接受完整 JSON 数组，不再兼容旧片段写法，
      * 以避免继续出现“示例能写但保存后不生效”的歧义。
      *
      * @param string $raw
