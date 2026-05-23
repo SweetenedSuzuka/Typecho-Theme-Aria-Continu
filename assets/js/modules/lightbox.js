@@ -38,6 +38,40 @@ function getImageCaption(image, trigger) {
   );
 }
 
+function isIgnorableAnchorChild(node) {
+  if (!node) {
+    return true;
+  }
+
+  if (node.nodeType === Node.TEXT_NODE) {
+    return (node.textContent || "").trim() === "";
+  }
+
+  return node.nodeType === Node.COMMENT_NODE;
+}
+
+function isDedicatedMediaAnchor(anchor, mediaContainer) {
+  return toArray(anchor.childNodes).every(function (node) {
+    return node === mediaContainer || isIgnorableAnchorChild(node);
+  });
+}
+
+function getImageMediaContainer(image) {
+  if (image.parentNode && image.parentNode.tagName === "PICTURE") {
+    return image.parentNode;
+  }
+
+  return image;
+}
+
+function getLightboxItemSource(trigger, image) {
+  if (trigger.tagName === "A") {
+    return trigger.getAttribute("href") || getImageSource(image);
+  }
+
+  return trigger.getAttribute("data-aria-lightbox-src") || getImageSource(image);
+}
+
 function resolveGalleryItems(trigger) {
   var groupName = trigger.getAttribute("data-aria-lightbox-group");
 
@@ -68,12 +102,14 @@ function renderCurrentImage() {
   var trigger = ariaLightboxState.currentItems[ariaLightboxState.currentIndex];
   var imageUrl;
   var caption;
+  var triggerImage;
 
   if (!trigger) {
     return;
   }
 
-  imageUrl = trigger.getAttribute("href") || "";
+  triggerImage = trigger.tagName === "IMG" ? trigger : trigger.querySelector("img");
+  imageUrl = getLightboxItemSource(trigger, triggerImage || ariaLightboxState.image);
   caption = trigger.getAttribute("data-caption") || "";
 
   ariaLightboxState.root.classList.remove("is-error");
@@ -267,6 +303,7 @@ function openLightbox(trigger) {
 
 function handleTriggerClick(event) {
   event.preventDefault();
+  event.stopPropagation();
   openLightbox(event.currentTarget);
 }
 
@@ -326,8 +363,10 @@ function ensureLightboxRoot() {
 }
 
 function bindLightboxTrigger(trigger, image, groupName) {
-  if (!trigger.getAttribute("href")) {
+  if (trigger.tagName === "A" && !trigger.getAttribute("href")) {
     trigger.setAttribute("href", getImageSource(image));
+  } else if (trigger.tagName !== "A") {
+    trigger.setAttribute("data-aria-lightbox-src", getImageSource(image));
   }
 
   trigger.classList.add("aria-lightbox-trigger");
@@ -349,7 +388,8 @@ function bindLightboxTrigger(trigger, image, groupName) {
 }
 
 function prepareImageTrigger(image, groupName) {
-  var parent = image.parentNode;
+  var mediaContainer = getImageMediaContainer(image);
+  var parent = mediaContainer.parentNode;
   var trigger;
 
   if (!parent || image.getAttribute("data-aria-lightbox-bound") === "true") {
@@ -357,11 +397,15 @@ function prepareImageTrigger(image, groupName) {
   }
 
   if (parent.tagName === "A") {
+    if (!isDedicatedMediaAnchor(parent, mediaContainer)) {
+      return;
+    }
+
     trigger = parent;
   } else {
     trigger = document.createElement("a");
-    parent.insertBefore(trigger, image);
-    trigger.appendChild(image);
+    parent.insertBefore(trigger, mediaContainer);
+    trigger.appendChild(mediaContainer);
   }
 
   bindLightboxTrigger(trigger, image, groupName);
