@@ -89,10 +89,11 @@ body.aria-style-aria-continuo .aria-optical-surface {
 	top: 0;
 	width: var(--aria-optical-width, 0px);
 	height: var(--aria-optical-height, 0px);
+	box-sizing: border-box;
 	border-radius: var(--aria-optical-radius, 10px);
 	transform: translate3d(var(--aria-optical-x, -9999px), var(--aria-optical-y, -9999px), 0);
 	opacity: 0;
-	transition: opacity var(--aria-duration-fast) var(--aria-ease-out), box-shadow 220ms var(--aria-ease-out), background-color 220ms var(--aria-ease-out), border-color 220ms var(--aria-ease-out);
+	transition: box-shadow 220ms var(--aria-ease-out), background-color 220ms var(--aria-ease-out), border-color 220ms var(--aria-ease-out);
 	-webkit-backdrop-filter: blur(var(--aria-optical-blur, 20px)) saturate(145%);
 	backdrop-filter: blur(var(--aria-optical-blur, 20px)) saturate(145%);
 	will-change: transform, width, height, opacity;
@@ -127,10 +128,6 @@ body.aria-style-aria-continuo .aria-optical-surface--pagination {
 body.aria-style-aria-continuo .aria-optical-surface--pagination.is-awake {
 	background: var(--aria-optical-pagination-bg-awake);
 	box-shadow: var(--aria-optical-pagination-shadow-awake);
-}
-
-body.aria-style-aria-continuo .aria-optical-surface--pagination:not(.in-view) {
-	opacity: 0;
 }
 
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */
