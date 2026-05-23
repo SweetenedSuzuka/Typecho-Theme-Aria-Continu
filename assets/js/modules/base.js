@@ -144,6 +144,48 @@ function scheduleOpticalSurfaceSync() {
   });
 }
 
+function startOpticalSurfaceTracking(key, duration) {
+  var endTime;
+
+  if (!key) {
+    return;
+  }
+
+  duration = typeof duration === "number" ? duration : 420;
+  endTime = Date.now() + duration;
+
+  if (!Aria.state.opticalSurfaceTrackingEnds) {
+    Aria.state.opticalSurfaceTrackingEnds = {};
+  }
+
+  Aria.state.opticalSurfaceTrackingEnds[key] = endTime;
+
+  if (!Aria.state.opticalSurfaceTrackingFrame) {
+    Aria.state.opticalSurfaceTrackingFrame = window.requestAnimationFrame(function tick() {
+      var trackingEnds = Aria.state.opticalSurfaceTrackingEnds || {};
+      var keys = Object.keys(trackingEnds);
+      var now = Date.now();
+      var hasPending = !1;
+
+      Aria.state.opticalSurfaceTrackingFrame = null;
+
+      keys.forEach(function (trackingKey) {
+        if (trackingEnds[trackingKey] >= now) {
+          hasPending = !0;
+          Aria.optical.sync(trackingKey);
+          return;
+        }
+
+        delete trackingEnds[trackingKey];
+      });
+
+      if (hasPending) {
+        Aria.state.opticalSurfaceTrackingFrame = window.requestAnimationFrame(tick);
+      }
+    });
+  }
+}
+
 function ensureOpticalSurfaceLoop() {
   if (Aria.state.opticalSurfaceLoopInstalled) {
     return;
@@ -294,6 +336,7 @@ Aria.optical.register = function (key, options) {
   if (typeof window.ResizeObserver === "function") {
     entry.resizeObserver = new window.ResizeObserver(function () {
       scheduleOpticalSurfaceSync();
+      startOpticalSurfaceTracking(key, 180);
     });
     entry.resizeObserver.observe(entry.host);
     if (sourceRoot && sourceRoot !== entry.host) {
@@ -304,6 +347,7 @@ Aria.optical.register = function (key, options) {
   if (sourceRoot && entry.mirroredClasses.length && typeof window.MutationObserver === "function") {
     entry.mutationObserver = new window.MutationObserver(function () {
       scheduleOpticalSurfaceSync();
+      startOpticalSurfaceTracking(key, 480);
     });
     entry.mutationObserver.observe(sourceRoot, {
       attributes: !0,
@@ -313,44 +357,25 @@ Aria.optical.register = function (key, options) {
 
   Aria.state.opticalSurfaces[key] = entry;
   scheduleOpticalSurfaceSync();
+  startOpticalSurfaceTracking(key);
   return entry.surface;
 };
 
 Aria.helpers.cleanupPageEntryAnimation = function () {
   var pageBody = document.getElementById("body");
-  var cleaned = !1;
 
   if (!pageBody || pageBody.getAttribute("data-aria-entry-cleaned") === "true") {
     return;
   }
 
-  function finishCleanup() {
-    if (cleaned) {
-      return;
-    }
+  pageBody.classList.remove("animated", "fadeIn");
+  pageBody.setAttribute("data-aria-entry-cleaned", "true");
 
-    cleaned = !0;
-    pageBody.classList.remove("animated", "fadeIn");
-    pageBody.setAttribute("data-aria-entry-cleaned", "true");
-
-    if (Aria.optical && typeof Aria.optical.refresh === "function") {
-      window.requestAnimationFrame(function () {
-        Aria.optical.refresh();
-      });
-    }
+  if (Aria.optical && typeof Aria.optical.refresh === "function") {
+    window.requestAnimationFrame(function () {
+      Aria.optical.refresh();
+    });
   }
-
-  pageBody.addEventListener(
-    "animationend",
-    function (event) {
-      if (event.target === pageBody) {
-        finishCleanup();
-      }
-    },
-    { once: !0 },
-  );
-
-  window.setTimeout(finishCleanup, 1200);
 };
 
 Aria.helpers.toggleNav = function () {
