@@ -1,3 +1,8 @@
+/*
+ * 拆分迁移快照：当前不参与前台运行时加载。
+ * 后续样式修改请落到 assets/css/systems/aria-original/ 或 assets/css/systems/aria-continuo/。
+ * 不要继续把 restored/ 当作当前主线样式入口。
+ */
 /**
  * Aria post styles
  * Restored from assets/css/style.min.css during phase 1 maintenance.

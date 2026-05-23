@@ -1,65 +1,20 @@
 /**
  * typecho-theme-aria - Theme Aria for Typecho crafted by Siphils
  * 
-* Based on original work by Siphils
- * @author SweetenedSuzuka
+ * @author Siphils
+ * @email siphils16@gmail.com
  * @version v1.10.0
- * @link https://suzuka.cc
+ * @link https://eriri.ink
  * @license GNU General Public License v2.0
+ * @Modified by 永見涼花
  * 
  */
 @charset "utf-8";
 
 :root {
-	/* 主要点缀色 - B站粉 */
 	--aria-color-primary: #fb7299;
 	--aria-color-primary-hover: #f25d8e;
 	--aria-color-primary-light: #fc8bab;
-	--aria-bg-body: #f2f2f2;
-	
-	/* 玻璃态与半透明容器底色 */
-	--aria-bg-container: rgba(255, 255, 255, 0.9);
-	--aria-bg-glass-heavy: rgba(255, 255, 255, 0.65);
-	--aria-bg-glass-medium: rgba(255, 255, 255, 0.5);
-	--aria-bg-glass-light: rgba(255, 255, 255, 0.4);
-	--aria-bg-mobile-nav: rgba(242, 242, 242, 0.85);
-	--aria-bg-search: rgba(255, 255, 255, 0.05);
-	
-	/* 文本层级 */
-	--aria-text-main: #444444;
-	--aria-text-heading: #333333;
-	--aria-text-muted: #8a8a8a;
-	--aria-text-link: #333333;
-	--aria-text-link-hover: grey;
-	
-	/* 边框与线条 */
-	--aria-border-color: #e1e1e1;
-	--aria-border-dashed: #dadada;
-	
-	/* 圆角系统 (可以扁，但是扁了就不准搭配超大圆角) */
-	--aria-radius-sm: 5px;
-	--aria-radius-md: 10px;
-	--aria-radius-lg: 14px;
-	
-	/* 阴影与微质感 (Z轴深度) */
-	--aria-shadow-base: 1px 1px 3px 1px rgba(0, 0, 0, 0.2);
-	--aria-shadow-hover: 0 5px 10px 5px rgba(110, 110, 110, 0.4);
-	--aria-shadow-nav: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 4px 5px 0 rgba(0, 0, 0, 0.06), 0 1px 10px 0 rgba(0, 0, 0, 0.08);
-	--aria-shadow-nav-sub: 0 -4px 20px -1px rgba(0, 0, 0, 0.06), 0 -4px 40px 0 rgba(0, 0, 0, 0.06), 0 -1px 10px 0 rgba(0, 0, 0, 0.08);
-	--aria-shadow-footer: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 10px 0 rgba(0, 0, 0, 0.4);
-	
-	/* 统一过渡动画体系 (非线性指数缓动) */
-	--aria-transition-time: 0.35s;
-	--aria-transition-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-	
-	/* 增强视觉模式专用的非线性动效 (Continuo) */
-	--aria-duration-fast: 150ms;
-	--aria-duration-normal: 300ms;
-	--aria-duration-slow: 500ms;
-	
-	--aria-ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* 入场/展开/位移 (缓出 expo) */
-	--aria-ease-in: cubic-bezier(0.7, 0, 0.84, 0);  /* 退场/收起 (缓入 expo) */
-	--aria-ease-in-out: cubic-bezier(0.87, 0, 0.13, 1); /* 状态平滑切换 */
 }
 
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */
@@ -255,7 +210,7 @@ template {
 }
 
 #nprogress .bar {
-	background: var(--aria-color-primary-light);
+	background: var(--aria-color-primary);
 	position: fixed;
 	z-index: 1031;
 	top: 0;
@@ -270,7 +225,7 @@ template {
 	right: 0;
 	width: 100px;
 	height: 100%;
-	box-shadow: 0 0 10px var(--aria-color-primary-light), 0 0 5px var(--aria-color-primary-light);
+	box-shadow: 0 0 10px var(--aria-color-primary-light), 0 0 5px var(--aria-color-primary-hover);
 	opacity: 1;
 	-webkit-transform: rotate(3deg) translate(0, -4px);
 	-ms-transform: rotate(3deg) translate(0, -4px);
@@ -286,8 +241,8 @@ template {
 #nprogress .spinner-icon {
 	box-sizing: border-box;
 	border: 2px solid transparent;
-	border-top-color: var(--aria-color-primary-light);
-	border-left-color: var(--aria-color-primary-light);
+	border-top-color: var(--aria-color-primary);
+	border-left-color: var(--aria-color-primary);
 	border-radius: 50%;
 	-webkit-animation: nprogress-spinner .4s linear infinite;
 	animation: nprogress-spinner .4s linear infinite

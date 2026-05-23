@@ -4,10 +4,10 @@
  */
 
 #comments {
-	box-shadow: var(--aria-shadow-base) !important;
-	background: var(--aria-bg-container);
+	box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, .2) !important;
+	background: rgba(255, 255, 255, .9);
 	padding: 25px;
-	border-radius: var(--aria-radius-md);
+	border-radius: 10px;
 	margin-bottom: 20px
 	/* margin-bottom: 20px;
 	padding-top: 15px */
@@ -459,14 +459,13 @@
 	margin-top: 10px
 }
 
-#comments > .page-navigator {
+#page-nav {
 	white-space: nowrap;
 	margin: 30px 0;
-	color: #2d2f33;
-	text-align: center;
+	color: #2d2f33
 }
 
-#comments > .page-navigator ul {
+#page-nav ul {
 	-webkit-user-select: none;
 	user-select: none;
 	list-style: none;
@@ -474,15 +473,15 @@
 	padding: 0
 }
 
-#comments > .page-navigator .page-current {
+#page-nav .page-current {
 	background-color: #8a8a8a
 }
 
-#comments > .page-navigator a {
+#page-nav a {
 	display: block
 }
 
-#comments > .page-navigator li {
+#page-nav li {
 	margin: 0 5px;
 	background-color: rgba(0, 0, 0, .075);
 	color: #5a5e66;
@@ -541,9 +540,9 @@
 }
 
 #footer {
-	background: var(--aria-bg-container);
-	-webkit-box-shadow: var(--aria-shadow-footer);
-	box-shadow: var(--aria-shadow-footer);
+	background: rgba(255, 255, 255, .9);
+	-webkit-box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .2), 0 1px 10px 0 rgba(0, 0, 0, .4);
+	box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .2), 0 1px 10px 0 rgba(0, 0, 0, .4);
 	padding: 15px 0;
 	font-size: 11px
 	/* padding: 15px 0;

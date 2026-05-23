@@ -57,7 +57,7 @@
 	padding: 0 0 0 15px;
 	font-weight: 400;
 	line-height: 1.5;
-	border-left: 3px solid var(--aria-color-primary-light);
+	border-left: 3px solid var(--aria-color-primary);
 	margin: 20px 0 10px
 }
 
@@ -76,13 +76,12 @@
 /* 正文内超链接颜色 */
 /* 新增 */
 .post-content a {
-	color: var(--aria-color-primary);
-	transition: var(--aria-transition-time) var(--aria-transition-timing);
+	color: #f5c
 }
 
 /* 新增 */
 .post-content a:hover {
-	color: var(--aria-color-primary-hover)
+	color: #a07
 }
 
 .post-content hr {
@@ -142,7 +141,7 @@
 	height: auto
 }
 
-.post-content img:not([class~=link-avatar]) {
+.post-content img:not([class~=link-avatar]):not([no-fancybox]) {
 	background: #fff;
 	display: block !important;
 	margin: 10px auto;
@@ -668,24 +667,4 @@ pre .lang {
 #response,
 #response i {
 	font-size: 25px
-}
-
-@keyframes aria-pagination-settle {
-    0% {
-        transform: translateY(12px) scale(0.985);
-    }
-    100% {
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes aria-pagination-current-mark {
-    0% {
-        width: 0;
-        opacity: 0;
-    }
-    100% {
-        width: 14px;
-        opacity: 1;
-    }
 }

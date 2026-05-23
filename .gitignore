@@ -5,3 +5,5 @@ docs/
 .dbg/
 node_modules/
 npm-debug.log*
+assets/css/systems/README.md
+assets/css/restored/README.md
