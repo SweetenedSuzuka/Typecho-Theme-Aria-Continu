@@ -755,15 +755,25 @@ pre .lang {
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 5px;
     margin: 0 auto;
-    padding: 6px 8px;
+    padding: 6px 4px;
+    /* 纯粹的光学模糊：极低底色 + 极高模糊 + 深远阴影 */
+    background-color: rgba(242, 242, 242, 0.15);
+    -webkit-backdrop-filter: blur(40px);
+    backdrop-filter: blur(40px);
     border: 1px solid rgba(68, 68, 68, 0.08);
     border-radius: 10px;
-    background-color: rgba(242, 242, 242, 0.68);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
     opacity: 0;
     transform: translateY(12px) scale(0.985);
+    transition: gap 220ms var(--aria-ease-out), padding-inline 220ms var(--aria-ease-out), box-shadow 220ms var(--aria-ease-out);
+}
+
+.aria-visual-enhancements #main > #page-nav.is-awake ul {
+    gap: 12px;
+    padding-inline: 12px;
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.1);
 }
 
 /* in-view 触发入场动画 */
@@ -775,7 +785,7 @@ pre .lang {
     position: relative;
     display: block;
     margin: 0;
-    min-width: 42px;
+    min-width: 36px;
     height: auto;
     padding: 0;
     background: transparent;
@@ -786,6 +796,11 @@ pre .lang {
     list-style: none;
     vertical-align: baseline;
     box-sizing: border-box;
+    transition: min-width 220ms var(--aria-ease-out);
+}
+
+.aria-visual-enhancements #main > #page-nav.is-awake li {
+    min-width: 48px;
 }
 
 .aria-visual-enhancements #main > #page-nav li a,
@@ -794,8 +809,8 @@ pre .lang {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 42px;
-    padding: 8px 10px 10px;
+    min-width: inherit;
+    padding: 8px 8px 10px;
     border-radius: 10px;
     color: inherit;
     text-decoration: none;
@@ -806,11 +821,21 @@ pre .lang {
     box-sizing: border-box;
 }
 
+.aria-visual-enhancements #main > #page-nav.is-awake li a,
+.aria-visual-enhancements #main > #page-nav.is-awake .page-current {
+    padding-inline: 12px;
+}
+
 .aria-visual-enhancements #main > #page-nav li .label {
     display: inline-block;
     transform: translateY(1px);
     font-variant-numeric: tabular-nums;
     line-height: 1;
+    transition: transform 220ms var(--aria-ease-out), letter-spacing 220ms var(--aria-ease-out);
+}
+
+.aria-visual-enhancements #main > #page-nav.is-awake li .label {
+    letter-spacing: 0.02em;
 }
 
 .aria-visual-enhancements #main > #page-nav li a::after,
@@ -888,13 +913,17 @@ pre .lang {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 42px;
-    padding: 8px 10px 10px;
+    min-width: inherit;
+    padding: 8px 8px 10px;
     border-radius: 10px;
     line-height: 1;
     /* 不参与位移，只利用 dock-scale 进行透明度呼吸反馈 */
     opacity: calc(0.4 + var(--dock-scale) * 0.4);
-    transition: opacity 100ms ease-out;
+    transition: opacity 100ms ease-out, padding-inline 220ms var(--aria-ease-out);
+}
+
+.aria-visual-enhancements #main > #page-nav.is-awake li.page-ellipsis {
+    padding-inline: 10px;
 }
 
 @keyframes aria-pagination-settle {

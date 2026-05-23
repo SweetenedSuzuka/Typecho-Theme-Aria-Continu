@@ -537,14 +537,21 @@ function observeMainPagination() {
 
 function initDockPagination() {
   var container = document.querySelector(".aria-visual-enhancements #main > #page-nav ul");
-  if (!container) return;
+  var paginationRoot = document.querySelector(".aria-visual-enhancements #main > #page-nav");
+  if (!container || !paginationRoot) return;
 
   var items = Array.prototype.slice.call(container.querySelectorAll("li"));
+
+  function setAwakeState(isAwake) {
+    paginationRoot.classList.toggle("is-awake", isAwake);
+  }
 
   container.addEventListener("mousemove", function (e) {
     var targetItem = null;
     var targetOffset = 0;
     var minDistance = Infinity;
+
+    setAwakeState(true);
 
     items.forEach(function (li) {
       var rect = li.getBoundingClientRect();
@@ -592,8 +599,25 @@ function initDockPagination() {
   });
 
   container.addEventListener("mouseleave", function () {
+    setAwakeState(false);
     items.forEach(function (el) {
       el.style.setProperty("--dock-scale", "0");
+    });
+  });
+
+  container.addEventListener("mouseenter", function () {
+    setAwakeState(true);
+  });
+
+  container.addEventListener("focusin", function () {
+    setAwakeState(true);
+  });
+
+  container.addEventListener("focusout", function () {
+    window.requestAnimationFrame(function () {
+      if (!container.contains(document.activeElement)) {
+        setAwakeState(false);
+      }
     });
   });
 }
