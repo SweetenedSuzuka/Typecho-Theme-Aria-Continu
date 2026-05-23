@@ -129,16 +129,40 @@
 	top: 80px;
 	opacity: 0;
 	visibility: hidden;
-	transform: translateY(12px);
+	transform: translateY(10px);
 	transform-origin: top center;
-	transition: opacity .6s cubic-bezier(.16, 1, .3, 1), transform .6s cubic-bezier(.16, 1, .3, 1)
+	pointer-events: none;
+	will-change: opacity, transform;
+	transition: none
+}
+
+#toc.aria-toc-entering,
+#toc.aria-toc-ready {
+	visibility: visible;
+}
+
+#toc.aria-toc-entering {
+	animation: aria-toc-intro var(--aria-duration-normal) var(--aria-ease-out) both;
 }
 
 #toc.aria-toc-ready {
 	opacity: 1;
 	visibility: visible;
 	transform: translateY(0);
+	pointer-events: auto;
 	transition-delay: 0s
+}
+
+@keyframes aria-toc-intro {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 body.aria-style-aria-continuo #toc {
@@ -229,8 +253,7 @@ body.aria-style-aria-continuo #toc li {
 /* 1. 当前项文字强调降级 */
 body.aria-style-aria-continuo #toc a.toc-active {
 	color: var(--aria-text-main) !important;
-	font-weight: 600;
-	transition: color 220ms var(--aria-ease-out), font-weight 220ms var(--aria-ease-out);
+	transition: color 220ms var(--aria-ease-out);
 }
 
 /* 2. 新增平滑移动的高光背景块（类 macOS 侧边栏选中项） */
@@ -265,6 +288,14 @@ body.aria-style-aria-continuo #toc .toc-marker::before {
 /* 当没有激活项时，隐藏滑块 */
 body.aria-style-aria-continuo #toc:not(.has-active) .toc-marker {
 	opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#toc {
+		animation: none;
+		transition: none;
+		transform: none;
+	}
 }
 
 @media (max-width:799px) {

@@ -158,6 +158,22 @@ function getTocScrollBehavior() {
   return "smooth";
 }
 
+function isTocIntroMotionEnabled() {
+  return !(
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+function clearTocIntroTimer() {
+  if (!Aria.state.tocIntroTimer) {
+    return;
+  }
+
+  window.clearTimeout(Aria.state.tocIntroTimer);
+  Aria.state.tocIntroTimer = null;
+}
+
 function updateHashWithoutJump(hash) {
   if (!hash) {
     return;
@@ -262,6 +278,7 @@ Aria.toc.init = function () {
 
   if (!toc || !postContent) {
     this.titleId = [];
+    clearTocIntroTimer();
     if (Aria.optical && typeof Aria.optical.unregister === "function") {
       Aria.optical.unregister("toc");
     }
@@ -270,7 +287,8 @@ Aria.toc.init = function () {
     return;
   }
 
-  toc.classList.remove("aria-toc-ready");
+  clearTocIntroTimer();
+  toc.classList.remove("aria-toc-entering", "aria-toc-ready");
   toc.setAttribute("aria-hidden", "true");
   toc.innerHTML = "";
   titleCount = createDirectory(postContent, toc, !0);
@@ -295,12 +313,43 @@ Aria.toc.init = function () {
       host: toc,
       sourceRoot: toc,
       variant: "toc",
-      mirroredClasses: ["aria-toc-ready", "has-active"],
+      mirroredClasses: ["aria-toc-entering", "aria-toc-ready", "has-active"],
     });
   }
 
-  window.requestAnimationFrame(function () {
+  if (!isTocIntroMotionEnabled()) {
     toc.classList.add("aria-toc-ready");
     toc.setAttribute("aria-hidden", "false");
+    return;
+  }
+
+  window.requestAnimationFrame(function () {
+    var introFinished = !1;
+
+    function finishTocIntro() {
+      if (introFinished) {
+        return;
+      }
+
+      introFinished = !0;
+      clearTocIntroTimer();
+      toc.classList.add("aria-toc-ready");
+      toc.classList.remove("aria-toc-entering");
+    }
+
+    toc.classList.add("aria-toc-entering");
+    toc.setAttribute("aria-hidden", "false");
+    toc.addEventListener(
+      "animationend",
+      function handleTocIntroAnimationEnd(event) {
+        if (event.target !== toc || event.animationName !== "aria-toc-intro") {
+          return;
+        }
+
+        finishTocIntro();
+      },
+      { once: !0 },
+    );
+    Aria.state.tocIntroTimer = window.setTimeout(finishTocIntro, 420);
   });
 };

@@ -108,10 +108,31 @@ body.aria-style-aria-continuo .aria-optical-surface--toc {
 	background: var(--aria-optical-toc-bg);
 	border: 1px solid var(--aria-optical-toc-border);
 	box-shadow: var(--aria-optical-toc-shadow);
+	transition: opacity 220ms var(--aria-ease-out), box-shadow var(--aria-duration-normal) var(--aria-ease-out), background-color var(--aria-duration-normal) var(--aria-ease-out), border-color var(--aria-duration-normal) var(--aria-ease-out);
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--toc:not(.aria-toc-entering):not(.aria-toc-ready) {
+	opacity: 0;
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--toc.aria-toc-entering {
+	animation: aria-toc-optical-intro var(--aria-duration-normal) var(--aria-ease-out) both;
 }
 
 body.aria-style-aria-continuo .aria-optical-surface--toc.has-active {
 	box-shadow: var(--aria-optical-toc-shadow-active);
+}
+
+@keyframes aria-toc-optical-intro {
+	from {
+		opacity: 0;
+		box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.12);
+	}
+
+	to {
+		opacity: 1;
+		box-shadow: var(--aria-optical-toc-shadow);
+	}
 }
 
 body.aria-style-aria-continuo .aria-optical-surface--pagination {
@@ -127,7 +148,6 @@ body.aria-style-aria-continuo .aria-optical-surface--pagination.is-awake {
 }
 
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */
-#toc a.toc-active,
 b,
 strong {
 	font-weight: bolder
