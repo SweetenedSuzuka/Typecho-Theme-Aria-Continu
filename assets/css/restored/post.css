@@ -876,7 +876,8 @@ pre .lang {
 
 /* 1. 焦点与邻近项的平滑变形与着色 */
 .aria-visual-enhancements #main > #page-nav li:not(.page-ellipsis) a,
-.aria-visual-enhancements #main > #page-nav li.page-current {
+.aria-visual-enhancements #main > #page-nav li.page-current,
+.aria-visual-enhancements #main > #page-nav li.page-ellipsis {
     background-color: rgba(68, 68, 68, calc(var(--dock-scale) * 0.12));
     color: var(--aria-text-main);
     transform: translateY(calc(var(--dock-scale) * -4px)) scale(calc(1 + var(--dock-scale) * 0.08));
@@ -899,6 +900,10 @@ pre .lang {
     background-color: var(--aria-color-primary);
 }
 
+.aria-visual-enhancements #main > #page-nav li.page-ellipsis::after {
+    display: none;
+}
+
 /* 3. 焦点项的无障碍反馈 */
 .aria-visual-enhancements #main > #page-nav li:not(.page-current) a:focus-visible {
     outline: none;
@@ -916,14 +921,45 @@ pre .lang {
     min-width: inherit;
     padding: 8px 8px 10px;
     border-radius: 10px;
+    color: var(--aria-text-main);
     line-height: 1;
-    /* 不参与位移，只利用 dock-scale 进行透明度呼吸反馈 */
-    opacity: calc(0.4 + var(--dock-scale) * 0.4);
-    transition: opacity 100ms ease-out, padding-inline 220ms var(--aria-ease-out);
+    opacity: 1;
+    transition: transform 100ms cubic-bezier(0.2, 0.9, 0.3, 1),
+                background-color 100ms ease-out,
+                box-shadow 100ms ease-out,
+                padding-inline 220ms var(--aria-ease-out);
 }
 
 .aria-visual-enhancements #main > #page-nav.is-awake li.page-ellipsis {
-    padding-inline: 10px;
+    padding-inline: 12px;
+}
+
+.aria-visual-enhancements #main > #page-nav li.page-ellipsis .label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6em;
+    gap: 0;
+    letter-spacing: 0;
+    transition: transform 220ms var(--aria-ease-out);
+}
+
+.aria-visual-enhancements #main > #page-nav li.page-ellipsis .dot {
+    display: inline-block;
+    transform: translateY(0);
+    transition: transform 140ms var(--aria-ease-out), opacity 140ms ease-out;
+}
+
+.aria-visual-enhancements #main > #page-nav li.page-ellipsis .dot:nth-child(1) {
+    transform: translateX(calc(var(--dock-scale) * -1.4px));
+}
+
+.aria-visual-enhancements #main > #page-nav li.page-ellipsis .dot:nth-child(2) {
+    transform: translateX(0);
+}
+
+.aria-visual-enhancements #main > #page-nav li.page-ellipsis .dot:nth-child(3) {
+    transform: translateX(calc(var(--dock-scale) * 1.4px));
 }
 
 @keyframes aria-pagination-settle {

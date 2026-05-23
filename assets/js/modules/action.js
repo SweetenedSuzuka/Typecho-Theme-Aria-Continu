@@ -450,6 +450,32 @@ function bindActions() {
 }
 
 function normalizeMainPaginationLabels() {
+  function normalizeEllipsisLabel(listItem) {
+    var ellipsisLabel = listItem.querySelector(".label");
+    var dotIndex;
+    var dot;
+
+    if (!listItem.classList.contains("page-ellipsis") || !ellipsisLabel) {
+      return;
+    }
+
+    if (ellipsisLabel.querySelector(".dot")) {
+      return;
+    }
+
+    if (ellipsisLabel.textContent.trim() !== "...") {
+      return;
+    }
+
+    ellipsisLabel.textContent = "";
+    for (dotIndex = 0; dotIndex < 3; dotIndex += 1) {
+      dot = document.createElement("span");
+      dot.className = "dot";
+      dot.textContent = ".";
+      ellipsisLabel.appendChild(dot);
+    }
+  }
+
   Array.prototype.forEach.call(
     document.querySelectorAll("#main > #page-nav li"),
     function (listItem) {
@@ -479,6 +505,7 @@ function normalizeMainPaginationLabels() {
         if (!listItem.querySelector("a") && !listItem.classList.contains("page-current")) {
           listItem.classList.add("page-ellipsis");
         }
+        normalizeEllipsisLabel(listItem);
         return;
       }
 
@@ -488,6 +515,7 @@ function normalizeMainPaginationLabels() {
         if (!listItem.querySelector("a") && !listItem.classList.contains("page-current")) {
           listItem.classList.add("page-ellipsis");
         }
+        normalizeEllipsisLabel(listItem);
         return;
       }
 
@@ -505,6 +533,8 @@ function normalizeMainPaginationLabels() {
       if (!listItem.querySelector("a") && !listItem.classList.contains("page-current")) {
         listItem.classList.add("page-ellipsis");
       }
+
+      normalizeEllipsisLabel(listItem);
     },
   );
 }
