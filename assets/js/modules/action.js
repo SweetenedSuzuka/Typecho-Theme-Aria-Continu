@@ -449,7 +449,7 @@ function bindActions() {
   document.addEventListener("click", Aria.state.actionClickHandler);
 }
 
-function normalizeMainPaginationLabels() {
+function normalizePaginationLabels(selector) {
   function normalizeEllipsisLabel(listItem) {
     var ellipsisLabel = listItem.querySelector(".label");
     var dotIndex;
@@ -477,7 +477,7 @@ function normalizeMainPaginationLabels() {
   }
 
   Array.prototype.forEach.call(
-    document.querySelectorAll("#main > #page-nav li"),
+    document.querySelectorAll(selector + " li"),
     function (listItem) {
       var currentLink;
       var item;
@@ -565,9 +565,9 @@ function observeMainPagination() {
   observer.observe(paginationContainer);
 }
 
-function initDockPagination() {
-  var container = document.querySelector(".aria-visual-enhancements #main > #page-nav ul");
-  var paginationRoot = document.querySelector(".aria-visual-enhancements #main > #page-nav");
+function initDockPagination(rootSelector, containerSelector) {
+  var container = document.querySelector(containerSelector);
+  var paginationRoot = document.querySelector(rootSelector);
   if (!container || !paginationRoot) return;
 
   var items = Array.prototype.slice.call(container.querySelectorAll("li"));
@@ -660,9 +660,11 @@ Aria.action.init = function () {
   nav();
   search();
   bindActions();
-  normalizeMainPaginationLabels();
+  normalizePaginationLabels("#main > #page-nav");
+  normalizePaginationLabels("#comments > .page-navigator");
   observeMainPagination();
-  initDockPagination();
+  initDockPagination(".aria-visual-enhancements #main > #page-nav", ".aria-visual-enhancements #main > #page-nav ul");
+  initDockPagination(".aria-visual-enhancements #comments > .page-navigator", ".aria-visual-enhancements #comments > .page-navigator ul");
   initWowAnimations();
 };
 Aria.action.closeNav = function () {

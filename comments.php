@@ -33,7 +33,7 @@
 		<?php $comments->listComments(); ?>
 
 	</div>
-		<div id="page-nav">
+		<div class="page-navigator">
 			<?php $comments->pageNav('<', '>',1,'...',array('wrapTag' => 'ul', 'wrapClass' => '','itemTag' => 'li','currentClass' => 'page-current',)); ?>
 		</div>
 
