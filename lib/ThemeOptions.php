@@ -119,6 +119,37 @@ class ThemeOptions
     }
 
     /**
+     * 获取主分页模糊开关状态
+     *
+     * 新增字段默认开启，但不能通过全局 schema 版本推断，
+     * 否则历史配置里缺失字段会被误判为关闭。
+     *
+     * @return bool
+     */
+    public static function isPaginationBlurEnabled()
+    {
+        if (!self::hasOption('enablePaginationBlur')) {
+            return true;
+        }
+
+        return self::isOptionEnabled('enablePaginationBlur', true);
+    }
+
+    /**
+     * 获取 TOC 模糊开关状态
+     *
+     * @return bool
+     */
+    public static function isTocBlurEnabled()
+    {
+        if (!self::hasOption('enableTocBlur')) {
+            return true;
+        }
+
+        return self::isOptionEnabled('enableTocBlur', true);
+    }
+
+    /**
      * 获取懒加载开关状态
      *
      * @return bool

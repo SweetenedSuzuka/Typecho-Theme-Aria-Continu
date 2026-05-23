@@ -573,6 +573,14 @@ class ThemeViewData
             $classes[] = 'aria-visual-enhancements';
         }
 
+        if (ThemeOptions::isPaginationBlurEnabled()) {
+            $classes[] = 'aria-pagination-blur';
+        }
+
+        if (ThemeOptions::isTocBlurEnabled()) {
+            $classes[] = 'aria-toc-blur';
+        }
+
         return implode(' ', $classes);
     }
 

@@ -752,27 +752,48 @@ pre .lang {
 
 .aria-visual-enhancements #main > #page-nav ul {
     display: inline-flex;
+    position: relative;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    overflow: hidden;
     gap: 5px;
     margin: 0 auto;
     padding: 6px 4px;
-    /* 纯粹的光学模糊：极低底色 + 极高模糊 + 深远阴影 */
-    background-color: rgba(242, 242, 242, 0.15);
-    -webkit-backdrop-filter: blur(40px);
-    backdrop-filter: blur(40px);
-    border: 1px solid rgba(68, 68, 68, 0.08);
+    background: transparent;
+    border: none;
     border-radius: 10px;
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
-    opacity: 0;
+    box-shadow: none;
+    opacity: 1;
     transform: translateY(12px) scale(0.985);
     transition: gap 220ms var(--aria-ease-out), padding-inline 220ms var(--aria-ease-out), box-shadow 220ms var(--aria-ease-out);
+}
+
+.aria-visual-enhancements #main > #page-nav ul::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: rgba(242, 242, 242, 0.74);
+    border: 1px solid rgba(68, 68, 68, 0.08);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.aria-visual-enhancements.aria-pagination-blur #main > #page-nav ul::before {
+    background-color: rgba(242, 242, 242, 0.18);
+    -webkit-backdrop-filter: blur(40px) saturate(120%);
+    backdrop-filter: blur(40px) saturate(120%);
+    transform: translateZ(0);
 }
 
 .aria-visual-enhancements #main > #page-nav.is-awake ul {
     gap: 12px;
     padding-inline: 12px;
+}
+
+.aria-visual-enhancements #main > #page-nav.is-awake ul::before {
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.1);
 }
 
@@ -796,6 +817,7 @@ pre .lang {
     list-style: none;
     vertical-align: baseline;
     box-sizing: border-box;
+    z-index: 1;
     transition: min-width 220ms var(--aria-ease-out);
 }
 
@@ -964,11 +986,9 @@ pre .lang {
 
 @keyframes aria-pagination-settle {
     0% {
-        opacity: 0;
         transform: translateY(12px) scale(0.985);
     }
     100% {
-        opacity: 1;
         transform: translateY(0) scale(1);
     }
 }

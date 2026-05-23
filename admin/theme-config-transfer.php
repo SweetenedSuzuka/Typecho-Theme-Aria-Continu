@@ -10,6 +10,8 @@ function ariaGetThemeConfigTransferSchema()
 {
     return array(
         'avatarUrl' => array('label' => '站点头像', 'type' => 'text', 'default' => ''),
+        'enablePaginationBlur' => array('label' => '启用分页模糊', 'type' => 'checkbox', 'default' => true),
+        'enableTocBlur' => array('label' => '启用 TOC 模糊', 'type' => 'checkbox', 'default' => true),
         'coverUrl' => array('label' => '首页封面图片', 'type' => 'textarea', 'default' => ''),
         'customPageBackgroundEnabled' => array('label' => '启用网页背景自定义', 'type' => 'checkbox', 'default' => false),
         'customPageBackgroundUrl' => array('label' => '网页背景图地址', 'type' => 'text', 'default' => '/assets/img/background.webp'),
