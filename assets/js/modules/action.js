@@ -114,7 +114,7 @@ function gotop() {
 
   function updateActiveTocLink(currentTop) {
     var toc = document.getElementById("toc");
-    var titleIds = Aria.toc.titleId || [];
+    var titleIds = (Aria.toc && Aria.toc.titleId) || [];
     var currentAnchorId = null;
     var currentAnchorTop = -Infinity;
 

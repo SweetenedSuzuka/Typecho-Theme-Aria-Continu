@@ -119,6 +119,8 @@
 }
 
 #toc {
+	--toc-axis-x: 4px;
+	--toc-dot-size: 8px;
 	padding: 15px;
 	background: rgba(255, 255, 255, .9);
 	border-radius: 10px;
@@ -164,25 +166,49 @@
 }
 
 #toc>ul {
-	position: relative;
-	border-left: 1px solid #ddd
+	position: relative
 }
 
-#toc>ul>li::before {
-	position: relative;
-	top: -1px;
-	left: -4.4px;
-	display: inline-block;
-	width: 8px;
-	height: 8px;
+#toc>ul::before {
 	content: '';
+	position: absolute;
+	left: var(--toc-axis-x);
+	top: 0;
+	bottom: 0;
+	width: 1px;
+	background-color: #ddd;
+	transform: translateX(-50%)
+}
+
+#toc>ul>li>a {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	min-height: 20px;
+	margin-left: 0;
+	padding-left: 14px
+}
+
+#toc>ul>li>a::before {
+	content: '';
+	position: absolute;
+	left: var(--toc-axis-x);
+	top: 50%;
+	width: var(--toc-dot-size);
+	height: var(--toc-dot-size);
 	border-radius: 50%;
-	background-color: #5c5c5c
+	background-color: #5c5c5c;
+	transform: translate(-50%, -50%)
+}
+
+/* 提升 li 的层级，确保文字和圆点能覆盖在滑块背景上方 */
+.aria-visual-enhancements #toc li {
+	position: relative;
+	z-index: 1;
 }
 
 #toc ul li a {
-	display: inline-table;
-	margin-left: 5px
+	position: relative
 }
 
 #toc ul li ul li a {
@@ -203,19 +229,14 @@
    TOC：平滑焦点滑块与当前项样式重构
 ========================================= */
 
-/* 1. 当前项文字强调降级（仅加深字重，不再变粉） */
+/* 1. 当前项文字强调降级 */
 .aria-visual-enhancements #toc a.toc-active {
 	color: var(--aria-text-main) !important;
 	font-weight: 600;
 	transition: color 220ms var(--aria-ease-out), font-weight 220ms var(--aria-ease-out);
 }
 
-/* 2. 废弃原有的硬切粉色竖线 */
-.aria-visual-enhancements #toc a.toc-active::before {
-	display: none !important;
-}
-
-/* 3. 新增平滑移动的高光背景块（类 macOS 侧边栏选中项） */
+/* 2. 新增平滑移动的高光背景块（类 macOS 侧边栏选中项） */
 .aria-visual-enhancements #toc .toc-marker {
 	position: absolute;
 	top: 0;
@@ -225,10 +246,23 @@
 	transform: translateY(var(--toc-marker-top, 0));
 	background: rgba(251, 114, 153, 0.08); /* 极弱的主题粉底衬 */
 	border-radius: var(--aria-radius-sm);
-	z-index: -1;
+	z-index: 0; /* 提升层级，覆盖在 ul 的 1px 边框上 */
 	pointer-events: none;
 	opacity: 1;
 	transition: transform 220ms var(--aria-ease-out), height 220ms var(--aria-ease-out), opacity 220ms var(--aria-ease-out);
+}
+
+/* 在滑块左侧增加一个跟随轴线移动的实体游标 */
+.aria-visual-enhancements #toc .toc-marker::before {
+	content: '';
+	position: absolute;
+	left: var(--toc-axis-x);
+	top: 4px;
+	bottom: 4px;
+	width: 3px;
+	background-color: #5c5c5c; /* 统一采用原本的灰色 */
+	border-radius: 2px;
+	transform: translateX(-50%);
 }
 
 /* 当没有激活项时，隐藏滑块 */
@@ -237,7 +271,7 @@
 }
 
 /* 经典模式兼容 */
-#toc a.toc-active::before {
+body:not(.aria-visual-enhancements) #toc a.toc-active::before {
 	content: '';
 	position: absolute;
 	border: 1px solid #5c5c5c;
