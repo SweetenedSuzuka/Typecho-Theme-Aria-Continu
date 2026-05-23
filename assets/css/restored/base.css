@@ -11,10 +11,10 @@
 @charset "utf-8";
 
 :root {
-	/* 品牌与色彩基建 */
-	--aria-color-primary: #f5c;
-	--aria-color-primary-hover: #a07;
-	--aria-color-primary-light: #f4c;
+	/* 主要点缀色 - B站粉 */
+	--aria-color-primary: #fb7299;
+	--aria-color-primary-hover: #f25d8e;
+	--aria-color-primary-light: #fc8bab;
 	--aria-bg-body: #f2f2f2;
 	
 	/* 玻璃态与半透明容器底色 */

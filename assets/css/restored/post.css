@@ -743,3 +743,178 @@ pre .lang {
     border-bottom: 2px solid var(--aria-border-color);
 }
 
+/* 分页组件视觉增强：单轨分页 */
+.aria-visual-enhancements #main > #page-nav {
+    margin: 64px auto 28px;
+    text-align: center;
+    white-space: normal;
+}
+
+.aria-visual-enhancements #main > #page-nav ul {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 auto;
+    padding: 6px 8px;
+    border: 1px solid rgba(68, 68, 68, 0.08);
+    border-radius: 10px;
+    background-color: rgba(242, 242, 242, 0.68);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+}
+
+/* in-view 触发入场动画 */
+.aria-visual-enhancements #main > #page-nav.in-view ul {
+    animation: aria-pagination-settle 300ms var(--aria-ease-out) forwards;
+}
+
+.aria-visual-enhancements #main > #page-nav li {
+    position: relative;
+    display: block;
+    margin: 0;
+    min-width: 42px;
+    height: auto;
+    padding: 0;
+    background: transparent;
+    color: var(--aria-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    list-style: none;
+    vertical-align: baseline;
+    box-sizing: border-box;
+}
+
+.aria-visual-enhancements #main > #page-nav li a,
+.aria-visual-enhancements #main > #page-nav .page-current {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    padding: 8px 10px 10px;
+    border-radius: 10px;
+    color: inherit;
+    text-decoration: none;
+    text-shadow: none;
+    line-height: 1;
+    transform: translateY(0);
+    transition: background-color var(--aria-duration-fast) var(--aria-ease-out), color var(--aria-duration-fast) var(--aria-ease-out), opacity var(--aria-duration-fast) var(--aria-ease-out), transform var(--aria-duration-fast) var(--aria-ease-out), box-shadow var(--aria-duration-fast) var(--aria-ease-out);
+    box-sizing: border-box;
+}
+
+.aria-visual-enhancements #main > #page-nav li .label {
+    display: inline-block;
+    transform: translateY(1px);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.aria-visual-enhancements #main > #page-nav li a::after,
+.aria-visual-enhancements #main > #page-nav .page-current::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    width: 0;
+    height: 2px;
+    border-radius: 999px;
+    background-color: rgba(68, 68, 68, 0.22);
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: width var(--aria-duration-fast) var(--aria-ease-out), opacity var(--aria-duration-fast) var(--aria-ease-out), background-color var(--aria-duration-fast) var(--aria-ease-out);
+}
+
+.aria-visual-enhancements #main > #page-nav .page-current {
+    color: var(--aria-text-main);
+    font-weight: 600;
+}
+
+.aria-visual-enhancements #main > #page-nav .page-current::after {
+    width: 14px;
+    opacity: 1;
+    background-color: var(--aria-color-primary);
+    animation: aria-pagination-current-mark 300ms var(--aria-ease-out) both;
+}
+
+/* =========================================
+   分页专属 Dock 联动效果 (JS 计算驱动)
+   实现鼠标经过时焦点项和邻近项的平滑连带
+========================================= */
+
+.aria-visual-enhancements #main > #page-nav li {
+    --dock-scale: 0;
+}
+
+/* 1. 焦点与邻近项的平滑变形与着色 */
+.aria-visual-enhancements #main > #page-nav li:not(.page-ellipsis) a,
+.aria-visual-enhancements #main > #page-nav li.page-current {
+    background-color: rgba(68, 68, 68, calc(var(--dock-scale) * 0.12));
+    color: var(--aria-text-main);
+    transform: translateY(calc(var(--dock-scale) * -4px)) scale(calc(1 + var(--dock-scale) * 0.08));
+    box-shadow: 0 calc(var(--dock-scale) * 6px) calc(var(--dock-scale) * 14px) rgba(0, 0, 0, calc(var(--dock-scale) * 0.05));
+    transition: transform 100ms cubic-bezier(0.2, 0.9, 0.3, 1), 
+                background-color 100ms ease-out, 
+                box-shadow 100ms ease-out;
+}
+
+/* 2. 动态刻度展开 */
+.aria-visual-enhancements #main > #page-nav li:not(.page-ellipsis) a::after {
+    width: calc(var(--dock-scale) * 16px);
+    opacity: var(--dock-scale);
+}
+
+.aria-visual-enhancements #main > #page-nav li.page-current::after {
+    /* 当前页已有 14px 刻度，随 Dock 联动微幅伸展 */
+    width: calc(14px + var(--dock-scale) * 4px);
+    opacity: 1;
+    background-color: var(--aria-color-primary);
+}
+
+/* 3. 焦点项的无障碍反馈 */
+.aria-visual-enhancements #main > #page-nav li:not(.page-current) a:focus-visible {
+    outline: none;
+    background-color: rgba(68, 68, 68, 0.14);
+    color: var(--aria-text-main);
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 2px rgba(251, 114, 153, 0.14);
+}
+
+/* 4. 特殊状态项的弱响应处理（省略号 .page-ellipsis） */
+.aria-visual-enhancements #main > #page-nav li.page-ellipsis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    padding: 8px 10px 10px;
+    border-radius: 10px;
+    line-height: 1;
+    /* 不参与位移，只利用 dock-scale 进行透明度呼吸反馈 */
+    opacity: calc(0.4 + var(--dock-scale) * 0.4);
+    transition: opacity 100ms ease-out;
+}
+
+@keyframes aria-pagination-settle {
+    0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.985);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes aria-pagination-current-mark {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+    100% {
+        width: 14px;
+        opacity: 1;
+    }
+}

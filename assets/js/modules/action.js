@@ -449,6 +449,155 @@ function bindActions() {
   document.addEventListener("click", Aria.state.actionClickHandler);
 }
 
+function normalizeMainPaginationLabels() {
+  Array.prototype.forEach.call(
+    document.querySelectorAll("#main > #page-nav li"),
+    function (listItem) {
+      var currentLink;
+      var item;
+      var rawText;
+      var label;
+      var directSpan;
+
+      if (listItem.classList.contains("page-current")) {
+        currentLink = listItem.querySelector("a");
+        if (currentLink) {
+          rawText = currentLink.textContent ? currentLink.textContent.trim() : "";
+          listItem.textContent = "";
+          if (rawText) {
+            label = document.createElement("span");
+            label.className = "label";
+            label.textContent = rawText;
+            listItem.appendChild(label);
+          }
+        }
+      }
+
+      item = listItem.querySelector("a") || listItem;
+
+      if (item.querySelector(".label")) {
+        if (!listItem.querySelector("a") && !listItem.classList.contains("page-current")) {
+          listItem.classList.add("page-ellipsis");
+        }
+        return;
+      }
+
+      directSpan = item.querySelector(":scope > span");
+      if (directSpan) {
+        directSpan.classList.add("label");
+        if (!listItem.querySelector("a") && !listItem.classList.contains("page-current")) {
+          listItem.classList.add("page-ellipsis");
+        }
+        return;
+      }
+
+      rawText = item.textContent;
+      if (!rawText) {
+        return;
+      }
+
+      label = document.createElement("span");
+      label.className = "label";
+      label.textContent = rawText.trim();
+      item.textContent = "";
+      item.appendChild(label);
+
+      if (!listItem.querySelector("a") && !listItem.classList.contains("page-current")) {
+        listItem.classList.add("page-ellipsis");
+      }
+    },
+  );
+}
+
+function observeMainPagination() {
+  var paginationContainer = document.querySelector("#main > #page-nav");
+  if (!paginationContainer || !window.IntersectionObserver) {
+    return;
+  }
+
+  // 检查是否关闭了动画
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    paginationContainer.classList.add("in-view");
+    return;
+  }
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        paginationContainer.classList.add("in-view");
+        observer.unobserve(paginationContainer);
+      }
+    });
+  }, {
+    threshold: 0.1 // 当 10% 进入视口时就触发
+  });
+
+  observer.observe(paginationContainer);
+}
+
+function initDockPagination() {
+  var container = document.querySelector(".aria-visual-enhancements #main > #page-nav ul");
+  if (!container) return;
+
+  var items = Array.prototype.slice.call(container.querySelectorAll("li"));
+
+  container.addEventListener("mousemove", function (e) {
+    var targetItem = null;
+    var targetOffset = 0;
+    var minDistance = Infinity;
+
+    items.forEach(function (li) {
+      var rect = li.getBoundingClientRect();
+      var distance = 0;
+
+      if (e.clientX >= rect.left && e.clientX <= rect.right) {
+        distance = 0;
+      } else {
+        distance = Math.min(Math.abs(e.clientX - rect.left), Math.abs(e.clientX - rect.right));
+      }
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        targetItem = li;
+        if (e.clientX < rect.left) {
+          targetOffset = 0;
+        } else if (e.clientX > rect.right) {
+          targetOffset = 1;
+        } else {
+          targetOffset = (e.clientX - rect.left) / rect.width;
+        }
+      }
+    });
+
+    if (targetItem) {
+      targetOffset = Math.max(0, Math.min(1, targetOffset));
+
+      items.forEach(function (el) {
+        el.style.setProperty("--dock-scale", "0");
+      });
+
+      var prev = targetItem.previousElementSibling;
+      var next = targetItem.nextElementSibling;
+
+      if (prev) {
+        prev.style.setProperty("--dock-scale", String(1 - targetOffset));
+      }
+
+      targetItem.style.setProperty("--dock-scale", "1");
+
+      if (next) {
+        next.style.setProperty("--dock-scale", String(targetOffset));
+      }
+    }
+  });
+
+  container.addEventListener("mouseleave", function () {
+    items.forEach(function (el) {
+      el.style.setProperty("--dock-scale", "0");
+    });
+  });
+}
+
 Aria.action = Aria.action || {};
 Aria.action.init = function () {
   headroom();
@@ -457,6 +606,9 @@ Aria.action.init = function () {
   nav();
   search();
   bindActions();
+  normalizeMainPaginationLabels();
+  observeMainPagination();
+  initDockPagination();
   initWowAnimations();
 };
 Aria.action.closeNav = function () {
