@@ -278,6 +278,11 @@ Aria.toc.init = function () {
   if (!titleCount) {
     return;
   }
+  
+  // 新增：创建跟随焦点滑块
+  var tocMarker = document.createElement("div");
+  tocMarker.className = "toc-marker";
+  toc.appendChild(tocMarker);
 
   window.requestAnimationFrame(function () {
     toc.classList.add("aria-toc-ready");

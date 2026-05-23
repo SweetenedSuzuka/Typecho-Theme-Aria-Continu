@@ -199,6 +199,44 @@
 	color: #5c5c5c
 }
 
+/* =========================================
+   TOC：平滑焦点滑块与当前项样式重构
+========================================= */
+
+/* 1. 当前项文字强调降级（仅加深字重，不再变粉） */
+.aria-visual-enhancements #toc a.toc-active {
+	color: var(--aria-text-main) !important;
+	font-weight: 600;
+	transition: color 220ms var(--aria-ease-out), font-weight 220ms var(--aria-ease-out);
+}
+
+/* 2. 废弃原有的硬切粉色竖线 */
+.aria-visual-enhancements #toc a.toc-active::before {
+	display: none !important;
+}
+
+/* 3. 新增平滑移动的高光背景块（类 macOS 侧边栏选中项） */
+.aria-visual-enhancements #toc .toc-marker {
+	position: absolute;
+	top: 0;
+	left: 15px; /* 与 TOC 容器 padding 对齐 */
+	right: 15px;
+	height: var(--toc-marker-height, 0);
+	transform: translateY(var(--toc-marker-top, 0));
+	background: rgba(251, 114, 153, 0.08); /* 极弱的主题粉底衬 */
+	border-radius: var(--aria-radius-sm);
+	z-index: -1;
+	pointer-events: none;
+	opacity: 1;
+	transition: transform 220ms var(--aria-ease-out), height 220ms var(--aria-ease-out), opacity 220ms var(--aria-ease-out);
+}
+
+/* 当没有激活项时，隐藏滑块 */
+.aria-visual-enhancements #toc:not(.has-active) .toc-marker {
+	opacity: 0;
+}
+
+/* 经典模式兼容 */
 #toc a.toc-active::before {
 	content: '';
 	position: absolute;

@@ -139,15 +139,30 @@ function gotop() {
       currentAnchorTop = targetTop;
     });
 
+    var hasActive = false;
+
     Array.prototype.forEach.call(
       toc.querySelectorAll("a"),
       function (anchor) {
-        anchor.classList.toggle(
-          "toc-active",
-          !!currentAnchorId && anchor.getAttribute("href") === "#" + currentAnchorId,
-        );
+        var isActive = !!currentAnchorId && anchor.getAttribute("href") === "#" + currentAnchorId;
+        anchor.classList.toggle("toc-active", isActive);
+        
+        // 动态更新 TOC 滑块的位置和高度
+        if (isActive) {
+          hasActive = true;
+          var tocRect = toc.getBoundingClientRect();
+          var anchorRect = anchor.getBoundingClientRect();
+          // 计算 anchor 相对 toc padding-box 的精确 top
+          var relativeTop = anchorRect.top - (tocRect.top + toc.clientTop) + toc.scrollTop;
+          // 稍微扩展滑块高度，使其更好地包裹文字
+          toc.style.setProperty("--toc-marker-top", (relativeTop - 2) + "px");
+          toc.style.setProperty("--toc-marker-height", (anchorRect.height + 4) + "px");
+        }
       },
     );
+
+    // 兼容不支持 :has() 的浏览器
+    toc.classList.toggle("has-active", hasActive);
   }
 
   function handleScroll() {
