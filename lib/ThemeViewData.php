@@ -557,7 +557,29 @@ class ThemeViewData
     }
 
     /**
-     * 获取网页背景与增强样式自定义 body class
+     * 获取当前启用的样式系统目录键名
+     *
+     * @return string
+     */
+    private static function getCurrentStyleSystemKey()
+    {
+        return ThemeOptions::isContinuoVisualsEnabled() ? 'aria-continuo' : 'aria-original';
+    }
+
+    /**
+     * 获取当前启用的样式系统 body class
+     *
+     * @return string
+     */
+    private static function getCurrentStyleSystemBodyClass()
+    {
+        return ThemeOptions::isContinuoVisualsEnabled()
+            ? 'aria-style-aria-continuo'
+            : 'aria-style-aria-original';
+    }
+
+    /**
+     * 获取网页背景与样式系统自定义 body class
      *
      * @return string
      */
@@ -569,17 +591,8 @@ class ThemeViewData
             $classes[] = 'body--custom-background';
         }
 
-        if (ThemeOptions::isContinuoVisualsEnabled()) {
-            $classes[] = 'aria-visual-enhancements';
-        }
-
-        if (ThemeOptions::isPaginationBlurEnabled()) {
-            $classes[] = 'aria-pagination-blur';
-        }
-
-        if (ThemeOptions::isTocBlurEnabled()) {
-            $classes[] = 'aria-toc-blur';
-        }
+        $classes[] = 'aria-style-system';
+        $classes[] = self::getCurrentStyleSystemBodyClass();
 
         return implode(' ', $classes);
     }
@@ -613,6 +626,7 @@ class ThemeViewData
     private static function getHeaderStyleUrls()
     {
         $styles = array();
+        $styleSystem = self::getCurrentStyleSystemKey();
 
         if (ThemeOptions::isImageLightboxEnabled()) {
             $styles[] = ThemeAssetHelper::getThemeAssetUrl('assets/css/lightbox.css');
@@ -621,12 +635,12 @@ class ThemeViewData
         return array_merge($styles, array(
             ThemeAssetHelper::getThemeAssetUrl('assets/css/animate.min.css'),
             ThemeAssetHelper::getThemeAssetUrl('assets/css/iconfont.css'),
-            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/base.css'),
-            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/layout.css'),
-            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/post.css'),
-            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/comments.css'),
-            ThemeAssetHelper::getThemeAssetUrl('assets/css/restored/extras.css'),
-            ThemeAssetHelper::getThemeAssetUrl('assets/css/pages.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/systems/' . $styleSystem . '/base.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/systems/' . $styleSystem . '/layout.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/systems/' . $styleSystem . '/post.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/systems/' . $styleSystem . '/comments.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/systems/' . $styleSystem . '/extras.css'),
+            ThemeAssetHelper::getThemeAssetUrl('assets/css/systems/' . $styleSystem . '/pages.css'),
         ), self::getOptionalIconPackStyleUrls());
     }
 
@@ -824,7 +838,7 @@ class ThemeViewData
         );
 
         $creditsMode = ThemeOptions::getOptionStringValue('footerCreditsMode', 'Continuo');
-        if ($creditsMode === 'original') {
+        if ($creditsMode === 'aria-original') {
             $items[] = array(
                 'text' => 'Aria',
                 'href' => 'https://eriri.ink/archives/Typecho-Theme-Aria.html',

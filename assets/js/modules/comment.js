@@ -96,7 +96,7 @@ function prefersReducedMotion() {
 function isContinuoReplyAnimationEnabled() {
   return (
     document.body &&
-    document.body.classList.contains("aria-visual-enhancements") &&
+    document.body.classList.contains("aria-style-aria-continuo") &&
     !prefersReducedMotion()
   );
 }

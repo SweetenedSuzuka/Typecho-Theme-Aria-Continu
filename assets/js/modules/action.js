@@ -678,8 +678,8 @@ Aria.action.init = function () {
   normalizePaginationLabels("#main > #page-nav");
   normalizePaginationLabels("#comments > .page-navigator");
   observeMainPagination();
-  initDockPagination(".aria-visual-enhancements #main > #page-nav", ".aria-visual-enhancements #main > #page-nav ul");
-  initDockPagination(".aria-visual-enhancements #comments > .page-navigator", ".aria-visual-enhancements #comments > .page-navigator ul");
+  initDockPagination("body.aria-style-aria-continuo #main > #page-nav", "body.aria-style-aria-continuo #main > #page-nav ul");
+  initDockPagination("body.aria-style-aria-continuo #comments > .page-navigator", "body.aria-style-aria-continuo #comments > .page-navigator ul");
   initWowAnimations();
 };
 Aria.action.closeNav = function () {

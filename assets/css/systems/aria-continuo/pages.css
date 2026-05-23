@@ -1,0 +1,199 @@
+.error-page {
+    margin-bottom: 30px;
+}
+
+.error-page-search-input {
+    padding: 10px;
+}
+
+.error-page-search-actions {
+    text-align: center;
+}
+
+.error-page-search-submit {
+    max-width: 200px;
+    width: 50%;
+}
+
+.archives-page {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.2);
+    margin-top: 40px;
+    padding: 15px;
+}
+
+.archives-page #archives-tags,
+.archives-page #archives-categories {
+    margin: 30px 0;
+    position: relative;
+}
+
+.archives-page #archives-tags > div,
+.archives-page #archives-categories > div {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 2.5rem;
+    margin: 0 0 20px;
+    padding: 0 0 0 20px;
+    position: relative;
+    text-shadow: 0 0 5px #b2b2b2;
+}
+
+.archives-page #archives-tags-list,
+.archives-page #archives-cate-list {
+    margin: 0;
+    padding: 0 0 0 40px;
+}
+
+.archives-page .archives-tags-item,
+.archives-page .archives-cate-item {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 0 5px 5px 0;
+    display: inline-block;
+    font-size: 15px;
+    height: 15px;
+    line-height: 15px;
+    list-style: none;
+    margin: 4px 6px;
+    padding: 5px 8px;
+    position: relative;
+    word-break: break-all;
+}
+
+.archives-page .archives-tags-item::before,
+.archives-page .archives-cate-item::before {
+    border-bottom: 12.5px solid transparent;
+    border-right: 10px solid rgba(0, 0, 0, 0.6);
+    border-top: 12.5px solid transparent;
+    content: "";
+    height: 0;
+    left: -10px;
+    position: absolute;
+    top: 0;
+    width: 0;
+}
+
+.archives-page .archives-tags-item::after,
+.archives-page .archives-cate-item::after {
+    background-color: #f2f2f2;
+    border-radius: 50%;
+    content: "";
+    height: 4px;
+    left: -4px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+}
+
+.archives-page .archives-tags-item > a,
+.archives-page .archives-cate-item > a {
+    color: #fff;
+}
+
+.archives-page #timeline-container {
+    position: relative;
+}
+
+.archives-page #timeline-container::before {
+    background-color: #dcdcdc;
+    content: "";
+    height: 100%;
+    left: 73px;
+    position: absolute;
+    top: 10px;
+    width: 4px;
+    z-index: -1;
+}
+
+.archives-page .timeline-ym {
+    background-color: #6f6f6f;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 1rem;
+    height: 32px;
+    left: 10px;
+    line-height: 32px;
+    margin: 10px 0;
+    padding: 0 12px;
+    position: relative;
+}
+
+.archives-page .timeline-ym a {
+    color: #fff;
+}
+
+.archives-page .timeline-box {
+    padding-left: 90px;
+    position: relative;
+}
+
+.archives-page .timeline-box::before {
+    background-color: #8a8a8a;
+    border-radius: 50%;
+    color: #fff;
+    content: "";
+    height: 20px;
+    left: 65px;
+    line-height: 20px;
+    position: absolute;
+    text-align: center;
+    top: 5.5px;
+    width: 20px;
+}
+
+.archives-page .timeline-post {
+    border-radius: 4px;
+    display: block;
+    font-size: 0.95rem;
+    line-height: 2rem;
+    margin: 5px 0 5px 15px;
+    min-height: 2rem;
+    padding: 0;
+    position: relative;
+}
+
+.archives-page .timeline-post::before {
+    background-color: #f2f2f2;
+    border-radius: 50%;
+    content: "";
+    height: 12px;
+    left: -36px;
+    position: absolute;
+    top: 9.5px;
+    transition: all 0.5s ease;
+    width: 12px;
+}
+
+.archives-page .timeline-post:hover::before {
+    background-color: #474747;
+}
+
+.archives-page .timeline-post a {
+    position: relative;
+}
+
+.archives-page .timeline-post a::after {
+    background: #6f6f6f;
+    bottom: -5px;
+    content: "";
+    display: block;
+    height: 2px;
+    left: 0;
+    position: absolute;
+    transition: all 0.5s ease-in-out;
+    width: 0;
+}
+
+.archives-page .timeline-post a:hover::after {
+    width: 100%;
+}
+
+.archives-page .timeline-post-time {
+    color: #6f6f6f;
+    font-family: Consolas;
+    font-size: 0.9rem;
+    left: -80px;
+    position: absolute;
+    top: 0;
+}

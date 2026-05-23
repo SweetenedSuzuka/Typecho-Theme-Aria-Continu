@@ -90,28 +90,10 @@ function themeConfig($form)
         'enableContinuoVisuals',
         array('1' => _t('开启')),
         ariaThemeToggleValue(ThemeOptions::getCheckboxOptionState('enableContinuoVisuals', true)),
-        _t('启用 Aria Continuo 视觉增强'),
-        _t('开启后将应用调整后的正文排版与容器表现；关闭则保持原有经典样式。')
+        _t('使用 Aria Continuo 样式'),
+        _t('开启后使用 Aria Continuo 样式；关闭则使用 Aria 原版样式。')
     );
     $form->addInput($enableContinuoVisuals->multiMode());
-
-    $enablePaginationBlur = new Typecho_Widget_Helper_Form_Element_Checkbox(
-        'enablePaginationBlur',
-        array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isPaginationBlurEnabled()),
-        _t('启用分页模糊'),
-        _t('控制主内容分页轨道是否使用背景模糊；关闭后保留同款层次与交互，仅移除 blur。')
-    );
-    $form->addInput($enablePaginationBlur->multiMode());
-
-    $enableTocBlur = new Typecho_Widget_Helper_Form_Element_Checkbox(
-        'enableTocBlur',
-        array('1' => _t('开启')),
-        ariaThemeToggleValue(ThemeOptions::isTocBlurEnabled()),
-        _t('启用 TOC 模糊'),
-        _t('控制侧边栏目录容器是否使用背景模糊；关闭后保留当前结构与焦点滑块，仅移除 blur。')
-    );
-    $form->addInput($enableTocBlur->multiMode());
 
     $avatarUrl = new Typecho_Widget_Helper_Form_Element_Text('avatarUrl', null, null, _t('站点头像'), _t('在这里填入一个图片URL地址, 以在网站标题前加上一个头像,需要带上http(s)://'));
     $form->addInput($avatarUrl);
