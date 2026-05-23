@@ -110,10 +110,6 @@ body.aria-style-aria-continuo .aria-optical-surface--toc {
 	box-shadow: var(--aria-optical-toc-shadow);
 }
 
-body.aria-style-aria-continuo .aria-optical-surface--toc:not(.aria-toc-ready) {
-	opacity: 0;
-}
-
 body.aria-style-aria-continuo .aria-optical-surface--toc.has-active {
 	box-shadow: var(--aria-optical-toc-shadow-active);
 }
