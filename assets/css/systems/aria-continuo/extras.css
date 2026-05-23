@@ -148,22 +148,8 @@ body.aria-style-aria-continuo #toc {
 	border-radius: var(--aria-radius-md);
 	position: -webkit-sticky;
 	position: sticky;
-	top: 80px
-}
-
-body.aria-style-aria-continuo #toc::before {
-	content: '';
-	position: absolute;
-	inset: 0;
-	border-radius: inherit;
-	background: rgba(255, 255, 255, 0.2);
-	border: 1px solid rgba(255, 255, 255, 0.5);
-	box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.08);
-	-webkit-backdrop-filter: blur(16px) saturate(120%);
-	backdrop-filter: blur(16px) saturate(120%);
-	transform: translateZ(0);
-	pointer-events: none;
-	z-index: 0
+	top: 80px;
+	z-index: 21
 }
 
 #toc li,

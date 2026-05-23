@@ -60,6 +60,77 @@
 	--aria-ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* 入场/展开/位移 (缓出 expo) */
 	--aria-ease-in: cubic-bezier(0.7, 0, 0.84, 0);  /* 退场/收起 (缓入 expo) */
 	--aria-ease-in-out: cubic-bezier(0.87, 0, 0.13, 1); /* 状态平滑切换 */
+
+	/* Optical Lens: 视口级模糊透镜参数 */
+	--aria-optical-toc-blur: 18px;
+	--aria-optical-toc-bg: rgba(255, 255, 255, 0.1);
+	--aria-optical-toc-border: rgba(255, 255, 255, 0.34);
+	--aria-optical-toc-shadow: 0 14px 36px -14px rgba(0, 0, 0, 0.18);
+	--aria-optical-toc-shadow-active: 0 18px 42px -16px rgba(0, 0, 0, 0.22);
+
+	--aria-optical-pagination-blur: 40px;
+	--aria-optical-pagination-bg: rgba(242, 242, 242, 0.12);
+	--aria-optical-pagination-bg-awake: rgba(242, 242, 242, 0.16);
+	--aria-optical-pagination-border: rgba(68, 68, 68, 0.08);
+	--aria-optical-pagination-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+	--aria-optical-pagination-shadow-awake: 0 18px 36px rgba(0, 0, 0, 0.1);
+}
+
+body.aria-style-aria-continuo #aria-optical-surfaces {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 20;
+}
+
+body.aria-style-aria-continuo .aria-optical-surface {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: var(--aria-optical-width, 0px);
+	height: var(--aria-optical-height, 0px);
+	border-radius: var(--aria-optical-radius, 10px);
+	transform: translate3d(var(--aria-optical-x, -9999px), var(--aria-optical-y, -9999px), 0);
+	opacity: 0;
+	transition: opacity var(--aria-duration-fast) var(--aria-ease-out), box-shadow 220ms var(--aria-ease-out), background-color 220ms var(--aria-ease-out), border-color 220ms var(--aria-ease-out);
+	-webkit-backdrop-filter: blur(var(--aria-optical-blur, 20px)) saturate(145%);
+	backdrop-filter: blur(var(--aria-optical-blur, 20px)) saturate(145%);
+	will-change: transform, width, height, opacity;
+}
+
+body.aria-style-aria-continuo .aria-optical-surface.is-visible {
+	opacity: 1;
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--toc {
+	--aria-optical-blur: var(--aria-optical-toc-blur);
+	background: var(--aria-optical-toc-bg);
+	border: 1px solid var(--aria-optical-toc-border);
+	box-shadow: var(--aria-optical-toc-shadow);
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--toc:not(.aria-toc-ready) {
+	opacity: 0;
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--toc.has-active {
+	box-shadow: var(--aria-optical-toc-shadow-active);
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--pagination {
+	--aria-optical-blur: var(--aria-optical-pagination-blur);
+	background: var(--aria-optical-pagination-bg);
+	border: 1px solid var(--aria-optical-pagination-border);
+	box-shadow: var(--aria-optical-pagination-shadow);
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--pagination.is-awake {
+	background: var(--aria-optical-pagination-bg-awake);
+	box-shadow: var(--aria-optical-pagination-shadow-awake);
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--pagination:not(.in-view) {
+	opacity: 0;
 }
 
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */

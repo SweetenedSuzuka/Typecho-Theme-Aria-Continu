@@ -262,6 +262,9 @@ Aria.toc.init = function () {
 
   if (!toc || !postContent) {
     this.titleId = [];
+    if (Aria.optical && typeof Aria.optical.unregister === "function") {
+      Aria.optical.unregister("toc");
+    }
     destroyTocScrollBinding();
     destroyTocHeightSync();
     return;
@@ -276,6 +279,9 @@ Aria.toc.init = function () {
   bindTocHeightSync();
 
   if (!titleCount) {
+    if (Aria.optical && typeof Aria.optical.unregister === "function") {
+      Aria.optical.unregister("toc");
+    }
     return;
   }
   
@@ -283,6 +289,15 @@ Aria.toc.init = function () {
   var tocMarker = document.createElement("div");
   tocMarker.className = "toc-marker";
   toc.appendChild(tocMarker);
+
+  if (Aria.optical && typeof Aria.optical.register === "function") {
+    Aria.optical.register("toc", {
+      host: toc,
+      sourceRoot: toc,
+      variant: "toc",
+      mirroredClasses: ["aria-toc-ready", "has-active"],
+    });
+  }
 
   window.requestAnimationFrame(function () {
     toc.classList.add("aria-toc-ready");

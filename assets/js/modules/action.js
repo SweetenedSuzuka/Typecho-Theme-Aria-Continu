@@ -580,6 +580,27 @@ function observeMainPagination() {
   observer.observe(paginationContainer);
 }
 
+function registerMainPaginationOpticalSurface() {
+  var paginationRoot = document.querySelector("body.aria-style-aria-continuo #main > #page-nav");
+  var paginationTrack = document.querySelector("body.aria-style-aria-continuo #main > #page-nav ul");
+
+  if (!Aria.optical || typeof Aria.optical.register !== "function") {
+    return;
+  }
+
+  if (!paginationRoot || !paginationTrack) {
+    Aria.optical.unregister("pagination");
+    return;
+  }
+
+  Aria.optical.register("pagination", {
+    host: paginationTrack,
+    sourceRoot: paginationRoot,
+    variant: "pagination",
+    mirroredClasses: ["is-awake", "in-view"],
+  });
+}
+
 function initDockPagination(rootSelector, containerSelector) {
   var container = document.querySelector(containerSelector);
   var paginationRoot = document.querySelector(rootSelector);
@@ -669,6 +690,9 @@ function initDockPagination(rootSelector, containerSelector) {
 
 Aria.action = Aria.action || {};
 Aria.action.init = function () {
+  if (Aria.helpers && typeof Aria.helpers.cleanupPageEntryAnimation === "function") {
+    Aria.helpers.cleanupPageEntryAnimation();
+  }
   headroom();
   gotop();
   closeNav();
@@ -680,6 +704,7 @@ Aria.action.init = function () {
   observeMainPagination();
   initDockPagination("body.aria-style-aria-continuo #main > #page-nav", "body.aria-style-aria-continuo #main > #page-nav ul");
   initDockPagination("body.aria-style-aria-continuo #comments > .page-navigator", "body.aria-style-aria-continuo #comments > .page-navigator ul");
+  registerMainPaginationOpticalSurface();
   initWowAnimations();
 };
 Aria.action.closeNav = function () {

@@ -85,6 +85,274 @@ function fadeElement(element, shouldShow, displayValue, duration) {
   }
 }
 
+function ensureOpticalSurfaceRoot() {
+  var root = Aria.state.opticalSurfaceRoot;
+  var container = document.getElementById("body") || document.body;
+
+  if (root && container && container.contains(root)) {
+    return root;
+  }
+
+  if (!container) {
+    return null;
+  }
+
+  if (root && root.parentNode && root.parentNode !== container) {
+    root.parentNode.removeChild(root);
+  }
+
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "aria-optical-surfaces";
+    root.setAttribute("aria-hidden", "true");
+  }
+
+  if (!container.contains(root)) {
+    container.appendChild(root);
+  }
+
+  Aria.state.opticalSurfaceRoot = root;
+  return root;
+}
+
+function disconnectOpticalSurfaceObservers(entry) {
+  if (!entry) {
+    return;
+  }
+
+  if (entry.resizeObserver) {
+    entry.resizeObserver.disconnect();
+    entry.resizeObserver = null;
+  }
+
+  if (entry.mutationObserver) {
+    entry.mutationObserver.disconnect();
+    entry.mutationObserver = null;
+  }
+}
+
+function scheduleOpticalSurfaceSync() {
+  if (Aria.state.opticalSurfaceFrame) {
+    return;
+  }
+
+  Aria.state.opticalSurfaceFrame = window.requestAnimationFrame(function () {
+    Aria.state.opticalSurfaceFrame = null;
+    Object.keys(Aria.state.opticalSurfaces || {}).forEach(function (key) {
+      Aria.optical.sync(key);
+    });
+  });
+}
+
+function ensureOpticalSurfaceLoop() {
+  if (Aria.state.opticalSurfaceLoopInstalled) {
+    return;
+  }
+
+  Aria.state.opticalSurfaceLoopInstalled = !0;
+  window.addEventListener("scroll", scheduleOpticalSurfaceSync, { passive: true });
+  window.addEventListener("resize", scheduleOpticalSurfaceSync);
+}
+
+function isOpticalHostVisible(element) {
+  var rect;
+  var style;
+
+  if (!element || !element.isConnected) {
+    return !1;
+  }
+
+  style = window.getComputedStyle(element);
+  if (
+    style.display === "none" ||
+    style.visibility === "hidden" ||
+    parseFloat(style.opacity || "1") === 0
+  ) {
+    return !1;
+  }
+
+  rect = element.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) {
+    return !1;
+  }
+
+  if (
+    rect.bottom <= 0 ||
+    rect.top >= window.innerHeight ||
+    rect.right <= 0 ||
+    rect.left >= window.innerWidth
+  ) {
+    return !1;
+  }
+
+  return !0;
+}
+
+Aria.optical = Aria.optical || {};
+Aria.state.opticalSurfaces = Aria.state.opticalSurfaces || {};
+
+Aria.optical.refresh = function () {
+  Object.keys(Aria.state.opticalSurfaces || {}).forEach(function (key) {
+    Aria.optical.sync(key);
+  });
+};
+
+Aria.optical.unregister = function (key) {
+  var entry = Aria.state.opticalSurfaces[key];
+
+  if (!entry) {
+    return;
+  }
+
+  disconnectOpticalSurfaceObservers(entry);
+  if (entry.surface && entry.surface.parentNode) {
+    entry.surface.parentNode.removeChild(entry.surface);
+  }
+
+  delete Aria.state.opticalSurfaces[key];
+};
+
+Aria.optical.sync = function (key) {
+  var entry = Aria.state.opticalSurfaces[key];
+  var host;
+  var surface;
+  var sourceRoot;
+  var rect;
+  var borderRadius;
+  var visible;
+
+  if (!entry) {
+    return;
+  }
+
+  host = entry.host;
+  surface = entry.surface;
+  sourceRoot = entry.sourceRoot || host;
+  if (!host || !surface) {
+    return;
+  }
+
+  visible = isOpticalHostVisible(host);
+  surface.classList.toggle("is-visible", visible);
+
+  if (!visible) {
+    surface.style.setProperty("--aria-optical-x", "-9999px");
+    surface.style.setProperty("--aria-optical-y", "-9999px");
+    return;
+  }
+
+  rect = host.getBoundingClientRect();
+  borderRadius = window.getComputedStyle(host).borderRadius || "0px";
+
+  surface.style.setProperty("--aria-optical-x", rect.left + "px");
+  surface.style.setProperty("--aria-optical-y", rect.top + "px");
+  surface.style.setProperty("--aria-optical-width", rect.width + "px");
+  surface.style.setProperty("--aria-optical-height", rect.height + "px");
+  surface.style.setProperty("--aria-optical-radius", borderRadius);
+
+  (entry.mirroredClasses || []).forEach(function (className) {
+    surface.classList.toggle(
+      className,
+      !!sourceRoot && sourceRoot.classList.contains(className),
+    );
+  });
+};
+
+Aria.optical.register = function (key, options) {
+  var entry;
+  var root;
+  var sourceRoot;
+
+  if (!options || !options.host) {
+    Aria.optical.unregister(key);
+    return null;
+  }
+
+  root = ensureOpticalSurfaceRoot();
+  if (!root) {
+    return null;
+  }
+
+  ensureOpticalSurfaceLoop();
+  entry = Aria.state.opticalSurfaces[key] || {};
+  sourceRoot = options.sourceRoot || options.host;
+
+  if (!entry.surface) {
+    entry.surface = document.createElement("div");
+    root.appendChild(entry.surface);
+  }
+
+  disconnectOpticalSurfaceObservers(entry);
+
+  entry.host = options.host;
+  entry.sourceRoot = sourceRoot;
+  entry.variant = options.variant || key;
+  entry.mirroredClasses = options.mirroredClasses || [];
+  entry.surface.className = "aria-optical-surface aria-optical-surface--" + entry.variant;
+  entry.surface.setAttribute("data-aria-optical-surface", key);
+
+  if (typeof window.ResizeObserver === "function") {
+    entry.resizeObserver = new window.ResizeObserver(function () {
+      scheduleOpticalSurfaceSync();
+    });
+    entry.resizeObserver.observe(entry.host);
+    if (sourceRoot && sourceRoot !== entry.host) {
+      entry.resizeObserver.observe(sourceRoot);
+    }
+  }
+
+  if (sourceRoot && entry.mirroredClasses.length && typeof window.MutationObserver === "function") {
+    entry.mutationObserver = new window.MutationObserver(function () {
+      scheduleOpticalSurfaceSync();
+    });
+    entry.mutationObserver.observe(sourceRoot, {
+      attributes: !0,
+      attributeFilter: ["class"],
+    });
+  }
+
+  Aria.state.opticalSurfaces[key] = entry;
+  scheduleOpticalSurfaceSync();
+  return entry.surface;
+};
+
+Aria.helpers.cleanupPageEntryAnimation = function () {
+  var pageBody = document.getElementById("body");
+  var cleaned = !1;
+
+  if (!pageBody || pageBody.getAttribute("data-aria-entry-cleaned") === "true") {
+    return;
+  }
+
+  function finishCleanup() {
+    if (cleaned) {
+      return;
+    }
+
+    cleaned = !0;
+    pageBody.classList.remove("animated", "fadeIn");
+    pageBody.setAttribute("data-aria-entry-cleaned", "true");
+
+    if (Aria.optical && typeof Aria.optical.refresh === "function") {
+      window.requestAnimationFrame(function () {
+        Aria.optical.refresh();
+      });
+    }
+  }
+
+  pageBody.addEventListener(
+    "animationend",
+    function (event) {
+      if (event.target === pageBody) {
+        finishCleanup();
+      }
+    },
+    { once: !0 },
+  );
+
+  window.setTimeout(finishCleanup, 1200);
+};
+
 Aria.helpers.toggleNav = function () {
   var navigation = document.getElementById("nav-vertical");
   var wrapper = document.getElementById("wrapper");
