@@ -31,6 +31,18 @@
 	--aria-text-muted: #8a8a8a;
 	--aria-text-link: #333333;
 	--aria-text-link-hover: grey;
+	--aria-nav-ink-dark: rgba(38, 40, 44, 0.86);
+	--aria-nav-ink-dark-hover: rgba(22, 24, 28, 0.96);
+	--aria-nav-ink-light: rgba(248, 250, 252, 0.9);
+	--aria-nav-ink-light-hover: rgba(255, 255, 255, 0.98);
+	--aria-nav-ink-shadow-dark: none;
+	--aria-nav-ink-shadow-light: 0 1px 10px rgba(0, 0, 0, 0.18);
+	--aria-nav-sub-ink-dark: rgba(42, 44, 48, 0.88);
+	--aria-nav-sub-ink-dark-hover: rgba(20, 22, 26, 0.96);
+	--aria-nav-sub-ink-light: rgba(248, 250, 252, 0.92);
+	--aria-nav-sub-ink-light-hover: rgba(255, 255, 255, 0.98);
+	--aria-nav-sub-ink-shadow-dark: none;
+	--aria-nav-sub-ink-shadow-light: 0 1px 10px rgba(0, 0, 0, 0.22);
 	
 	/* 边框与线条 */
 	--aria-border-color: #e1e1e1;
@@ -74,6 +86,12 @@
 	--aria-optical-pagination-border: rgba(68, 68, 68, 0.08);
 	--aria-optical-pagination-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
 	--aria-optical-pagination-shadow-awake: 0 18px 36px rgba(0, 0, 0, 0.1);
+
+	--aria-optical-nav-sub-blur: 28px;
+	--aria-optical-nav-sub-bg: rgba(248, 249, 251, 0.14);
+	--aria-optical-nav-sub-border: rgba(255, 255, 255, 0.24);
+	--aria-optical-nav-sub-shadow: 0 18px 40px rgba(0, 0, 0, 0.12), 0 8px 18px rgba(0, 0, 0, 0.06);
+	--aria-optical-nav-sub-shadow-active: 0 22px 46px rgba(0, 0, 0, 0.14), 0 10px 22px rgba(0, 0, 0, 0.08);
 }
 
 body.aria-style-aria-continuo #aria-optical-surfaces {
@@ -145,6 +163,26 @@ body.aria-style-aria-continuo .aria-optical-surface--pagination {
 body.aria-style-aria-continuo .aria-optical-surface--pagination.is-awake {
 	background: var(--aria-optical-pagination-bg-awake);
 	box-shadow: var(--aria-optical-pagination-shadow-awake);
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--nav-submenu {
+	--aria-optical-blur: var(--aria-optical-nav-sub-blur);
+	background: var(--aria-optical-nav-sub-bg);
+	border: 1px solid var(--aria-optical-nav-sub-border);
+	box-shadow: var(--aria-optical-nav-sub-shadow);
+	opacity: 0;
+	transition: opacity 260ms var(--aria-ease-out), box-shadow 420ms var(--aria-ease-out), background-color 320ms var(--aria-ease-out), border-color 320ms var(--aria-ease-out);
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--nav-submenu.is-visible.show-sub.aria-submenu-entered {
+	opacity: 1;
+	box-shadow: var(--aria-optical-nav-sub-shadow-active);
+}
+
+body.aria-style-aria-continuo .aria-optical-surface--nav-submenu.is-visible.show-sub.aria-submenu-closing {
+	opacity: 0;
+	box-shadow: var(--aria-optical-nav-sub-shadow);
+	transition: opacity 240ms var(--aria-ease-in), box-shadow 320ms var(--aria-ease-in-out), background-color 260ms var(--aria-ease-in-out), border-color 260ms var(--aria-ease-in-out);
 }
 
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */

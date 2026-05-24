@@ -227,19 +227,35 @@ input[type=password] {
 	font-family: Roboto, "Open Sans", "Microsoft YaHei", "Helvetica Neue", Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif
 }
 
-#nav-menu a {
-	/* 顶部选项颜色 */
-	color: #4f4f4f;
-	font-size: 20px;
-	display: inline-block
-	/* font-size: 20px;
-	display: inline-block */
+body.aria-style-aria-continuo #nav-menu {
+	--aria-nav-current-ink: var(--aria-nav-ink-dark);
+	--aria-nav-current-ink-hover: var(--aria-nav-ink-dark-hover);
+	--aria-nav-current-ink-shadow: var(--aria-nav-ink-shadow-dark);
 }
 
-/* 新增 */
-#nav-menu a:hover {
-	/* 顶部选项颜色（鼠标置于上方） */
-	color: #272727
+body.aria-style-aria-continuo #nav-menu.aria-nav-tone-light {
+	--aria-nav-current-ink: var(--aria-nav-ink-light);
+	--aria-nav-current-ink-hover: var(--aria-nav-ink-light-hover);
+	--aria-nav-current-ink-shadow: var(--aria-nav-ink-shadow-light);
+}
+
+body.aria-style-aria-continuo #nav-menu.aria-nav-tone-dark {
+	--aria-nav-current-ink: var(--aria-nav-ink-dark);
+	--aria-nav-current-ink-hover: var(--aria-nav-ink-dark-hover);
+	--aria-nav-current-ink-shadow: var(--aria-nav-ink-shadow-dark);
+}
+
+body.aria-style-aria-continuo #nav-menu a,
+body.aria-style-aria-continuo #nav-menu #nav-btns i {
+	color: var(--aria-nav-current-ink);
+	text-shadow: var(--aria-nav-current-ink-shadow);
+	font-size: 20px;
+	display: inline-block
+}
+
+body.aria-style-aria-continuo #nav-menu a:hover,
+body.aria-style-aria-continuo #nav-menu #nav-btns i:hover {
+	color: var(--aria-nav-current-ink-hover)
 }
 
 #nav-left {
@@ -744,7 +760,7 @@ body.aria-style-aria-continuo .card:hover {
                 0 4px 12px -4px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* 调整顶部导航栏 (Nav) 的阴影与模糊参数 */
+/* 顶部导航栏 (Nav) 的阴影与模糊参数 */
 body.aria-style-aria-continuo #nav-menu {
     backdrop-filter: blur(10px) saturate(120%);
     -webkit-backdrop-filter: blur(10px) saturate(120%);
@@ -777,29 +793,188 @@ body.aria-style-aria-continuo #search-box {
     backdrop-filter: blur(20px) saturate(120%);
     -webkit-backdrop-filter: blur(20px) saturate(120%);
 }
+/*
+ * Aria Continuo: 顶栏二级下拉菜单
+ *
+ * - 面板先显现，再从顶栏下缘滑出
+ * - 菜单项逐项入场，形成自上而下展开的层次
+ * - 模糊强度参与状态变化，不做静态透明板
+ * - hover 时由选项自身向左探出，直接响应指针位置
+ */
+
+body.aria-style-aria-continuo .nav-right-item {
+    overflow: visible;
+}
+
 body.aria-style-aria-continuo .nav-sub {
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    /* 弥散阴影 */
-    box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.1) !important;
+    --aria-nav-sub-current-ink: var(--aria-nav-sub-ink-dark);
+    --aria-nav-sub-current-ink-hover: var(--aria-nav-sub-ink-dark-hover);
+    --aria-nav-sub-current-ink-shadow: var(--aria-nav-sub-ink-shadow-dark);
+    display: block;
+    width: max-content;
+    min-width: 142px;
+    position: absolute;
+    isolation: isolate;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 6px;
+    top: calc(100% + 10px);
+    overflow: visible;
+    transform-origin: 50% 0;
+    transform: translate3d(-50%, -12px, 0) scale3d(0.982, 0.9, 1) !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    will-change: transform, opacity;
+    animation: none !important;
 }
 
-/* 子菜单弹出动画 */
-@keyframes aria-sub-menu-fade-in {
-    0% {
-        opacity: 0;
-        transform: translate3d(-50%, 8px, 0) scale(0.98);
-    }
-    100% {
-        opacity: 1;
-        transform: translate3d(-50%, 0, 0) scale(1);
-    }
+body.aria-style-aria-continuo .nav-sub.aria-submenu-tone-light {
+    --aria-nav-sub-current-ink: var(--aria-nav-sub-ink-light);
+    --aria-nav-sub-current-ink-hover: var(--aria-nav-sub-ink-light-hover);
+    --aria-nav-sub-current-ink-shadow: var(--aria-nav-sub-ink-shadow-light);
 }
 
-body.aria-style-aria-continuo .show-sub {
-    animation-name: aria-sub-menu-fade-in !important;
-    animation-duration: 0.25s !important;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+body.aria-style-aria-continuo .nav-sub.aria-submenu-tone-dark {
+    --aria-nav-sub-current-ink: var(--aria-nav-sub-ink-dark);
+    --aria-nav-sub-current-ink-hover: var(--aria-nav-sub-ink-dark-hover);
+    --aria-nav-sub-current-ink-shadow: var(--aria-nav-sub-ink-shadow-dark);
+}
+
+body.aria-style-aria-continuo .nav-sub.show-sub {
+    visibility: visible;
+    pointer-events: auto;
+    transition: none;
+    animation: none !important;
+}
+
+body.aria-style-aria-continuo .nav-sub.show-sub.aria-submenu-entered {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale3d(1, 1, 1) !important;
+    transition:
+        opacity 320ms var(--aria-ease-out),
+        transform 460ms var(--aria-ease-out),
+        visibility 0s linear 0s;
+    animation: none !important;
+}
+
+body.aria-style-aria-continuo .nav-sub.show-sub.aria-submenu-closing {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(-50%, -5px, 0) scale3d(0.988, 0.95, 1) !important;
+    transition:
+        opacity 280ms var(--aria-ease-in),
+        transform 420ms var(--aria-ease-in-out),
+        visibility 0s linear 0s;
+}
+
+body.aria-style-aria-continuo .nav-sub::before {
+    display: none !important;
+}
+
+body.aria-style-aria-continuo .sub-item {
+    margin: 0;
+    white-space: nowrap;
+    position: relative;
+}
+
+body.aria-style-aria-continuo .sub-item a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 142px;
+    margin: 0 !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-align: left;
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--aria-nav-sub-current-ink);
+    text-shadow: var(--aria-nav-sub-current-ink-shadow);
+    /* 初始入场位移 */
+    opacity: 0;
+    transform: translate3d(10px, 8px, 0) scale3d(0.985, 0.985, 1);
+    transition:
+        opacity 280ms var(--aria-ease-out),
+        transform 460ms var(--aria-ease-out),
+        color 220ms var(--aria-ease-out),
+        text-shadow 220ms var(--aria-ease-out);
+}
+
+body.aria-style-aria-continuo .sub-item a::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(0, 0, 0, 0.06); /* 浅色模式下压暗 */
+    opacity: 0;
+    transform: scaleX(0.96);
+    transition:
+        opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 0;
+}
+
+body.aria-style-aria-continuo.dark .sub-item a::before {
+    background: rgba(255, 255, 255, 0.08); /* 深色模式下提亮 */
+}
+
+body.aria-style-aria-continuo .sub-item a > * {
+    position: relative;
+    z-index: 1;
+}
+
+body.aria-style-aria-continuo .sub-item a i {
+    color: inherit;
+    font-size: 13px !important;
+    line-height: 1 !important;
+    flex: 0 0 auto;
+}
+
+body.aria-style-aria-continuo .nav-sub.show-sub.aria-submenu-entered .sub-item a {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    transition-delay: calc(70ms + var(--aria-sub-item-index, 0) * 38ms);
+}
+
+body.aria-style-aria-continuo .nav-sub.show-sub.aria-submenu-closing .sub-item a {
+    opacity: 0;
+    transform: translate3d(-2px, 4px, 0) scale3d(0.988, 0.988, 1);
+    transition-delay: 55ms;
+}
+
+body.aria-style-aria-continuo .nav-sub.show-sub.aria-submenu-entered .sub-item a:hover {
+    /* 左探响应 */
+    color: var(--aria-nav-sub-current-ink-hover);
+    transform: translate3d(-4px, 0, 0);
+    /* 鼠标滑上时快速响应，配合离开时较为缓慢的速度，形成波浪效果 */
+    transition:
+        transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: 0s !important;
+}
+
+body.aria-style-aria-continuo .nav-sub.show-sub.aria-submenu-entered .sub-item a:hover::before {
+    opacity: 1;
+    transform: scaleX(1);
+    /* 底板瞬间亮起 */
+    transition:
+        opacity 0.05s ease-out,
+        transform 0.1s ease-out;
+    transition-delay: 0s !important;
+}
+
+body.aria-style-aria-continuo .nav-sub.show-sub.aria-submenu-closing .sub-item a::before {
+    opacity: 0;
+    transform: scaleX(0.98);
+    transition:
+        opacity 180ms var(--aria-ease-in),
+        transform 260ms var(--aria-ease-in);
 }

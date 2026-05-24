@@ -81,6 +81,412 @@ function headroom() {
   Aria.state.headroom = createHeadroomController(navigation);
 }
 
+function parseContrastColor(value) {
+  var match;
+  var hex;
+  var alphaHex;
+
+  if (!value || value === "transparent") {
+    return null;
+  }
+
+  if (value.indexOf("rgb") === 0) {
+    match = value.match(/rgba?\(([^)]+)\)/);
+    if (!match) {
+      return null;
+    }
+
+    match = match[1].split(",").map(function (part) {
+      return parseFloat(part.trim());
+    });
+
+    return {
+      r: match[0],
+      g: match[1],
+      b: match[2],
+      a: typeof match[3] === "number" && !isNaN(match[3]) ? match[3] : 1,
+    };
+  }
+
+  if (value.charAt(0) === "#") {
+    hex = value.slice(1);
+    if (hex.length === 3 || hex.length === 4) {
+      hex = hex.split("").map(function (digit) {
+        return digit + digit;
+      }).join("");
+    }
+
+    if (hex.length !== 6 && hex.length !== 8) {
+      return null;
+    }
+
+    alphaHex = hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1;
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+      a: alphaHex,
+    };
+  }
+
+  return null;
+}
+
+function getContrastLuminance(color) {
+  function normalize(channel) {
+    var srgb = channel / 255;
+    return srgb <= 0.03928 ? srgb / 12.92 : Math.pow((srgb + 0.055) / 1.055, 2.4);
+  }
+
+  return 0.2126 * normalize(color.r) + 0.7152 * normalize(color.g) + 0.0722 * normalize(color.b);
+}
+
+function getContrastImageState(src) {
+  var cache = Aria.state.adaptiveInkImageCache || (Aria.state.adaptiveInkImageCache = {});
+  var entry = cache[src];
+
+  if (entry) {
+    return entry;
+  }
+
+  entry = {
+    image: new Image(),
+    ready: !1,
+    failed: !1,
+  };
+
+  entry.image.crossOrigin = "anonymous";
+  entry.image.decoding = "async";
+  entry.image.onload = function () {
+    entry.ready = !0;
+    scheduleAdaptiveNavInkUpdate();
+  };
+  entry.image.onerror = function () {
+    entry.failed = !0;
+  };
+  entry.image.src = src;
+  cache[src] = entry;
+  return entry;
+}
+
+function getContrastCanvasContext() {
+  var canvas = Aria.state.adaptiveInkCanvas;
+  if (!canvas) {
+    canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = 1;
+    Aria.state.adaptiveInkCanvas = canvas;
+    Aria.state.adaptiveInkContext = canvas.getContext("2d", { willReadFrequently: !0 });
+  }
+  return Aria.state.adaptiveInkContext;
+}
+
+function sampleContrastImage(entry, imageX, imageY) {
+  var context;
+  var data;
+  var clampedX;
+  var clampedY;
+
+  if (!entry || !entry.ready || entry.failed) {
+    return null;
+  }
+
+  context = getContrastCanvasContext();
+  if (!context) {
+    return null;
+  }
+
+  clampedX = Math.max(0, Math.min(entry.image.naturalWidth - 1, Math.round(imageX)));
+  clampedY = Math.max(0, Math.min(entry.image.naturalHeight - 1, Math.round(imageY)));
+
+  try {
+    context.clearRect(0, 0, 1, 1);
+    context.drawImage(entry.image, clampedX, clampedY, 1, 1, 0, 0, 1, 1);
+    data = context.getImageData(0, 0, 1, 1).data;
+    return {
+      r: data[0],
+      g: data[1],
+      b: data[2],
+      a: data[3] / 255,
+    };
+  } catch (error) {
+    entry.failed = !0;
+    return null;
+  }
+}
+
+function mapCoverSamplePoint(containerWidth, containerHeight, imageWidth, imageHeight, xRatio, yRatio, fitMode) {
+  var scale;
+  var renderedWidth;
+  var renderedHeight;
+  var offsetX;
+  var offsetY;
+
+  fitMode = fitMode === "contain" ? "contain" : "cover";
+  scale = fitMode === "contain"
+    ? Math.min(containerWidth / imageWidth, containerHeight / imageHeight)
+    : Math.max(containerWidth / imageWidth, containerHeight / imageHeight);
+
+  renderedWidth = imageWidth * scale;
+  renderedHeight = imageHeight * scale;
+  offsetX = (containerWidth - renderedWidth) / 2;
+  offsetY = (containerHeight - renderedHeight) / 2;
+
+  return {
+    x: ((xRatio * containerWidth) - offsetX) / renderedWidth * imageWidth,
+    y: ((yRatio * containerHeight) - offsetY) / renderedHeight * imageHeight,
+  };
+}
+
+function extractBackgroundImageUrl(backgroundImage) {
+  var match;
+
+  if (!backgroundImage || backgroundImage === "none") {
+    return null;
+  }
+
+  match = backgroundImage.match(/url\((['"]?)(.*?)\1\)/);
+  return match ? match[2] : null;
+}
+
+function sampleImageElementContrast(element, x, y) {
+  var rect = element.getBoundingClientRect();
+  var entry;
+  var point;
+  var fitMode;
+
+  if (!rect.width || !rect.height || !element.currentSrc && !element.src) {
+    return null;
+  }
+
+  entry = getContrastImageState(element.currentSrc || element.src);
+  if (!entry.ready || entry.failed || !entry.image.naturalWidth || !entry.image.naturalHeight) {
+    return null;
+  }
+
+  fitMode = window.getComputedStyle(element).objectFit || "cover";
+  point = mapCoverSamplePoint(
+    rect.width,
+    rect.height,
+    entry.image.naturalWidth,
+    entry.image.naturalHeight,
+    (x - rect.left) / rect.width,
+    (y - rect.top) / rect.height,
+    fitMode
+  );
+
+  return sampleContrastImage(entry, point.x, point.y);
+}
+
+function sampleBackgroundImageContrast(element, style, x, y) {
+  var src = extractBackgroundImageUrl(style.backgroundImage);
+  var rect = element.getBoundingClientRect();
+  var entry;
+  var sizeMode;
+  var point;
+
+  if (!src || !rect.width || !rect.height) {
+    return null;
+  }
+
+  entry = getContrastImageState(src);
+  if (!entry.ready || entry.failed || !entry.image.naturalWidth || !entry.image.naturalHeight) {
+    return null;
+  }
+
+  sizeMode = style.backgroundSize === "contain" ? "contain" : "cover";
+  point = mapCoverSamplePoint(
+    rect.width,
+    rect.height,
+    entry.image.naturalWidth,
+    entry.image.naturalHeight,
+    (x - rect.left) / rect.width,
+    (y - rect.top) / rect.height,
+    sizeMode
+  );
+
+  return sampleContrastImage(entry, point.x, point.y);
+}
+
+function shouldIgnoreContrastElement(element, ignoredElements) {
+  if (!element) {
+    return !0;
+  }
+
+  if (element.id === "aria-optical-surfaces" || element.closest("#aria-optical-surfaces")) {
+    return !0;
+  }
+
+  return ignoredElements.some(function (ignored) {
+    return ignored && (ignored === element || ignored.contains(element));
+  });
+}
+
+function resolveContrastColorAtPoint(x, y, ignoredElements) {
+  var stack = typeof document.elementsFromPoint === "function"
+    ? document.elementsFromPoint(x, y)
+    : [document.elementFromPoint(x, y)];
+  var fallback = parseContrastColor(window.getComputedStyle(document.body).backgroundColor) || { r: 242, g: 242, b: 242, a: 1 };
+  var softFallback = null;
+
+  stack.some(function (element) {
+    var style;
+    var backgroundColor;
+    var sampledImageColor;
+
+    if (!element || shouldIgnoreContrastElement(element, ignoredElements)) {
+      return !1;
+    }
+
+    style = window.getComputedStyle(element);
+    if (
+      style.display === "none" ||
+      style.visibility === "hidden" ||
+      parseFloat(style.opacity || "1") <= 0
+    ) {
+      return !1;
+    }
+
+    if (element.tagName === "IMG") {
+      sampledImageColor = sampleImageElementContrast(element, x, y);
+      if (sampledImageColor) {
+        fallback = sampledImageColor;
+        return !0;
+      }
+    }
+
+    sampledImageColor = sampleBackgroundImageContrast(element, style, x, y);
+    if (sampledImageColor) {
+      fallback = sampledImageColor;
+      return !0;
+    }
+
+    backgroundColor = parseContrastColor(style.backgroundColor);
+    if (!backgroundColor || backgroundColor.a <= 0.03) {
+      return !1;
+    }
+
+    if (backgroundColor.a >= 0.4) {
+      fallback = backgroundColor;
+      return !0;
+    }
+
+    softFallback = backgroundColor;
+    return !1;
+  });
+
+  return softFallback || fallback;
+}
+
+function getAverageContrastTone(points, ignoredElements) {
+  var luminanceTotal = 0;
+
+  if (!points.length) {
+    return "dark";
+  }
+
+  points.forEach(function (point) {
+    luminanceTotal += getContrastLuminance(
+      resolveContrastColorAtPoint(point.x, point.y, ignoredElements),
+    );
+  });
+
+  return luminanceTotal / points.length < 0.48 ? "light" : "dark";
+}
+
+function applyNavInkTone(element, classPrefix, tone) {
+  if (!element) {
+    return;
+  }
+
+  element.classList.remove(classPrefix + "-light", classPrefix + "-dark");
+  element.classList.add(classPrefix + "-" + tone);
+}
+
+function updateAdaptiveNavInk() {
+  var navigation = document.getElementById("nav-menu");
+  var openSubmenus;
+  var navRect;
+  var navPoints;
+
+  if (!document.body.classList.contains("aria-style-aria-continuo") || !navigation) {
+    return;
+  }
+
+  navRect = navigation.getBoundingClientRect();
+  navPoints = [0.14, 0.32, 0.5, 0.68, 0.86].map(function (ratio) {
+    return {
+      x: navRect.left + navRect.width * ratio,
+      y: navRect.top + Math.min(navRect.height - 8, Math.max(16, navRect.height * 0.5)),
+    };
+  });
+
+  applyNavInkTone(
+    navigation,
+    "aria-nav-tone",
+    getAverageContrastTone(navPoints, [navigation]),
+  );
+
+  openSubmenus = navigation.querySelectorAll(".nav-sub.show-sub");
+  Array.prototype.forEach.call(openSubmenus, function (submenu) {
+    var rect = submenu.getBoundingClientRect();
+    var xInset = Math.min(24, rect.width * 0.2);
+    var yInset = Math.min(14, rect.height * 0.2);
+    var submenuPoints = [
+      { x: rect.left + xInset, y: rect.top + yInset },
+      { x: rect.left + rect.width * 0.5, y: rect.top + yInset },
+      { x: rect.right - xInset, y: rect.top + yInset },
+      { x: rect.left + rect.width * 0.32, y: rect.bottom - yInset },
+      { x: rect.left + rect.width * 0.68, y: rect.bottom - yInset },
+    ];
+
+    applyNavInkTone(
+      submenu,
+      "aria-submenu-tone",
+      getAverageContrastTone(submenuPoints, [navigation, submenu]),
+    );
+  });
+}
+
+function scheduleAdaptiveNavInkUpdate() {
+  if (Aria.state.adaptiveNavInkFrame) {
+    return;
+  }
+
+  Aria.state.adaptiveNavInkFrame = window.requestAnimationFrame(function () {
+    Aria.state.adaptiveNavInkFrame = null;
+    updateAdaptiveNavInk();
+  });
+}
+
+function adaptiveNavInk() {
+  var state = Aria.state.adaptiveNavInk || {};
+  var navigation = document.getElementById("nav-menu");
+
+  if (state.scrollHandler) {
+    window.removeEventListener("scroll", state.scrollHandler);
+    window.removeEventListener("resize", state.scrollHandler);
+    window.removeEventListener("load", state.scrollHandler);
+  }
+
+  state.scrollHandler = null;
+
+  if (!document.body.classList.contains("aria-style-aria-continuo") || !navigation) {
+    Aria.state.adaptiveNavInk = state;
+    return;
+  }
+
+  state.scrollHandler = function () {
+    scheduleAdaptiveNavInkUpdate();
+  };
+
+  window.addEventListener("scroll", state.scrollHandler, { passive: !0 });
+  window.addEventListener("resize", state.scrollHandler);
+  window.addEventListener("load", state.scrollHandler);
+  Aria.state.adaptiveNavInk = state;
+  scheduleAdaptiveNavInkUpdate();
+}
+
 function gotop() {
   var scrollOptions = { passive: !0 };
   var visibleOffset = 100;
@@ -188,45 +594,251 @@ function gotop() {
 
 function nav() {
   var hoverBindings = Aria.state.navHoverBindings || [];
+  var continuoCloseDelay = 700;
+  var continuoCloseAnimationMs = 420;
+
+  if (Aria.optical && typeof Aria.optical.unregister === "function") {
+    Aria.optical.unregister("nav-submenu");
+  }
 
   hoverBindings.forEach(function (binding) {
     binding.element.removeEventListener("mouseenter", binding.enterHandler);
     binding.element.removeEventListener("mouseleave", binding.leaveHandler);
+    if (binding.submenu) {
+      binding.submenu.removeEventListener(
+        "mouseenter",
+        binding.submenuEnterHandler,
+      );
+      binding.submenu.removeEventListener(
+        "mouseleave",
+        binding.submenuLeaveHandler,
+      );
+    }
+    if (binding.submenu && binding.submenu._ariaCloseTimer) {
+      window.clearTimeout(binding.submenu._ariaCloseTimer);
+      binding.submenu._ariaCloseTimer = null;
+    }
+    if (binding.submenu && binding.submenu._ariaExitTimer) {
+      window.clearTimeout(binding.submenu._ariaExitTimer);
+      binding.submenu._ariaExitTimer = null;
+    }
+    if (binding.submenu && binding.submenu._ariaEnterFrame) {
+      window.cancelAnimationFrame(binding.submenu._ariaEnterFrame);
+      binding.submenu._ariaEnterFrame = null;
+    }
   });
 
   Aria.state.navHoverBindings = [];
 
+  var isContinuo = document.body.classList.contains("aria-style-aria-continuo");
+  var activeContinuoSubmenu = null;
+
+  function syncContinuoSubmenuSurface(submenu) {
+    if (!isContinuo || !Aria.optical || typeof Aria.optical.register !== "function") {
+      return;
+    }
+
+    if (!submenu) {
+      if (typeof Aria.optical.unregister === "function") {
+        Aria.optical.unregister("nav-submenu");
+      }
+      return;
+    }
+
+    Aria.optical.register("nav-submenu", {
+      host: submenu,
+      sourceRoot: submenu,
+      variant: "nav-submenu",
+      mirroredClasses: ["show-sub", "aria-submenu-entered", "aria-submenu-closing"],
+    });
+  }
+
+  function clearContinuoCloseTimer(submenu) {
+    if (!submenu || !submenu._ariaCloseTimer) {
+      return;
+    }
+
+    window.clearTimeout(submenu._ariaCloseTimer);
+    submenu._ariaCloseTimer = null;
+  }
+
+  function clearContinuoAnimationTimers(submenu) {
+    if (!submenu) {
+      return;
+    }
+
+    clearContinuoCloseTimer(submenu);
+
+    if (submenu._ariaExitTimer) {
+      window.clearTimeout(submenu._ariaExitTimer);
+      submenu._ariaExitTimer = null;
+    }
+
+    if (submenu._ariaEnterFrame) {
+      window.cancelAnimationFrame(submenu._ariaEnterFrame);
+      submenu._ariaEnterFrame = null;
+    }
+  }
+
+  function openContinuoSubmenu(submenu) {
+    if (!submenu) {
+      return;
+    }
+
+    clearContinuoAnimationTimers(submenu);
+    submenu.classList.add("show-sub");
+    submenu.classList.remove("aria-submenu-closing");
+
+    submenu._ariaEnterFrame = window.requestAnimationFrame(function () {
+      submenu._ariaEnterFrame = null;
+      submenu.classList.add("aria-submenu-entered");
+      scheduleAdaptiveNavInkUpdate();
+    });
+  }
+
+  function finishContinuoSubmenuClose(submenu) {
+    if (!submenu) {
+      return;
+    }
+
+    submenu.classList.remove("show-sub", "aria-submenu-entered", "aria-submenu-closing");
+    submenu.classList.remove("aria-submenu-tone-light", "aria-submenu-tone-dark");
+    submenu._ariaExitTimer = null;
+
+    if (activeContinuoSubmenu === submenu) {
+      activeContinuoSubmenu = null;
+      syncContinuoSubmenuSurface(null);
+    }
+
+    scheduleAdaptiveNavInkUpdate();
+  }
+
+  function closeContinuoSubmenu(submenu) {
+    if (!submenu) {
+      return;
+    }
+
+    clearContinuoAnimationTimers(submenu);
+
+    if (!submenu.classList.contains("show-sub")) {
+      finishContinuoSubmenuClose(submenu);
+      return;
+    }
+
+    submenu.classList.remove("aria-submenu-entered");
+    submenu.classList.add("aria-submenu-closing");
+    submenu._ariaExitTimer = window.setTimeout(function () {
+      finishContinuoSubmenuClose(submenu);
+    }, continuoCloseAnimationMs);
+    scheduleAdaptiveNavInkUpdate();
+  }
+
+  function scheduleContinuoClose(submenu) {
+    clearContinuoCloseTimer(submenu);
+    submenu._ariaCloseTimer = window.setTimeout(function () {
+      submenu._ariaCloseTimer = null;
+      closeContinuoSubmenu(submenu);
+    }, continuoCloseDelay);
+  }
+
   Array.prototype.forEach.call(
     document.querySelectorAll(".nav-right-item"),
     function (element) {
-      function handleMouseEnter() {
-        var submenu = element.querySelector(".nav-sub");
+      var submenu = element.querySelector(".nav-sub");
 
+      Array.prototype.forEach.call(
+        element.querySelectorAll(".sub-item"),
+        function (subItem, index) {
+          subItem.style.setProperty("--aria-sub-item-index", index);
+        },
+      );
+
+      function handleMouseEnter() {
         if (!submenu) {
           return;
         }
 
         submenu.classList.add("fast");
         submenu.style.display = "block";
-        Aria.helpers.animateCss(submenu, "show-sub");
+
+        if (isContinuo) {
+          clearContinuoAnimationTimers(submenu);
+
+          // 如果是从其他菜单移过来，立即收起其他菜单
+          if (activeContinuoSubmenu && activeContinuoSubmenu !== submenu) {
+            closeContinuoSubmenu(activeContinuoSubmenu);
+          }
+
+          if (
+            submenu.classList.contains("show-sub") &&
+            submenu.classList.contains("aria-submenu-entered") &&
+            !submenu.classList.contains("aria-submenu-closing")
+          ) {
+            activeContinuoSubmenu = submenu;
+            scheduleAdaptiveNavInkUpdate();
+            return;
+          }
+
+          openContinuoSubmenu(submenu);
+          activeContinuoSubmenu = submenu;
+          syncContinuoSubmenuSurface(submenu);
+          scheduleAdaptiveNavInkUpdate();
+        } else {
+          Aria.helpers.animateCss(submenu, "show-sub");
+        }
       }
 
       function handleMouseLeave() {
-        var submenu = element.querySelector(".nav-sub");
-
         if (!submenu) {
           return;
         }
 
-        submenu.style.display = "none";
+        if (isContinuo) {
+          scheduleContinuoClose(submenu);
+        } else {
+          submenu.style.display = "none";
+        }
+
+        scheduleAdaptiveNavInkUpdate();
+      }
+
+      function handleSubmenuMouseEnter() {
+        if (!isContinuo || !submenu) {
+          return;
+        }
+
+        clearContinuoAnimationTimers(submenu);
+
+        if (submenu.classList.contains("aria-submenu-closing")) {
+          openContinuoSubmenu(submenu);
+          activeContinuoSubmenu = submenu;
+          syncContinuoSubmenuSurface(submenu);
+        }
+
+        scheduleAdaptiveNavInkUpdate();
+      }
+
+      function handleSubmenuMouseLeave() {
+        if (!isContinuo || !submenu) {
+          return;
+        }
+
+        scheduleContinuoClose(submenu);
       }
 
       element.addEventListener("mouseenter", handleMouseEnter);
       element.addEventListener("mouseleave", handleMouseLeave);
+      if (submenu) {
+        submenu.addEventListener("mouseenter", handleSubmenuMouseEnter);
+        submenu.addEventListener("mouseleave", handleSubmenuMouseLeave);
+      }
       Aria.state.navHoverBindings.push({
         element: element,
         enterHandler: handleMouseEnter,
         leaveHandler: handleMouseLeave,
+        submenu: submenu,
+        submenuEnterHandler: handleSubmenuMouseEnter,
+        submenuLeaveHandler: handleSubmenuMouseLeave,
       });
     },
   );
@@ -694,6 +1306,7 @@ Aria.action.init = function () {
     Aria.helpers.cleanupPageEntryAnimation();
   }
   headroom();
+  adaptiveNavInk();
   gotop();
   closeNav();
   nav();
