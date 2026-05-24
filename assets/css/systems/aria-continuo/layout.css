@@ -728,11 +728,11 @@ input[type=password] {
 }
 
 /* ==========================================================================
-   Aria Continuo 视觉增强体验 (Component Micro-interactions)
+   Aria Continuo
    Triggered by body.aria-style-aria-continuo body class
    ========================================================================== */
 
-/* 调整文章卡片悬浮动画：上浮位移与阴影一起变化 */
+/* 文章卡片悬浮动画 */
 body.aria-style-aria-continuo .card {
     transition: transform var(--aria-transition-time) var(--aria-transition-timing), 
                 box-shadow var(--aria-transition-time) var(--aria-transition-timing) !important;
@@ -746,27 +746,24 @@ body.aria-style-aria-continuo .card:hover {
 
 /* 调整顶部导航栏 (Nav) 的阴影与模糊参数 */
 body.aria-style-aria-continuo #nav-menu {
-    /* 收窄模糊半径并保留背景透色 */
     backdrop-filter: blur(10px) saturate(120%);
     -webkit-backdrop-filter: blur(10px) saturate(120%);
     
-    /* 进一步降低白色遮罩的透明度，确保不是“白膜”而是“清透玻璃” */
     background: rgba(255, 255, 255, 0.15) !important;
     
-    /* 极细的顶部高光，只在边缘暗示物理厚度 */
+    /* 顶部高光 */
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
     border-bottom: none;
 }
 
 body.aria-style-aria-continuo #nav-menu.headroom--not-top {
-    /* 滚动后虽然需要保证可读性，但也应该尽量保持透明度 */
     background: rgba(255, 255, 255, 0.25) !important;
     box-shadow: 
         inset 0 1px 0 rgba(255, 255, 255, 0.5),
         0 4px 16px -4px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* 优化移动端侧边抽屉 (Drawer) 的玻璃质感 */
+/* 移动端侧边抽屉的玻璃效果 */
 body.aria-style-aria-continuo #nav-vertical {
     background: rgba(255, 255, 255, 0.65) !important;
     backdrop-filter: blur(20px) saturate(120%);
@@ -785,11 +782,11 @@ body.aria-style-aria-continuo .nav-sub {
     -webkit-backdrop-filter: blur(12px) saturate(120%);
     background: rgba(255, 255, 255, 0.2) !important;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    /* 干净的弥散阴影，剥离过度复杂的内发光 */
+    /* 弥散阴影 */
     box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* 重写子菜单弹出动画 (原 show-sub 是从 Y轴 15% 滑入，我们改用更细腻的 8px 滑入加轻微缩放) */
+/* 子菜单弹出动画 */
 @keyframes aria-sub-menu-fade-in {
     0% {
         opacity: 0;

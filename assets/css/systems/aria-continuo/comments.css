@@ -107,7 +107,6 @@ body.aria-style-aria-continuo .comment-list .respond.aria-respond-enter {
 	overflow: hidden
 }
 
-/* 恢复评论块的物理边界，但使其更加精致 */
 body.aria-style-aria-continuo .comment-body:not(.comment-child) {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 	margin: 0 0 1.5em;
@@ -121,12 +120,12 @@ body.aria-style-aria-continuo .comment-body .comment-text {
 	padding: 12px 15px;
 }
 
-/* 隐藏对话框指向头像的三角小尾巴（保留去碎片化） */
+/* 隐藏对话框指向头像的三角小尾巴 */
 body.aria-style-aria-continuo .comment-body .comment-text:before {
 	display: none;
 }
 
-/* 阶梯状的左侧边框指示线 (Indent Border) */
+/* 阶梯状的左侧边框指示线 */
 body.aria-style-aria-continuo .comment-body:before,
 body.aria-style-aria-continuo .comment-data:before {
 	display: none;
@@ -158,7 +157,7 @@ body.aria-style-aria-continuo .comment-child .comment-avatar {
 	margin-left: 0;
 }
 
-/* 正在被回复的评论高亮 (Highlight Target) - 保持保留 */
+/* 正在被回复的评论高亮 (Highlight Target)、 */
 body.aria-style-aria-continuo .comment-body.aria-is-reply-target > div {
 	position: relative;
 }
@@ -220,7 +219,7 @@ body.aria-style-aria-continuo .comment-body.aria-is-reply-target .comment-meta::
 	transform: translateY(0);
 }
 
-/* 博主徽章 (Author Badge) 精致化 */
+/* 博主徽章 */
 body.aria-style-aria-continuo .comment-by-author > div > .comment-avatar::before {
 	content: "博主";
 	font-family: inherit;
@@ -237,7 +236,7 @@ body.aria-style-aria-continuo .comment-by-author > div > .comment-avatar::before
 	z-index: 2;
 }
 
-/* 头像质感：移除旧阴影，改为细描边 */
+/* 头像细描边 */
 body.aria-style-aria-continuo .comment-avatar,
 body.aria-style-aria-continuo #comment-info img {
 	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
@@ -805,8 +804,7 @@ body.aria-style-aria-continuo .OwO .OwO-body .OwO-bar .OwO-packages .OwO-package
 }
 
 /* =========================================
-   评论分页：轻量级 Dock 联动（视觉增强模式）
-   不再使用强毛玻璃，全透明轨道，仅提供克制的交互响应
+   评论分页
 ========================================= */
 
 body.aria-style-aria-continuo #comments > .page-navigator ul {
