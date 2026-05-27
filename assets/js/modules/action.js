@@ -1300,6 +1300,25 @@ function initDockPagination(rootSelector, containerSelector) {
   });
 }
 
+function injectArchiveItemIndices() {
+  var isContinuo = document.body.classList.contains("aria-style-aria-continuo");
+  if (!isContinuo) return;
+
+  var containers = [
+    { selector: "#timeline-container .timeline-item" },
+    { selector: "#timeline-container .timeline-ym" },
+    { selector: "#archives-categories .archives-cate-item" },
+    { selector: "#archives-tags .archives-tags-item" },
+  ];
+
+  containers.forEach(function (group) {
+    var items = document.querySelectorAll(group.selector);
+    items.forEach(function (item, index) {
+      item.style.setProperty("--aria-item-index", String(index));
+    });
+  });
+}
+
 Aria.action = Aria.action || {};
 Aria.action.init = function () {
   if (Aria.helpers && typeof Aria.helpers.cleanupPageEntryAnimation === "function") {
@@ -1318,6 +1337,7 @@ Aria.action.init = function () {
   initDockPagination("body.aria-style-aria-continuo #main > #page-nav", "body.aria-style-aria-continuo #main > #page-nav ul");
   initDockPagination("body.aria-style-aria-continuo #comments > .page-navigator", "body.aria-style-aria-continuo #comments > .page-navigator ul");
   registerMainPaginationOpticalSurface();
+  injectArchiveItemIndices();
   initWowAnimations();
 };
 Aria.action.closeNav = function () {

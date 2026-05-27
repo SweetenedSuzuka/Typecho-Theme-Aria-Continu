@@ -3,11 +3,7 @@
 <?php $archiveHeaderViewData = ThemeViewData::getArchiveHeaderViewData($this); ?>
 
 <div id="main" class="col-mb-12 col-8 col-offset-2" >
-    <div style="border-radius: 5px;
-    background-color: #fff;
-    margin: 30px 0;
-    color: rgba(0,0,0,.7);
-    padding: 15px;">
+    <div class="archive-header">
     <?php echo $archiveHeaderViewData['titleHtml']; ?><br><?php echo $archiveHeaderViewData['descriptionHtml']; ?>
     </div>
     <?php while($this->next()): ?>
