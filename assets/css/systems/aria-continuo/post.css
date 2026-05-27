@@ -4,7 +4,7 @@
  */
 
 .post {
-	background-color: #FFF
+	background-color: var(--aria-bg-container)
 }
 
 .post-title {
@@ -48,31 +48,6 @@
 	margin-top: 25px */
 }
 
-.post-content h1,
-.post-content h2,
-.post-content h3,
-.post-content h4,
-.post-content h5,
-.post-content h6 {
-	padding: 0 0 0 15px;
-	font-weight: 400;
-	line-height: 1.5;
-	border-left: 3px solid var(--aria-color-primary-light);
-	margin: 20px 0 10px
-}
-
-.post-content h1 {
-	font-size: 24px
-}
-
-.post-content h2 {
-	font-size: 22px
-}
-
-/* .post-content a:not([class~=fancybox], [class~=copy-code]) {
-	border-bottom: 1px solid #333
-} */
-
 /* 正文内超链接颜色 */
 /* 新增 */
 .post-content a {
@@ -96,34 +71,9 @@
 	background-image: repeating-linear-gradient(-45deg, #fff, #fff 4px, transparent 4px, transparent 8px) */
 }
 
-.post-content p {
-	/* margin: 15px 0; */
-	line-height: 2rem;
-	text-align: justify;
-	padding: 0 10px
-}
-
-/* 新增 */
-.post-content li {
-	margin-top: 10px;
-	padding: 0 20px 0 5px
-}
-
 .post-content b,
 .post-content strong {
 	font-weight: 700
-}
-
-.post-content blockquote {
-	margin: 0 0 0 15px;
-	padding: 0 0 0 10px;
-	color: #666;
-	border-left: 4px solid #ddd;
-	word-wrap: break-word;
-	word-break: normal;
-	background: rgba(240, 240, 240, .5)
-	/* word-break: break-all;
-	background: #fafafa */
 }
 
 .post-content ol,
@@ -670,11 +620,6 @@ pre .lang {
 	font-size: 25px
 }
 
-/* ==========================================================================
-   Aria Continuo 视觉增强体验 (Typography & Readability)
-   Triggered by body.aria-style-aria-continuo body class
-   ========================================================================== */
-
 /* 优化段落：行高更松弛，限制行长，提升中文阅读体验 */
 body.aria-style-aria-continuo .post-content p {
     line-height: 1.8;
@@ -684,7 +629,7 @@ body.aria-style-aria-continuo .post-content p {
     padding: 0;
 }
 
-/* 移除 H1-H6 的左侧硬边框，通过字重、字号与留白建立层级 */
+/* H1-H6：通过字重、字号与留白建立层级 */
 body.aria-style-aria-continuo .post-content h1,
 body.aria-style-aria-continuo .post-content h2,
 body.aria-style-aria-continuo .post-content h3,
@@ -704,7 +649,7 @@ body.aria-style-aria-continuo .post-content h2 { font-size: 1.5em; }
 body.aria-style-aria-continuo .post-content h3 { font-size: 1.25em; }
 body.aria-style-aria-continuo .post-content h4 { font-size: 1.1em; }
 
-/* 重新设计引用块（Blockquote）：移除左侧边框，采用通透的背景填充与内边距 */
+/* 引用块（Blockquote） */
 body.aria-style-aria-continuo .post-content blockquote {
     border-left: none;
     background: rgba(150, 150, 150, 0.08);
@@ -866,8 +811,7 @@ body.aria-style-aria-continuo #main > #page-nav .page-current::after {
 }
 
 /* =========================================
-   分页专属 Dock 联动效果 (JS 计算驱动)
-   实现鼠标经过时焦点项和邻近项的平滑连带
+   分页 Dock 联动效果 (JS 计算驱动)
 ========================================= */
 
 body.aria-style-aria-continuo #main > #page-nav li {
