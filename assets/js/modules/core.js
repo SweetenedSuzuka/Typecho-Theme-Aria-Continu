@@ -454,56 +454,300 @@ Object.assign(Aria, {
   },
 
   codeBlock: {
+    isContinuo: function () {
+      return document.body.classList.contains("aria-style-aria-continuo");
+    },
+
     init: function () {
+      var isContinuo = this.isContinuo();
+
       Array.prototype.forEach.call(
         document.querySelectorAll("pre code"),
         function (element, index) {
-          var shouldAddLineNumbers;
-          var rawCodeText;
-          var match;
-          var language;
-          var nextElement;
-          var copyButton;
-
           if (element.getAttribute("data-aria-code-block-bound") === "true") {
             return;
           }
 
-          shouldAddLineNumbers = !element.closest(".comment-text");
-          rawCodeText = element.textContent || "";
-
-          element.setAttribute("data-aria-code-block-bound", "true");
-          element.setAttribute("data-aria-copy-text", rawCodeText);
-          hljs.highlightElement(element);
-          if (
-            shouldAddLineNumbers &&
-            element.getAttribute("data-aria-code-lines-bound") !== "true"
-          ) {
-            element.setAttribute("data-aria-code-lines-bound", "true");
-            buildHighlightedCodeLineTable(element);
+          if (isContinuo) {
+            Aria.codeBlock.initContinuoBlock(element, index);
+          } else {
+            Aria.codeBlock.initOriginalBlock(element, index);
           }
-          element.id = "code-block-" + index;
-
-          match = (element.getAttribute("class") || "").match(/\blang(?:uage)?-([\w-]+)\b/i);
-          language = match == null ? "CODE" : match[1].toUpperCase();
-
-          element.setAttribute("data-lang", language);
-          nextElement = element.nextElementSibling;
-          if (nextElement && nextElement.classList.contains("copy-code")) {
-            return;
-          }
-
-          copyButton = document.createElement("a");
-          copyButton.className = "copy-code";
-          copyButton.href = "javascript:";
-          copyButton.title = "拷贝代码";
-          copyButton.setAttribute("data-clipboard-target", "#" + element.id);
-          copyButton.innerHTML = '<i class="iconfont icon-aria-copy"></i>';
-          element.insertAdjacentElement("afterend", copyButton);
         },
       );
 
+      if (isContinuo) {
+        this.bindToggleEvents();
+      }
+
       this.clipboard();
+    },
+
+    initContinuoBlock: function (element, index) {
+      var pre = element.parentNode;
+      var shouldAddLineNumbers;
+      var rawCodeText;
+      var match;
+      var language;
+      var headerEl;
+      var langEl;
+      var actionsEl;
+      var linesToggle;
+      var wrapToggle;
+      var copyButton;
+
+      shouldAddLineNumbers = !element.closest(".comment-text");
+      rawCodeText = element.textContent || "";
+
+      element.setAttribute("data-aria-code-block-bound", "true");
+      element.setAttribute("data-aria-copy-text", rawCodeText);
+
+      hljs.highlightElement(element);
+
+      if (
+        shouldAddLineNumbers &&
+        element.getAttribute("data-aria-code-lines-bound") !== "true"
+      ) {
+        element.setAttribute("data-aria-code-lines-bound", "true");
+        buildHighlightedCodeLineTable(element);
+      }
+
+      element.id = "code-block-" + index;
+
+      match = (element.getAttribute("class") || "").match(/\blang(?:uage)?-([\w-]+)\b/i);
+      language = match == null ? "CODE" : match[1].toUpperCase();
+
+      element.setAttribute("data-lang", language);
+
+      headerEl = document.createElement("div");
+      headerEl.className = "aria-code-header";
+
+      langEl = document.createElement("span");
+      langEl.className = "aria-code-lang";
+      langEl.textContent = language;
+
+      actionsEl = document.createElement("div");
+      actionsEl.className = "aria-code-actions";
+
+      linesToggle = document.createElement("button");
+      linesToggle.className = "aria-code-btn is-active";
+      linesToggle.setAttribute("data-action", "toggle-lines");
+      linesToggle.title = "切换行号";
+      linesToggle.innerHTML = '<i class="iconfont icon-aria-code"></i><span>行号</span>';
+
+      wrapToggle = document.createElement("button");
+      wrapToggle.className = "aria-code-btn";
+      wrapToggle.setAttribute("data-action", "toggle-wrap");
+      wrapToggle.title = "切换自动换行";
+      wrapToggle.innerHTML = '<i class="aria-code-icon-wrap"></i><span>换行</span>';
+
+      copyButton = document.createElement("button");
+      copyButton.className = "aria-code-btn";
+      copyButton.setAttribute("data-action", "copy");
+      copyButton.title = "拷贝代码";
+      copyButton.innerHTML = '<i class="iconfont icon-aria-copy"></i><span>复制</span>';
+
+      actionsEl.appendChild(linesToggle);
+      actionsEl.appendChild(wrapToggle);
+      actionsEl.appendChild(copyButton);
+      headerEl.appendChild(langEl);
+      headerEl.appendChild(actionsEl);
+      pre.insertBefore(headerEl, pre.firstChild);
+
+      if (shouldAddLineNumbers) {
+        pre.classList.add("is-lines-visible");
+      } else {
+        linesToggle.style.display = "none";
+      }
+    },
+
+    initOriginalBlock: function (element, index) {
+      var shouldAddLineNumbers;
+      var rawCodeText;
+      var match;
+      var language;
+      var nextElement;
+      var copyButton;
+
+      shouldAddLineNumbers = !element.closest(".comment-text");
+      rawCodeText = element.textContent || "";
+
+      element.setAttribute("data-aria-code-block-bound", "true");
+      element.setAttribute("data-aria-copy-text", rawCodeText);
+
+      hljs.highlightElement(element);
+
+      if (
+        shouldAddLineNumbers &&
+        element.getAttribute("data-aria-code-lines-bound") !== "true"
+      ) {
+        element.setAttribute("data-aria-code-lines-bound", "true");
+        buildHighlightedCodeLineTable(element);
+      }
+
+      element.id = "code-block-" + index;
+
+      match = (element.getAttribute("class") || "").match(/\blang(?:uage)?-([\w-]+)\b/i);
+      language = match == null ? "CODE" : match[1].toUpperCase();
+
+      element.setAttribute("data-lang", language);
+
+      nextElement = element.nextElementSibling;
+      if (nextElement && nextElement.classList.contains("copy-code")) {
+        return;
+      }
+
+      copyButton = document.createElement("a");
+      copyButton.className = "copy-code";
+      copyButton.href = "javascript:";
+      copyButton.title = "拷贝代码";
+      copyButton.setAttribute("data-clipboard-target", "#" + element.id);
+      copyButton.innerHTML = '<i class="iconfont icon-aria-copy"></i>';
+      element.insertAdjacentElement("afterend", copyButton);
+    },
+
+    bindToggleEvents: function () {
+      if (Aria.state.codeBlockTogglesBound) {
+        return;
+      }
+
+      Aria.state.codeBlockTogglesBound = true;
+
+      document.addEventListener("click", function (event) {
+        var btn = event.target.closest(".aria-code-btn");
+
+        if (!btn) {
+          return;
+        }
+
+        var action = btn.getAttribute("data-action");
+        var pre = btn.closest("pre");
+
+        if (!pre) {
+          return;
+        }
+
+        event.preventDefault();
+
+        if (action === "toggle-lines") {
+          Aria.codeBlock.toggleLineNumbers(pre, btn);
+        } else if (action === "toggle-wrap") {
+          Aria.codeBlock.toggleWrap(pre, btn);
+        } else if (action === "copy") {
+          Aria.codeBlock.handleCopy(btn);
+        }
+      });
+    },
+
+    toggleLineNumbers: function (pre, btn) {
+      var isVisible = pre.classList.contains("is-lines-visible");
+
+      if (isVisible) {
+        pre.classList.remove("is-lines-visible");
+        btn.classList.remove("is-active");
+      } else {
+        pre.classList.add("is-lines-visible");
+        btn.classList.add("is-active");
+      }
+    },
+
+    animateButtonWidth: function (btn, after) {
+      var oldWidth = btn.offsetWidth;
+      var newWidth;
+
+      btn.style.width = oldWidth + "px";
+      btn.offsetHeight;
+
+      after();
+
+      btn.style.width = "auto";
+      newWidth = btn.offsetWidth;
+      btn.style.width = oldWidth + "px";
+      btn.offsetHeight;
+      btn.style.width = newWidth + "px";
+
+      setTimeout(function () {
+        btn.style.width = "";
+      }, 220);
+    },
+
+    toggleWrap: function (pre, btn) {
+      var isWrapped = pre.classList.contains("is-wrapped");
+      var labelSpan = btn.querySelector("span");
+      var currentHeight;
+      var newHeight;
+
+      currentHeight = pre.offsetHeight;
+      pre.style.maxHeight = currentHeight + "px";
+      pre.style.overflow = "hidden";
+
+      Aria.codeBlock.animateButtonWidth(btn, function () {
+        if (isWrapped) {
+          pre.classList.remove("is-wrapped");
+          btn.classList.remove("is-active");
+          if (labelSpan) labelSpan.textContent = "换行";
+        } else {
+          pre.classList.add("is-wrapped");
+          btn.classList.add("is-active");
+          if (labelSpan) labelSpan.textContent = "取消换行";
+        }
+      });
+
+      pre.style.maxHeight = "none";
+      pre.style.overflow = "visible";
+      newHeight = pre.offsetHeight;
+
+      pre.style.maxHeight = currentHeight + "px";
+      pre.style.overflow = "hidden";
+
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          pre.style.maxHeight = newHeight + "px";
+
+          setTimeout(function () {
+            pre.style.maxHeight = "";
+            pre.style.overflow = "";
+          }, 350);
+        });
+      });
+    },
+
+    handleCopy: function (btn) {
+      var pre = btn.closest("pre");
+      var code = pre ? pre.querySelector("code") : null;
+      var text;
+      var labelSpan;
+
+      if (!code) {
+        return;
+      }
+
+      text = code.getAttribute("data-aria-copy-text") || code.textContent || "";
+
+      copyTextToClipboard(text)
+        .then(function () {
+          labelSpan = btn.querySelector("span");
+
+          Aria.codeBlock.animateButtonWidth(btn, function () {
+            btn.classList.add("is-copied");
+            if (labelSpan) labelSpan.textContent = "已复制";
+          });
+
+          setTimeout(function () {
+            Aria.codeBlock.animateButtonWidth(btn, function () {
+              btn.classList.remove("is-copied");
+              if (labelSpan) labelSpan.textContent = "复制";
+            });
+          }, 1500);
+
+          Aria.notify.success("代码成功拷贝到剪贴板！");
+          if (typeof window.getSelection === "function") {
+            window.getSelection().removeAllRanges();
+          }
+        })
+        .catch(function () {
+          Aria.notify.error("代码拷贝失败！");
+        });
     },
 
     clipboard: function () {

@@ -3,6 +3,10 @@
  * Restored from assets/css/style.min.css during phase 1 maintenance.
  */
 
+/* =========================================
+   文章容器
+========================================= */
+
 .post {
 	background-color: var(--aria-bg-container)
 }
@@ -48,14 +52,20 @@
 	margin-top: 25px */
 }
 
-/* 正文内超链接颜色 */
-/* 新增 */
+/* =========================================
+   文章容器 — 结束
+========================================= */
+
+/* =========================================
+   正文排版
+========================================= */
+
+/* 正文超链接 */
 .post-content a {
 	color: var(--aria-color-primary);
 	transition: var(--aria-transition-time) var(--aria-transition-timing);
 }
 
-/* 新增 */
 .post-content a:hover {
 	color: var(--aria-color-primary-hover)
 }
@@ -107,130 +117,68 @@
 	-o-border-radius: 4px
 }
 
-.post-content pre code::-webkit-scrollbar,
-.comment-text pre code::-webkit-scrollbar {
-	height: 10x !important;
-	width: 10x !important;
-	background-color: #1d1f21 !important
+/* Aria Continuo 正文排版 */
+
+body.aria-style-aria-continuo .post-content p {
+    line-height: 1.8;
+    max-width: 75ch;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
 }
 
-.post-content pre code::-webkit-scrollbar-track,
-.comment-text pre code::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 6px rgba(0, 0, 0, .3) !important;
-	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3) !important;
-	border-radius: 10px !important;
-	background-color: #21252b !important
+body.aria-style-aria-continuo .post-content h1,
+body.aria-style-aria-continuo .post-content h2,
+body.aria-style-aria-continuo .post-content h3,
+body.aria-style-aria-continuo .post-content h4,
+body.aria-style-aria-continuo .post-content h5,
+body.aria-style-aria-continuo .post-content h6 {
+    border-left: none;
+    padding-left: 0;
+    font-weight: 600;
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    color: var(--aria-text-heading);
 }
 
-.post-content pre code::-webkit-scrollbar-thumb,
-.comment-text pre code::-webkit-scrollbar-thumb {
-	border-radius: 5px !important;
-	background-color: #535353 !important;
-	-webkit-border-radius: 5px !important;
-	-moz-border-radius: 5px !important;
-	-ms-border-radius: 5px !important;
-	-o-border-radius: 5px !important;
-	-webkit-box-shadow: inset 0 0 0 #fff;
-	box-shadow: inset 0 0 0 #fff
+body.aria-style-aria-continuo .post-content h1 { font-size: 1.75em; }
+body.aria-style-aria-continuo .post-content h2 { font-size: 1.5em; }
+body.aria-style-aria-continuo .post-content h3 { font-size: 1.25em; }
+body.aria-style-aria-continuo .post-content h4 { font-size: 1.1em; }
+
+body.aria-style-aria-continuo .post-content blockquote {
+    border-left: none;
+    background: rgba(150, 150, 150, 0.08);
+    padding: 1.25em 1.5em;
+    margin: 2em auto;
+    max-width: 75ch;
+    border-radius: var(--aria-radius-sm);
+    color: var(--aria-text-muted);
 }
 
-.post-content pre code::-webkit-scrollbar-track-piece,
-.comment-text pre code::-webkit-scrollbar-track-piece {
-	background-color: #1d1f21 !important
+body.aria-style-aria-continuo .post-content blockquote p {
+    margin: 0;
+    max-width: none;
 }
 
-.highlight {
-	display: block !important;
-	margin: 0;
-	padding: 0 0 0 10px
+body.aria-style-aria-continuo .post-content ul,
+body.aria-style-aria-continuo .post-content ol {
+    max-width: 75ch;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2em;
 }
 
-.highlight::before {
-	content: attr(data-line);
-	margin: 0;
-	color: #fff;
-	position: absolute;
-	display: inline-block;
-	background-color: #1d1f21;
-	height: 25px;
-	left: 0;
-	padding: 0 5px
-}
+/* =========================================
+   正文排版 — 结束
+========================================= */
 
-.hl-child {
-	margin-left: 28px
-}
+/* =========================================
+   代码块
+========================================= */
 
-.post-content pre,
-.comment-text pre {
-	position: relative;
-	background: #2c333b;
-	border-radius: 5px;
-	line-height: 1.6;
-	margin-bottom: 1.6em;
-	max-width: 100%;
-	overflow: auto;
-	text-shadow: none;
-	color: #000;
-	padding-top: 30px;
-	box-shadow: 0 10px 30px 0 rgba(0, 0, 0, .4)
-}
-
-.post-content pre:before,
-.comment-text pre:before {
-	content: " ";
-	position: absolute;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background: #fc625d;
-	width: 12px;
-	height: 12px;
-	left: 10px;
-	margin-top: -20px;
-	-webkit-box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
-	box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b
-}
-
-.post-content pre code[data-lang]:before,
-.comment-text pre code[data-lang]:before {
-	color: #fff;
-	content: attr(data-lang);
-	height: 30px;
-	line-height: 30px;
-	background: #2c333b;
-	font-size: 16px;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-	top: 0;
-	font-weight: 700;
-	pointer-events: none
-}
-
-#new-response,
-#new-response i {
-	font-size: 20px
-}
-
-.post-content pre .copy-code .iconfont,
-.comment-text pre .copy-code .iconfont {
-	font-size: 20px
-}
-
-.post-content pre .copy-code,
-.comment-text pre .copy-code {
-	color: #fff;
-	position: absolute;
-	right: 10px;
-	top: 0
-}
-
-.post-content pre .copy-code:hover,
-.comment-text pre .copy-code:hover {
-	color: rgba(255, 255, 255, .5)
-}
-
-.post-content :not(pre) > code {
+/* 内联代码 */
+.post-content :not(pre) code {
 	padding: 2px 8px;
 	margin: 0 4px;
 	word-wrap: break-word;
@@ -240,69 +188,216 @@
 	font-size: 14px
 }
 
-.post-content pre code,
-.comment-text pre code {
-	padding-left: 10px
+/* 代码块容器 */
+
+body.aria-style-aria-continuo .post-content pre,
+body.aria-style-aria-continuo .comment-text pre {
+	position: relative;
+	background: #f4f5f7;
+	border: 1px solid var(--aria-border-color);
+	border-radius: var(--aria-radius-sm);
+	font-family: inherit;
+	line-height: 1.7;
+	margin: 2.4em auto;
+	max-width: 75ch;
+	text-shadow: none;
+	color: #24292f;
+	padding: 0;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .07);
+	transition: max-height 320ms var(--aria-ease-out)
 }
 
-pre .lang {
-	font-size: .85714286rem;
-	cursor: pointer;
-	background-color: #767676 !important;
-	border-color: #767676 !important;
-	color: #FFF !important;
-	position: absolute;
-	line-height: 1;
-	margin: 0 .14285714em;
-	background-image: none;
-	padding: .5833em .833em;
-	font-weight: 700;
-	border: 0 solid transparent;
-	border-radius: .28571429rem;
-	-webkit-transition: background .1s ease;
-	transition: background .1s ease
+body.aria-style-aria-continuo .post-content pre code,
+body.aria-style-aria-continuo .comment-text pre code {
+	display: block;
+	overflow-x: auto;
+	padding: 16px 20px;
+	background: transparent;
+	color: #24292f;
+	font-family: "Cascadia Code", "Fira Code", Consolas, "Source Code Pro", Menlo, Monaco, monospace;
+	font-size: .875em;
+	tab-size: 4;
+	white-space: pre;
+	transition: white-space 0s;
+	scrollbar-width: thin;
+	scrollbar-color: #d0d0d0 transparent
 }
 
-.comment-main code {
-	padding-left: 40px
+/* 自动换行 */
+body.aria-style-aria-continuo .post-content pre.is-wrapped code,
+body.aria-style-aria-continuo .comment-text pre.is-wrapped code {
+	white-space: pre-wrap;
+	word-break: break-all
 }
 
-.comment-main code li {
-	margin: 0;
-	line-height: 24px
-}
+/* 顶部标题栏 */
 
-.post-content pre .code-ln td.code-ln-numbers,
-.comment-text pre .code-ln td.code-ln-numbers {
-	-webkit-touch-callout: none;
-	-khtml-user-select: none;
-	user-select: none;
-	text-align: center;
-	color: #fff;
-	background: #1d1f21;
-	font-family: monospace, Helvetica, Tahoma, Arial, STXihei, "STHeiti Light", "Microsoft YaHei", sans-serif;
-	vertical-align: top;
-	position: absolute;
-	left: 0;
-	width: 30px;
-	border-right: 1px solid #fff
-}
-
-#response,
-.comment-new,
-.link-item {
+body.aria-style-aria-continuo .aria-code-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 34px;
+	padding: 0 8px 0 10px;
+	background: #e8eaed;
+	border-bottom: 1px solid var(--aria-border-color);
 	user-select: none
 }
 
-.post-content pre .code-ln td.code-ln-code,
-.comment-text pre .code-ln td.code-ln-code {
-	padding-left: 30px
+body.aria-style-aria-continuo .aria-code-lang {
+	font-size: .78em;
+	font-weight: 600;
+	color: var(--aria-text-muted);
+	letter-spacing: .04em;
+	font-family: Roboto, "Open Sans", "Microsoft YaHei", sans-serif
 }
 
-.post-content pre .code-ln-line,
-.comment-text pre .code-ln-line {
+body.aria-style-aria-continuo .aria-code-actions {
+	display: flex;
+	align-items: center;
+	gap: 4px
+}
+
+/* 标题栏按钮 */
+
+body.aria-style-aria-continuo .aria-code-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	height: 24px;
+	padding: 0 8px;
+	border: none;
+	background: transparent;
+	color: var(--aria-text-muted);
+	cursor: pointer;
+	border-radius: 4px;
+	font-size: 12px;
+	font-family: Roboto, "Open Sans", "Microsoft YaHei", sans-serif;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: color 200ms var(--aria-ease-out), background-color 200ms var(--aria-ease-out), width 200ms var(--aria-ease-out)
+}
+
+body.aria-style-aria-continuo .aria-code-btn:hover {
+	color: var(--aria-text-main);
+	background: rgba(0, 0, 0, .06)
+}
+
+body.aria-style-aria-continuo .aria-code-btn.is-active {
+	color: var(--aria-color-primary)
+}
+
+body.aria-style-aria-continuo .aria-code-btn.is-copied {
+	color: var(--aria-color-primary)
+}
+
+body.aria-style-aria-continuo .aria-code-btn .iconfont {
+	font-size: 13px;
+	line-height: 1
+}
+
+/* 换行按钮的折行小图标 */
+body.aria-style-aria-continuo .aria-code-btn .aria-code-icon-wrap {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid currentColor;
+	border-bottom: 1.5px solid currentColor;
+	transform: translateY(1px)
+}
+
+/* 行号表格 */
+body.aria-style-aria-continuo .post-content pre .code-ln,
+body.aria-style-aria-continuo .comment-text pre .code-ln {
+	border-collapse: separate;
+	border-spacing: 0;
 	width: 100%
 }
+
+body.aria-style-aria-continuo .post-content pre .code-ln td.code-ln-numbers,
+body.aria-style-aria-continuo .comment-text pre .code-ln td.code-ln-numbers {
+	user-select: none;
+	text-align: right;
+	color: #bfbfbf;
+	background: transparent;
+	font-family: "Cascadia Code", "Fira Code", Consolas, Menlo, Monaco, monospace;
+	font-size: .85em;
+	vertical-align: top;
+	padding: 0 12px 0 0;
+	width: 1%;
+	white-space: nowrap;
+	border-right: 1px solid #e8eaed;
+	transition: width 280ms var(--aria-ease-out), padding 280ms var(--aria-ease-out), opacity 280ms var(--aria-ease-out), border-color 280ms var(--aria-ease-out)
+}
+
+body.aria-style-aria-continuo .post-content pre .code-ln td.code-ln-code,
+body.aria-style-aria-continuo .comment-text pre .code-ln td.code-ln-code {
+	padding-left: 14px;
+	vertical-align: top;
+	transition: padding-left 280ms var(--aria-ease-out)
+}
+
+body.aria-style-aria-continuo .post-content pre .code-ln-line,
+body.aria-style-aria-continuo .comment-text pre .code-ln-line {
+	width: 100%;
+	transition: background-color 120ms var(--aria-ease-out)
+}
+
+/* 行悬停效果 */
+body.aria-style-aria-continuo .post-content pre .code-ln-line:hover,
+body.aria-style-aria-continuo .comment-text pre .code-ln-line:hover {
+	background-color: rgba(0, 0, 0, .025)
+}
+
+/* 隐藏行号效果 */
+body.aria-style-aria-continuo .post-content pre:not(.is-lines-visible) .code-ln td.code-ln-numbers,
+body.aria-style-aria-continuo .comment-text pre:not(.is-lines-visible) .code-ln td.code-ln-numbers {
+	width: 0;
+	padding: 0;
+	opacity: 0;
+	border-right-color: transparent;
+	overflow: hidden
+}
+
+body.aria-style-aria-continuo .post-content pre:not(.is-lines-visible) .code-ln td.code-ln-code,
+body.aria-style-aria-continuo .comment-text pre:not(.is-lines-visible) .code-ln td.code-ln-code {
+	padding-left: 0
+}
+
+/* 滚动条 */
+body.aria-style-aria-continuo .post-content pre code::-webkit-scrollbar,
+body.aria-style-aria-continuo .comment-text pre code::-webkit-scrollbar {
+	height: 6px;
+	width: 6px
+}
+
+body.aria-style-aria-continuo .post-content pre code::-webkit-scrollbar-track,
+body.aria-style-aria-continuo .comment-text pre code::-webkit-scrollbar-track {
+	background: transparent
+}
+
+body.aria-style-aria-continuo .post-content pre code::-webkit-scrollbar-thumb,
+body.aria-style-aria-continuo .comment-text pre code::-webkit-scrollbar-thumb {
+	border-radius: 3px;
+	background-color: #d0d0d0
+}
+
+body.aria-style-aria-continuo .post-content pre code::-webkit-scrollbar-thumb:hover,
+body.aria-style-aria-continuo .comment-text pre code::-webkit-scrollbar-thumb:hover {
+	background-color: #b0b0b0
+}
+
+body.aria-style-aria-continuo .post-content pre code::-webkit-scrollbar-track-piece,
+body.aria-style-aria-continuo .comment-text pre code::-webkit-scrollbar-track-piece {
+	background: transparent
+}
+
+/* =========================================
+   代码块 — 结束
+========================================= */
+
+/* =========================================
+   表格
+========================================= */
 
 .post-content table:not([class*=code-ln]) {
 	border-spacing: 0;
@@ -382,6 +477,29 @@ pre .lang {
 	-webkit-border-radius: 0 0 6px 0;
 	border-radius: 0 0 6px
 }
+
+/* 表格 */
+
+body.aria-style-aria-continuo .post-content table:not([class*=code-ln]) {
+    box-shadow: none;
+    border: 1px solid var(--aria-border-color);
+}
+
+body.aria-style-aria-continuo .post-content table:not([class*=code-ln]) th {
+    background-image: none;
+    background-color: rgba(150, 150, 150, 0.08);
+    box-shadow: none;
+    text-shadow: none;
+    border-bottom: 2px solid var(--aria-border-color);
+}
+
+/* =========================================
+   表格 — 结束
+========================================= */
+
+/* =========================================
+   文章底部
+========================================= */
 
 .post-other {
 	margin: 60px auto 10px;
@@ -476,6 +594,14 @@ pre .lang {
 	margin-right: 2px
 }
 
+/* =========================================
+   文章底部 — 结束
+========================================= */
+
+/* =========================================
+   前后篇导航
+========================================= */
+
 .post-footer {
 	overflow: hidden;
 	width: 100%;
@@ -542,11 +668,6 @@ pre .lang {
 	display: block
 }
 
-#page-nav,
-#response i {
-	font-weight: 700
-}
-
 .post-footer .post-footer-label {
 	font-size: 13px;
 	display: block;
@@ -599,26 +720,29 @@ pre .lang {
 	bottom: 40px
 }
 
-#footer,
-#footer p:first-child i,
-#page-nav,
-#page-nav li,
-#response p,
-.comment-new,
-.link-name {
-	text-align: center
-}
-
 .post-footer.nextprev .next .post-footer-label {
 	top: 40px;
 	right: 40px
 }
+
+/* =========================================
+   前后篇导航 — 结束
+========================================= */
+
+/* =========================================
+   评论区标题
+========================================= */
 
 #response {
 	padding: 30px 0;
 	display: block;
 	/* 去除border-top: 1px solid #8e8d8d; */
 	position: relative
+}
+
+#response,
+#response i {
+	font-size: 25px
 }
 
 #response p {
@@ -632,80 +756,19 @@ pre .lang {
 	/* background-color: #f2f2f2 */
 }
 
-#response,
-#response i {
-	font-size: 25px
+#new-response,
+#new-response i {
+	font-size: 20px
 }
 
-/* 优化段落：行高更松弛，限制行长，提升中文阅读体验 */
-body.aria-style-aria-continuo .post-content p {
-    line-height: 1.8;
-    max-width: 75ch;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0;
-}
+/* =========================================
+   评论区标题 — 结束
+========================================= */
 
-/* H1-H6：通过字重、字号与留白建立层级 */
-body.aria-style-aria-continuo .post-content h1,
-body.aria-style-aria-continuo .post-content h2,
-body.aria-style-aria-continuo .post-content h3,
-body.aria-style-aria-continuo .post-content h4,
-body.aria-style-aria-continuo .post-content h5,
-body.aria-style-aria-continuo .post-content h6 {
-    border-left: none;
-    padding-left: 0;
-    font-weight: 600;
-    margin-top: 2.5em;
-    margin-bottom: 1em;
-    color: var(--aria-text-heading);
-}
+/* =========================================
+   分页组件
+========================================= */
 
-body.aria-style-aria-continuo .post-content h1 { font-size: 1.75em; }
-body.aria-style-aria-continuo .post-content h2 { font-size: 1.5em; }
-body.aria-style-aria-continuo .post-content h3 { font-size: 1.25em; }
-body.aria-style-aria-continuo .post-content h4 { font-size: 1.1em; }
-
-/* 引用块（Blockquote） */
-body.aria-style-aria-continuo .post-content blockquote {
-    border-left: none;
-    background: rgba(150, 150, 150, 0.08);
-    padding: 1.25em 1.5em;
-    margin: 2em auto;
-    max-width: 75ch;
-    border-radius: var(--aria-radius-sm);
-    color: var(--aria-text-muted);
-}
-
-body.aria-style-aria-continuo .post-content blockquote p {
-    margin: 0;
-    max-width: none;
-}
-
-/* 优化列表排版 */
-body.aria-style-aria-continuo .post-content ul,
-body.aria-style-aria-continuo .post-content ol {
-    max-width: 75ch;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 2em;
-}
-
-/* 表格视觉优化：去除过时的阴影和渐变，走向清爽干净的线条 */
-body.aria-style-aria-continuo .post-content table:not([class*=code-ln]) {
-    box-shadow: none;
-    border: 1px solid var(--aria-border-color);
-}
-
-body.aria-style-aria-continuo .post-content table:not([class*=code-ln]) th {
-    background-image: none;
-    background-color: rgba(150, 150, 150, 0.08);
-    box-shadow: none;
-    text-shadow: none;
-    border-bottom: 2px solid var(--aria-border-color);
-}
-
-/* 分页组件视觉增强：单轨分页 */
 body.aria-style-aria-continuo #main > #page-nav {
     margin: 64px auto 28px;
     text-align: center;
@@ -737,7 +800,7 @@ body.aria-style-aria-continuo #main > #page-nav.is-awake ul {
     padding-inline: 12px;
 }
 
-/* in-view 触发入场动画 */
+/* in-view 入场动画 */
 body.aria-style-aria-continuo #main > #page-nav.in-view ul {
     animation: aria-pagination-settle 300ms var(--aria-ease-out) forwards;
 }
@@ -827,15 +890,12 @@ body.aria-style-aria-continuo #main > #page-nav .page-current::after {
     animation: aria-pagination-current-mark 300ms var(--aria-ease-out) both;
 }
 
-/* =========================================
-   分页 Dock 联动效果 (JS 计算驱动)
-========================================= */
+/* Dock 联动效果 */
 
 body.aria-style-aria-continuo #main > #page-nav li {
     --dock-scale: 0;
 }
 
-/* 1. 焦点与邻近项的平滑变形与着色 */
 body.aria-style-aria-continuo #main > #page-nav li:not(.page-ellipsis) a,
 body.aria-style-aria-continuo #main > #page-nav li.page-current,
 body.aria-style-aria-continuo #main > #page-nav li.page-ellipsis {
@@ -848,14 +908,12 @@ body.aria-style-aria-continuo #main > #page-nav li.page-ellipsis {
                 box-shadow 100ms ease-out;
 }
 
-/* 2. 动态刻度展开 */
 body.aria-style-aria-continuo #main > #page-nav li:not(.page-ellipsis) a::after {
     width: calc(var(--dock-scale) * 16px);
     opacity: var(--dock-scale);
 }
 
 body.aria-style-aria-continuo #main > #page-nav li.page-current::after {
-    /* 当前页已有 14px 刻度，随 Dock 联动微幅伸展 */
     width: calc(14px + var(--dock-scale) * 4px);
     opacity: 1;
     background-color: var(--aria-color-primary);
@@ -865,7 +923,6 @@ body.aria-style-aria-continuo #main > #page-nav li.page-ellipsis::after {
     display: none;
 }
 
-/* 3. 焦点项的无障碍反馈 */
 body.aria-style-aria-continuo #main > #page-nav li:not(.page-current) a:focus-visible {
     outline: none;
     background-color: rgba(68, 68, 68, 0.14);
@@ -874,7 +931,6 @@ body.aria-style-aria-continuo #main > #page-nav li:not(.page-current) a:focus-vi
     box-shadow: 0 0 0 2px rgba(251, 114, 153, 0.14);
 }
 
-/* 4. 特殊状态项的弱响应处理（省略号 .page-ellipsis） */
 body.aria-style-aria-continuo #main > #page-nav li.page-ellipsis {
     display: flex;
     align-items: center;
@@ -942,3 +998,36 @@ body.aria-style-aria-continuo #main > #page-nav li.page-ellipsis .dot:nth-child(
         opacity: 1;
     }
 }
+
+/* =========================================
+   分页组件 — 结束
+========================================= */
+
+/* =========================================
+   杂项
+========================================= */
+
+#page-nav,
+#response i {
+	font-weight: 700
+}
+
+#footer,
+#footer p:first-child i,
+#page-nav,
+#page-nav li,
+#response p,
+.comment-new,
+.link-name {
+	text-align: center
+}
+
+#response,
+.comment-new,
+.link-item {
+	user-select: none
+}
+
+/* =========================================
+   杂项 — 结束
+========================================= */

@@ -1,7 +1,7 @@
 /**
  * typecho-theme-aria - Theme Aria for Typecho crafted by Siphils
  * 
-* Based on original work by Siphils
+ * Based on original work by Siphils
  * @author SweetenedSuzuka
  * @version v1.10.0
  * @link https://suzuka.cc
@@ -10,8 +10,12 @@
  */
 @charset "utf-8";
 
+/* =========================================
+   CSS 变量
+========================================= */
+
 :root {
-	/* 主要点缀色 - B站粉 */
+	/* 点缀色 */
 	--aria-color-primary: #fb7299;
 	--aria-color-primary-hover: #f25d8e;
 	--aria-color-primary-light: #fc8bab;
@@ -44,7 +48,7 @@
 	--aria-nav-sub-ink-shadow-dark: none;
 	--aria-nav-sub-ink-shadow-light: 0 1px 10px rgba(0, 0, 0, 0.22);
 	
-	/* 边框与线条 */
+	/* 边框 */
 	--aria-border-color: #e1e1e1;
 	--aria-border-dashed: #dadada;
 	
@@ -53,18 +57,17 @@
 	--aria-radius-md: 10px;
 	--aria-radius-lg: 14px;
 	
-	/* 阴影与微质感 (Z轴深度) */
+	/* 阴影 */
 	--aria-shadow-base: 1px 1px 3px 1px rgba(0, 0, 0, 0.2);
 	--aria-shadow-hover: 0 5px 10px 5px rgba(110, 110, 110, 0.4);
 	--aria-shadow-nav: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 4px 5px 0 rgba(0, 0, 0, 0.06), 0 1px 10px 0 rgba(0, 0, 0, 0.08);
 	--aria-shadow-nav-sub: 0 -4px 20px -1px rgba(0, 0, 0, 0.06), 0 -4px 40px 0 rgba(0, 0, 0, 0.06), 0 -1px 10px 0 rgba(0, 0, 0, 0.08);
 	--aria-shadow-footer: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 10px 0 rgba(0, 0, 0, 0.4);
 	
-	/* 统一过渡动画体系 (非线性指数缓动) */
+	/* 过渡动画 */
 	--aria-transition-time: 0.35s;
 	--aria-transition-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 	
-	/* 增强视觉模式专用的非线性动效 (Continuo) */
 	--aria-duration-fast: 150ms;
 	--aria-duration-normal: 300ms;
 	--aria-duration-slow: 500ms;
@@ -73,7 +76,7 @@
 	--aria-ease-in: cubic-bezier(0.7, 0, 0.84, 0);  /* 退场/收起 (缓入 expo) */
 	--aria-ease-in-out: cubic-bezier(0.87, 0, 0.13, 1); /* 状态平滑切换 */
 
-	/* Optical Lens: 视口级模糊透镜参数 */
+	/* Optical Lens 模糊透镜参数 */
 	--aria-optical-toc-blur: 18px;
 	--aria-optical-toc-bg: rgba(255, 255, 255, 0.1);
 	--aria-optical-toc-border: rgba(255, 255, 255, 0.34);
@@ -93,6 +96,14 @@
 	--aria-optical-nav-sub-shadow: 0 18px 40px rgba(0, 0, 0, 0.12), 0 8px 18px rgba(0, 0, 0, 0.06);
 	--aria-optical-nav-sub-shadow-active: 0 22px 46px rgba(0, 0, 0, 0.14), 0 10px 22px rgba(0, 0, 0, 0.08);
 }
+
+/* =========================================
+   CSS 变量 — 结束
+========================================= */
+
+/* =========================================
+   Optical Surface 模糊透镜
+========================================= */
 
 body.aria-style-aria-continuo #aria-optical-surfaces {
 	position: fixed;
@@ -121,6 +132,7 @@ body.aria-style-aria-continuo .aria-optical-surface.is-visible {
 	opacity: 1;
 }
 
+/* TOC 透镜 */
 body.aria-style-aria-continuo .aria-optical-surface--toc {
 	--aria-optical-blur: var(--aria-optical-toc-blur);
 	background: var(--aria-optical-toc-bg);
@@ -153,6 +165,7 @@ body.aria-style-aria-continuo .aria-optical-surface--toc.has-active {
 	}
 }
 
+/* 分页透镜 */
 body.aria-style-aria-continuo .aria-optical-surface--pagination {
 	--aria-optical-blur: var(--aria-optical-pagination-blur);
 	background: var(--aria-optical-pagination-bg);
@@ -165,6 +178,7 @@ body.aria-style-aria-continuo .aria-optical-surface--pagination.is-awake {
 	box-shadow: var(--aria-optical-pagination-shadow-awake);
 }
 
+/* 导航子菜单透镜 */
 body.aria-style-aria-continuo .aria-optical-surface--nav-submenu {
 	--aria-optical-blur: var(--aria-optical-nav-sub-blur);
 	background: var(--aria-optical-nav-sub-bg);
@@ -185,6 +199,14 @@ body.aria-style-aria-continuo .aria-optical-surface--nav-submenu.is-visible.show
 	transition: opacity 240ms var(--aria-ease-in), box-shadow 320ms var(--aria-ease-in-out), background-color 260ms var(--aria-ease-in-out), border-color 260ms var(--aria-ease-in-out);
 }
 
+/* =========================================
+   Optical Surface — 结束
+========================================= */
+
+/* =========================================
+   Normalize / 浏览器默认样式复位
+========================================= */
+
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */
 b,
 strong {
@@ -198,7 +220,6 @@ input {
 }
 
 button,
-pre .lang,
 select {
 	text-transform: none
 }
@@ -373,78 +394,13 @@ template {
 	display: none
 }
 
-#nprogress {
-	pointer-events: none
-}
+/* =========================================
+   Normalize — 结束
+========================================= */
 
-#nprogress .bar {
-	background: var(--aria-color-primary-light);
-	position: fixed;
-	z-index: 1031;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 2px
-}
-
-#nprogress .peg {
-	display: block;
-	position: absolute;
-	right: 0;
-	width: 100px;
-	height: 100%;
-	box-shadow: 0 0 10px var(--aria-color-primary-light), 0 0 5px var(--aria-color-primary-light);
-	opacity: 1;
-	-webkit-transform: rotate(3deg) translate(0, -4px);
-	-ms-transform: rotate(3deg) translate(0, -4px);
-	transform: rotate(3deg) translate(0, -4px)
-}
-
-#nprogress .spinner {
-	display: block;
-	position: fixed;
-	z-index: 1031
-}
-
-#nprogress .spinner-icon {
-	box-sizing: border-box;
-	border: 2px solid transparent;
-	border-top-color: var(--aria-color-primary-light);
-	border-left-color: var(--aria-color-primary-light);
-	border-radius: 50%;
-	-webkit-animation: nprogress-spinner .4s linear infinite;
-	animation: nprogress-spinner .4s linear infinite
-}
-
-.nprogress-custom-parent {
-	overflow: hidden;
-	position: relative
-}
-
-.nprogress-custom-parent #nprogress .bar,
-.nprogress-custom-parent #nprogress .spinner {
-	position: absolute
-}
-
-@-webkit-keyframes nprogress-spinner {
-	0% {
-		-webkit-transform: rotate(0)
-	}
-
-	100% {
-		-webkit-transform: rotate(360deg)
-	}
-}
-
-@keyframes nprogress-spinner {
-	0% {
-		transform: rotate(0)
-	}
-
-	100% {
-		transform: rotate(360deg)
-	}
-}
+/* =========================================
+   网格系统 / container、row、col
+========================================= */
 
 .container,
 .row [class*=col-] {
@@ -1191,6 +1147,14 @@ template {
 	clear: both
 }
 
+/* =========================================
+   网格系统 — 结束
+========================================= */
+
+/* =========================================
+   Notyf / 通知组件与动画
+========================================= */
+
 @-webkit-keyframes a {
 	0% {
 		opacity: 0;
@@ -1469,8 +1433,7 @@ template {
 }
 
 .submit,
-.ui.checkbox,
-pre .lang {
+.ui.checkbox {
 	vertical-align: baseline
 }
 
@@ -1484,114 +1447,147 @@ pre .lang {
 	}
 }
 
-.post-content pre code,
-.comment-text pre code {
-	display: block;
-	overflow-x: auto;
-	padding: .5em;
-	background: #1d1f21;
-	color: #c5c8c6
+/* =========================================
+   Notyf — 结束
+========================================= */
+
+/* =========================================
+   语法高亮
+========================================= */
+
+/* 关键字 */
+body.aria-style-aria-continuo .post-content pre .hljs-keyword,
+body.aria-style-aria-continuo .post-content pre .hljs-selector-tag,
+body.aria-style-aria-continuo .post-content pre .hljs-tag,
+body.aria-style-aria-continuo .comment-text pre .hljs-keyword,
+body.aria-style-aria-continuo .comment-text pre .hljs-selector-tag,
+body.aria-style-aria-continuo .comment-text pre .hljs-tag {
+	color: #cf222e
 }
 
-.post-content pre .hljs-name,
-.post-content pre .hljs-title,
-.comment-text pre .hljs-name,
-.comment-text pre .hljs-title {
-	color: #f0c674
+/* 函数名、标题 */
+body.aria-style-aria-continuo .post-content pre .hljs-name,
+body.aria-style-aria-continuo .post-content pre .hljs-title,
+body.aria-style-aria-continuo .post-content pre .hljs-selector-class,
+body.aria-style-aria-continuo .comment-text pre .hljs-name,
+body.aria-style-aria-continuo .comment-text pre .hljs-title,
+body.aria-style-aria-continuo .comment-text pre .hljs-selector-class {
+	color: #8250df
 }
 
-.post-content pre .hljs-comment,
-.post-content pre .hljs-meta,
-.post-content pre .hljs-meta .hljs-keyword,
-.comment-text pre .hljs-comment,
-.comment-text pre .hljs-meta,
-.comment-text pre .hljs-meta .hljs-keyword {
-	color: #707880
+/* 字符串 */
+body.aria-style-aria-continuo .post-content pre .hljs-string,
+body.aria-style-aria-continuo .post-content pre .hljs-regexp,
+body.aria-style-aria-continuo .post-content pre .hljs-selector-attr,
+body.aria-style-aria-continuo .post-content pre .hljs-selector-pseudo,
+body.aria-style-aria-continuo .comment-text pre .hljs-string,
+body.aria-style-aria-continuo .comment-text pre .hljs-regexp,
+body.aria-style-aria-continuo .comment-text pre .hljs-selector-attr,
+body.aria-style-aria-continuo .comment-text pre .hljs-selector-pseudo {
+	color: #0a3069
 }
 
-.post-content pre .hljs-deletion,
-.post-content pre .hljs-link,
-.post-content pre .hljs-literal,
-.post-content pre .hljs-number,
-.post-content pre .hljs-symbol,
-.comment-text pre .hljs-deletion,
-.comment-text pre .hljs-link,
-.comment-text pre .hljs-literal,
-.comment-text pre .hljs-number,
-.comment-text pre .hljs-symbol {
-	color: #c66
+/* 数字 */
+body.aria-style-aria-continuo .post-content pre .hljs-number,
+body.aria-style-aria-continuo .post-content pre .hljs-literal,
+body.aria-style-aria-continuo .post-content pre .hljs-symbol,
+body.aria-style-aria-continuo .comment-text pre .hljs-number,
+body.aria-style-aria-continuo .comment-text pre .hljs-literal,
+body.aria-style-aria-continuo .comment-text pre .hljs-symbol {
+	color: #0550ae
 }
 
-.post-content pre .hljs-addition,
-.post-content pre .hljs-doctag,
-.post-content pre .hljs-regexp,
-.post-content pre .hljs-selector-attr,
-.post-content pre .hljs-selector-pseudo,
-.post-content pre .hljs-string,
-.comment-text pre .hljs-addition,
-.comment-text pre .hljs-doctag,
-.comment-text pre .hljs-regexp,
-.comment-text pre .hljs-selector-attr,
-.comment-text pre .hljs-selector-pseudo,
-.comment-text pre .hljs-string {
-	color: #b5bd68
+/* 注释 */
+body.aria-style-aria-continuo .post-content pre .hljs-comment,
+body.aria-style-aria-continuo .post-content pre .hljs-meta,
+body.aria-style-aria-continuo .post-content pre .hljs-meta .hljs-keyword,
+body.aria-style-aria-continuo .comment-text pre .hljs-comment,
+body.aria-style-aria-continuo .comment-text pre .hljs-meta,
+body.aria-style-aria-continuo .comment-text pre .hljs-meta .hljs-keyword {
+	color: #6e7781
 }
 
-.post-content pre .hljs-attribute,
-.post-content pre .hljs-code,
-.post-content pre .hljs-selector-id,
-.comment-text pre .hljs-attribute,
-.comment-text pre .hljs-code,
-.comment-text pre .hljs-selector-id {
-	color: #b294bb
+/* 属性 */
+body.aria-style-aria-continuo .post-content pre .hljs-attribute,
+body.aria-style-aria-continuo .post-content pre .hljs-code,
+body.aria-style-aria-continuo .post-content pre .hljs-selector-id,
+body.aria-style-aria-continuo .comment-text pre .hljs-attribute,
+body.aria-style-aria-continuo .comment-text pre .hljs-code,
+body.aria-style-aria-continuo .comment-text pre .hljs-selector-id {
+	color: #8250df
 }
 
-.post-content pre .hljs-bullet,
-.post-content pre .hljs-keyword,
-.post-content pre .hljs-selector-tag,
-.post-content pre .hljs-tag,
-.comment-text pre .hljs-bullet,
-.comment-text pre .hljs-keyword,
-.comment-text pre .hljs-selector-tag,
-.comment-text pre .hljs-tag {
-	color: #81a2be
+/* 内置类型 */
+body.aria-style-aria-continuo .post-content pre .hljs-built_in,
+body.aria-style-aria-continuo .post-content pre .hljs-type,
+body.aria-style-aria-continuo .post-content pre .hljs-section,
+body.aria-style-aria-continuo .comment-text pre .hljs-built_in,
+body.aria-style-aria-continuo .comment-text pre .hljs-type,
+body.aria-style-aria-continuo .comment-text pre .hljs-section {
+	color: #953800
 }
 
-.post-content pre .hljs-subst,
-.post-content pre .hljs-template-tag,
-.post-content pre .hljs-template-variable,
-.post-content pre .hljs-variable,
-.comment-text pre .hljs-subst,
-.comment-text pre .hljs-template-tag,
-.comment-text pre .hljs-template-variable,
-.comment-text pre .hljs-variable {
-	color: #8abeb7
+/* 变量 */
+body.aria-style-aria-continuo .post-content pre .hljs-variable,
+body.aria-style-aria-continuo .post-content pre .hljs-subst,
+body.aria-style-aria-continuo .post-content pre .hljs-template-variable,
+body.aria-style-aria-continuo .comment-text pre .hljs-variable,
+body.aria-style-aria-continuo .comment-text pre .hljs-subst,
+body.aria-style-aria-continuo .comment-text pre .hljs-template-variable {
+	color: #953800
 }
 
-.post-content pre .hljs-built_in,
-.post-content pre .hljs-builtin-name,
-.post-content pre .hljs-quote,
-.post-content pre .hljs-section,
-.post-content pre .hljs-selector-class,
-.post-content pre .hljs-type,
-.comment-text pre .hljs-built_in,
-.comment-text pre .hljs-builtin-name,
-.comment-text pre .hljs-quote,
-.comment-text pre .hljs-section,
-.comment-text pre .hljs-selector-class,
-.comment-text pre .hljs-type {
-	color: #de935f
+/* 删除 */
+body.aria-style-aria-continuo .post-content pre .hljs-deletion,
+body.aria-style-aria-continuo .comment-text pre .hljs-deletion {
+	color: #82071e
 }
 
-.post-content pre .hljs-emphasis,
-.comment-text pre .hljs-emphasis {
+/* 新增 */
+body.aria-style-aria-continuo .post-content pre .hljs-addition,
+body.aria-style-aria-continuo .post-content pre .hljs-doctag,
+body.aria-style-aria-continuo .comment-text pre .hljs-addition,
+body.aria-style-aria-continuo .comment-text pre .hljs-doctag {
+	color: #116329
+}
+
+/* 链接 */
+body.aria-style-aria-continuo .post-content pre .hljs-link,
+body.aria-style-aria-continuo .comment-text pre .hljs-link {
+	color: #0550ae;
+	text-decoration: underline
+}
+
+/* 引用 */
+body.aria-style-aria-continuo .post-content pre .hljs-quote,
+body.aria-style-aria-continuo .comment-text pre .hljs-quote {
+	color: #6e7781
+}
+
+/* 标点、符号 */
+body.aria-style-aria-continuo .post-content pre .hljs-bullet,
+body.aria-style-aria-continuo .comment-text pre .hljs-bullet {
+	color: #24292f
+}
+
+/* 强调 */
+body.aria-style-aria-continuo .post-content pre .hljs-emphasis,
+body.aria-style-aria-continuo .comment-text pre .hljs-emphasis {
 	font-style: italic
 }
 
-.post-content pre .hljs-strong,
-.comment-text pre .hljs-strong {
+body.aria-style-aria-continuo .post-content pre .hljs-strong,
+body.aria-style-aria-continuo .comment-text pre .hljs-strong {
 	font-weight: 700
 }
+
+/* =========================================
+   语法高亮 — 结束
+========================================= */
+
+/* =========================================
+   图标字体 / 全局选择 / 滚动条
+========================================= */
 
 .iconfont {
 	font-family: iconfont !important;
@@ -1625,8 +1621,6 @@ pre .lang {
 ::-webkit-scrollbar {
 	width: 5px;
 	height: 5px
-	/* width: 10px;
-	height: 7px */
 }
 
 ::-webkit-scrollbar-track {
@@ -1646,3 +1640,7 @@ pre .lang {
 ::-webkit-scrollbar-thumb:hover {
 	background-color: #8a8a8abf
 }
+
+/* =========================================
+   图标字体 / 全局选择 / 滚动条 — 结束
+========================================= */
