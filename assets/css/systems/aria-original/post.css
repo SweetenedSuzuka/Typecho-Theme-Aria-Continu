@@ -158,34 +158,34 @@
 
 .post-content pre code::-webkit-scrollbar,
 .comment-text pre code::-webkit-scrollbar {
-	height: 10x !important;
-	width: 10x !important;
-	background-color: #1d1f21 !important
+	height: 6px;
+	width: 6px;
+	background-color: #1d1f21
 }
 
 .post-content pre code::-webkit-scrollbar-track,
 .comment-text pre code::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 6px rgba(0, 0, 0, .3) !important;
-	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3) !important;
-	border-radius: 10px !important;
-	background-color: #21252b !important
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+	border-radius: 10px;
+	background-color: #21252b
 }
 
 .post-content pre code::-webkit-scrollbar-thumb,
 .comment-text pre code::-webkit-scrollbar-thumb {
-	border-radius: 5px !important;
-	background-color: #535353 !important;
-	-webkit-border-radius: 5px !important;
-	-moz-border-radius: 5px !important;
-	-ms-border-radius: 5px !important;
-	-o-border-radius: 5px !important;
+	border-radius: 5px;
+	background-color: #535353;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
 	-webkit-box-shadow: inset 0 0 0 #fff;
 	box-shadow: inset 0 0 0 #fff
 }
 
 .post-content pre code::-webkit-scrollbar-track-piece,
 .comment-text pre code::-webkit-scrollbar-track-piece {
-	background-color: #1d1f21 !important
+	background-color: #1d1f21
 }
 
 .highlight {
