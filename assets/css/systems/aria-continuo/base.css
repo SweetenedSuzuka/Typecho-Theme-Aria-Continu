@@ -209,7 +209,8 @@ sup {
 	vertical-align: baseline
 }
 
-.hljs-ln td.hljs-ln-numbers,
+.post-content pre .code-ln td.code-ln-numbers,
+.comment-text pre .code-ln td.code-ln-numbers,
 .iconfont {
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -1483,7 +1484,8 @@ pre .lang {
 	}
 }
 
-.hljs {
+.post-content pre code,
+.comment-text pre code {
 	display: block;
 	overflow-x: auto;
 	padding: .5em;
@@ -1491,78 +1493,103 @@ pre .lang {
 	color: #c5c8c6
 }
 
-.hljs span::selection,
-.hljs::selection {
-	background: #373b41
-}
-
-.hljs span::-moz-selection,
-.hljs::-moz-selection {
-	background: #373b41
-}
-
-.hljs-name,
-.hljs-title {
+.post-content pre .hljs-name,
+.post-content pre .hljs-title,
+.comment-text pre .hljs-name,
+.comment-text pre .hljs-title {
 	color: #f0c674
 }
 
-.hljs-comment,
-.hljs-meta,
-.hljs-meta .hljs-keyword {
+.post-content pre .hljs-comment,
+.post-content pre .hljs-meta,
+.post-content pre .hljs-meta .hljs-keyword,
+.comment-text pre .hljs-comment,
+.comment-text pre .hljs-meta,
+.comment-text pre .hljs-meta .hljs-keyword {
 	color: #707880
 }
 
-.hljs-deletion,
-.hljs-link,
-.hljs-literal,
-.hljs-number,
-.hljs-symbol {
+.post-content pre .hljs-deletion,
+.post-content pre .hljs-link,
+.post-content pre .hljs-literal,
+.post-content pre .hljs-number,
+.post-content pre .hljs-symbol,
+.comment-text pre .hljs-deletion,
+.comment-text pre .hljs-link,
+.comment-text pre .hljs-literal,
+.comment-text pre .hljs-number,
+.comment-text pre .hljs-symbol {
 	color: #c66
 }
 
-.hljs-addition,
-.hljs-doctag,
-.hljs-regexp,
-.hljs-selector-attr,
-.hljs-selector-pseudo,
-.hljs-string {
+.post-content pre .hljs-addition,
+.post-content pre .hljs-doctag,
+.post-content pre .hljs-regexp,
+.post-content pre .hljs-selector-attr,
+.post-content pre .hljs-selector-pseudo,
+.post-content pre .hljs-string,
+.comment-text pre .hljs-addition,
+.comment-text pre .hljs-doctag,
+.comment-text pre .hljs-regexp,
+.comment-text pre .hljs-selector-attr,
+.comment-text pre .hljs-selector-pseudo,
+.comment-text pre .hljs-string {
 	color: #b5bd68
 }
 
-.hljs-attribute,
-.hljs-code,
-.hljs-selector-id {
+.post-content pre .hljs-attribute,
+.post-content pre .hljs-code,
+.post-content pre .hljs-selector-id,
+.comment-text pre .hljs-attribute,
+.comment-text pre .hljs-code,
+.comment-text pre .hljs-selector-id {
 	color: #b294bb
 }
 
-.hljs-bullet,
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-tag {
+.post-content pre .hljs-bullet,
+.post-content pre .hljs-keyword,
+.post-content pre .hljs-selector-tag,
+.post-content pre .hljs-tag,
+.comment-text pre .hljs-bullet,
+.comment-text pre .hljs-keyword,
+.comment-text pre .hljs-selector-tag,
+.comment-text pre .hljs-tag {
 	color: #81a2be
 }
 
-.hljs-subst,
-.hljs-template-tag,
-.hljs-template-variable,
-.hljs-variable {
+.post-content pre .hljs-subst,
+.post-content pre .hljs-template-tag,
+.post-content pre .hljs-template-variable,
+.post-content pre .hljs-variable,
+.comment-text pre .hljs-subst,
+.comment-text pre .hljs-template-tag,
+.comment-text pre .hljs-template-variable,
+.comment-text pre .hljs-variable {
 	color: #8abeb7
 }
 
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-quote,
-.hljs-section,
-.hljs-selector-class,
-.hljs-type {
+.post-content pre .hljs-built_in,
+.post-content pre .hljs-builtin-name,
+.post-content pre .hljs-quote,
+.post-content pre .hljs-section,
+.post-content pre .hljs-selector-class,
+.post-content pre .hljs-type,
+.comment-text pre .hljs-built_in,
+.comment-text pre .hljs-builtin-name,
+.comment-text pre .hljs-quote,
+.comment-text pre .hljs-section,
+.comment-text pre .hljs-selector-class,
+.comment-text pre .hljs-type {
 	color: #de935f
 }
 
-.hljs-emphasis {
+.post-content pre .hljs-emphasis,
+.comment-text pre .hljs-emphasis {
 	font-style: italic
 }
 
-.hljs-strong {
+.post-content pre .hljs-strong,
+.comment-text pre .hljs-strong {
 	font-weight: 700
 }
 

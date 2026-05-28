@@ -362,7 +362,7 @@ function buildHighlightedCodeLineTable(codeElement) {
   var table = document.createElement("table");
   var tbody = document.createElement("tbody");
 
-  table.className = "hljs-ln";
+  table.className = "code-ln";
 
   lines.forEach(function (line, index) {
     var row = document.createElement("tr");
@@ -370,10 +370,10 @@ function buildHighlightedCodeLineTable(codeElement) {
     var numberText = document.createElement("div");
     var codeCell = document.createElement("td");
 
-    row.className = "hljs-ln-line";
-    numberCell.className = "hljs-ln-numbers";
-    codeCell.className = "hljs-ln-code";
-    numberText.className = "hljs-ln-n";
+    row.className = "code-ln-line";
+    numberCell.className = "code-ln-numbers";
+    codeCell.className = "code-ln-code";
+    numberText.className = "code-ln-n";
     numberText.textContent = String(index + 1);
 
     numberCell.appendChild(numberText);
@@ -428,7 +428,7 @@ Object.assign(Aria, {
       this.lazyload();
     }
 
-    this.hljs.init();
+    this.codeBlock.init();
     this.commentPlus.init();
     this.toc.init();
   },
@@ -453,7 +453,7 @@ Object.assign(Aria, {
       .catch(function () {});
   },
 
-  hljs: {
+  codeBlock: {
     init: function () {
       Array.prototype.forEach.call(
         document.querySelectorAll("pre code"),
@@ -465,24 +465,24 @@ Object.assign(Aria, {
           var nextElement;
           var copyButton;
 
-          if (element.getAttribute("data-aria-hljs-bound") === "true") {
+          if (element.getAttribute("data-aria-code-block-bound") === "true") {
             return;
           }
 
           shouldAddLineNumbers = !element.closest(".comment-text");
           rawCodeText = element.textContent || "";
 
-          element.setAttribute("data-aria-hljs-bound", "true");
+          element.setAttribute("data-aria-code-block-bound", "true");
           element.setAttribute("data-aria-copy-text", rawCodeText);
           hljs.highlightBlock(element);
           if (
             shouldAddLineNumbers &&
-            element.getAttribute("data-aria-hljs-lines-bound") !== "true"
+            element.getAttribute("data-aria-code-lines-bound") !== "true"
           ) {
-            element.setAttribute("data-aria-hljs-lines-bound", "true");
+            element.setAttribute("data-aria-code-lines-bound", "true");
             buildHighlightedCodeLineTable(element);
           }
-          element.id = "hljs-" + index;
+          element.id = "code-block-" + index;
 
           match = (element.getAttribute("class") || "").match(/lang-(\w+)/);
           language = match == null ? "CODE" : match[1].toUpperCase();

@@ -283,7 +283,6 @@ class Comments
         $content = empty($lastContent) ? $content : $lastContent;
         if ($widget instanceof Widget_Abstract) {
             $content = self::commentAt($content, $widget);
-            $content = self::parseHljsWrap($content, $widget);
         }
 
         return $content;
@@ -309,25 +308,6 @@ class Comments
         } else {
             return $content;
         }
-    }
-
-    /**
-     * 给<pre>增加class
-     *
-     * @param mixed $content
-     * @param mixed $widget
-     *
-     * @return mixed
-     */
-
-    public static function parseHljsWrap($content, $widget)
-    {
-        $preg = "/<pre>/";
-        $replace = '<pre class="highlight-wrap">';
-
-        $content = preg_replace($preg, $replace, $content);
-        
-        return $content;
     }
 
     /**

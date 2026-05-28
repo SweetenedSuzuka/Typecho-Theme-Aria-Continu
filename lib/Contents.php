@@ -481,29 +481,9 @@ class Contents
         if ($widget instanceof Widget_Abstract) {
             add_shortcode('link-item', 'Contents::shortcode_linkitem');
             add_shortcode('link-box', 'Contents::shortcode_linkbox');
-            $content = self::parseHljsWrap($content, $widget);
 
             $content = do_shortcode($content);
         }
-
-        return $content;
-    }
-
-    /**
-     * 给<pre>增加class
-     *
-     * @param mixed $content
-     * @param mixed $widget
-     *
-     * @return mixed
-     */
-
-    public static function parseHljsWrap($content, $widget)
-    {
-        $preg = "/<pre.*?>/";
-        $replace = '<pre class="highlight-wrap">';
-
-        $content = preg_replace($preg, $replace, $content);
 
         return $content;
     }
