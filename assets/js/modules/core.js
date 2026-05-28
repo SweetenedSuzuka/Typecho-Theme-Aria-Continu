@@ -474,7 +474,7 @@ Object.assign(Aria, {
 
           element.setAttribute("data-aria-code-block-bound", "true");
           element.setAttribute("data-aria-copy-text", rawCodeText);
-          hljs.highlightBlock(element);
+          hljs.highlightElement(element);
           if (
             shouldAddLineNumbers &&
             element.getAttribute("data-aria-code-lines-bound") !== "true"
@@ -484,7 +484,7 @@ Object.assign(Aria, {
           }
           element.id = "code-block-" + index;
 
-          match = (element.getAttribute("class") || "").match(/lang-(\w+)/);
+          match = (element.getAttribute("class") || "").match(/\blang(?:uage)?-([\w-]+)\b/i);
           language = match == null ? "CODE" : match[1].toUpperCase();
 
           element.setAttribute("data-lang", language);
